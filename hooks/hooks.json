@@ -15,6 +15,14 @@
         ]
       },
       {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/guard-capture-secret.sh\"" },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/guard-capture-sot.sh\"" },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/guard-blast-radius.sh\"" }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/guard-git-commit.sh\"" }
