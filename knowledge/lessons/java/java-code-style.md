@@ -7,18 +7,16 @@ tags:
 
 > 상위: [java](README.md) · [lessons](../README.md)
 
-# 학습: KT Cloud Java 코드 스타일
+# Java 코드 스타일 가이드
 
 ## 날짜
 2026-01-22
 
 ## 프로젝트
-전체 Java 프로젝트 (luppiter-web, luppiter_inv 등)
+전체 Java 프로젝트
 
 ## 출처 문서
-- kt-cloud-java-code-style 저장소
-- `intellij_formatter.xml`
-- `checkstyle.xml` / `suppressions.xml`
+- Java 코드 스타일 가이드 (intellij_formatter.xml / checkstyle.xml 기반)
 
 ---
 
@@ -105,12 +103,12 @@ VPC.java
 
 ```java
 // 나쁜 예
-package com.ktcloud.apiGateway
-package com.ktcloud.ApiGateway
-package com.ktcloud.api_gateway
+package com.<your_org>.apiGateway
+package com.<your_org>.ApiGateway
+package com.<your_org>.api_gateway
 
 // 좋은 예
-package com.ktcloud.apigateway
+package com.<your_org>.apigateway
 ```
 
 ## 2-3. 클래스 이름
@@ -326,8 +324,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.ktcloud.request.RequestDto;
-import com.ktcloud.response.ResponseDto;
+import com.<your_org>.request.RequestDto;
+import com.<your_org>.response.ResponseDto;
 
 import static org.springframework.data.domain.ExampleMatcher.*;
 ```
@@ -446,7 +444,8 @@ long example = 5442323241221L;
 
 \b, \f, \n, \r, \t, \, \\ 와 같이 특별히 정의된 선언 방식이 있는 특수 문자가 있다.
 
-옥텟(\012) 이나 유니코드(\u000a) 과 같은 방식을 사용하지 않는다.
+옥텟(\012) 이나 유니코드(
+) 과 같은 방식을 사용하지 않는다.
 
 `예) 줄바꿈 선언`
 
@@ -777,12 +776,12 @@ package 선언 후, 빈 줄을 삽입한다.
 
 ```java
 // 나쁜 예
-package com.naver.lucy.util;
+package com.example.util;
 import java.util.Date;
 import java.util.List;
 
 // 좋은 예
-package com.naver.lucy.util;
+package com.example.util;
 
 import java.util.Date;
 import java.util.List;
@@ -1138,7 +1137,7 @@ Class 또는 파일 최상 위에 설명을 위한 내용을 작성함.
 /**
  * (설명)
  * @since 1.0.0
- * @author xxx@kt.com
+ * @author author@example.com
  */
 ```
 
@@ -1187,7 +1186,7 @@ TODO 주석을 commit/push 하는 것을 지양한다.
 
 하지만, 사용할 경우 대문자 TODO 와 콜론 ( : ) 및 공백을 포함해야한다.
 
-추가적으로, 전달 사항이 있어 언급할때에는 콜론( : ) 뒤에 @사번 으로 주석을 남긴다.
+추가적으로, 전달 사항이 있어 언급할때에는 콜론( : ) 뒤에 @사용자ID 으로 주석을 남긴다.
 
 `예) TODO 주석 예시`
 
@@ -1201,7 +1200,7 @@ TODO 주석을 commit/push 하는 것을 지양한다.
 // 좋은 예
 
 // TODO: Remove This Line
-// TODO: @12349876 Remove This Line
+// TODO: @user123 Remove This Line
 ```
 
 ---
@@ -1304,86 +1303,6 @@ AccessLoggerAspect.java
 | Entity | Entity 접미사 |
 | Configuration | Configuration 접미사 |
 | AOP | Aspect 접미사 |
-
----
-
-# 11. 프로젝트 적용 현황 (2026-01-22 기준)
-
-## 11-1. 준수율 분석
-
-| 항목 | luppiter_web | luppiter_scheduler | 전체 |
-|------|-------------|-------------------|------|
-| K&R 중괄호 | 100% | 100% | **100%** |
-| 들여쓰기 (4칸) | 100% | 100% | **100%** |
-| Import 순서 | ~85% | ~75% | **80%** |
-| Configuration 명명 | 80% | 40% | **60%** |
-| Entity 명명 | ~50% | ~30% | **~40%** |
-| Interface I 접두사 | 0% | 0% | **0%** |
-| Enum E 접두사 | 0% | 0% | **0%** |
-| **종합** | ~60% | ~50% | **~54%** |
-
-## 11-2. 주요 미준수 사례
-
-```java
-// Interface - I 접두사 없음
-CommonService, EvtService, SttMapper, EventBatchMapper
-
-// Enum - E 접두사 없음
-ErrorCode, enumsTypes.eventActType, enumsLoginTypes
-
-// Configuration - 혼용 (luppiter_scheduler)
-DataSourceConfig, SchedulerConfig  // Config 사용
-PrimarySqlConfiguration            // Configuration 사용
-```
-
-## 11-3. 권장사항
-
-### 즉시 적용 (신규 코드)
-
-**신규 코드 작성 시 필수 적용:**
-
-```java
-// 1. Interface: I 접두사
-public interface ICommonService { }
-public interface IEvtService { }
-public interface ISttMapper { }
-
-// 2. Enum: E 접두사
-public enum EErrorCode { NO_DATA, NO_DATA_BATCH_INFO; }
-public enum EEventActType { INIT, PERCEIVE, ... }
-
-// 3. Configuration: Configuration 접미사 통일
-public class DataSourceConfiguration { }
-public class SchedulerConfiguration { }
-
-// 4. Entity: Entity 접미사
-public class UserEntity { }
-public class EventInfoEntity { }
-```
-
-### 점진적 적용 (기존 코드)
-
-리팩토링 시 점진적으로 적용:
-
-| 우선순위 | 항목 | 작업 |
-|---------|------|------|
-| 1 | Configuration 통일 | `*Config` → `*Configuration` |
-| 2 | Enum 정규화 | 클래스명 PascalCase + E 접두사 |
-| 3 | Interface 접두사 | 의존성 영향 검토 후 적용 |
-| 4 | Import 정리 | jakarta/javax 혼용 정리 |
-
-### 적용 제외 (호환성)
-
-기존 외부 연동 Interface는 현행 유지 (API 호환성):
-- 외부 시스템 연동 Interface
-- 공개 API의 DTO/VO 클래스명
-
----
-
-## 11-4. 강점 영역
-
-- **포맷팅**: IDE 설정이 잘 적용되어 K&R 중괄호, 들여쓰기 완벽 준수
-- **Import 순서**: 대부분 올바른 순서 유지
 
 ---
 

@@ -1,0 +1,129 @@
+#!/usr/bin/env node
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const path = require('path');
+const {
+  checkExistingPath,
+  cloneSource,
+  ensureNoDuplicateSource,
+  fail,
+  gitHead,
+  hasSecretInRepoUrl,
+  inferNameFromRepo,
+  parseArgs,
+  printPlan,
+  readSources,
+  remoteCheck,
+  requireGit,
+  sourceRefFromArgs,
+  updateLock,
+  validateSource,
+  workspaceRootFromArgs,
+  writeSources,
+} = require('./lib/cairn-workspace-lib.cjs');
+
+function usage() {
+  console.log(`Usage:
+  cairn-project-add <repo-url> [--name <name>] [--branch <branch>|--tag <tag>|--commit <sha>]
+                    [--role service|domain|docs|wiki|support|platform]
+                    [--path <workspace-relative-path>] [--service-key <key>]
+                    [--pull-policy manual|auto|on-start|scheduled]
+                    [--clone|--no-clone] [--dry-run] [--yes]
+
+Defaults to preview only. Add --yes to update sources.yaml and clone.`);
+}
+
+function main() {
+  const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    usage();
+    return;
+  }
+  requireGit();
+
+  const repo = args._[0] ? String(args._[0]) : '';
+  if (!repo) {
+    usage();
+    fail('repo URL is required');
+  }
+  if (hasSecretInRepoUrl(repo)) {
+    fail('repo URL appears to contain credentials');
+  }
+
+  const workspaceRoot = workspaceRootFromArgs(args);
+  const doc = readSources(workspaceRoot);
+  const defaults = doc.defaults || {};
+  const name = String(args.name || inferNameFromRepo(repo));
+  const ref = sourceRefFromArgs(args);
+  const root = String(defaults.root || 'projects');
+  const sourcePath = String(args.path || path.posix.join(root, name));
+  const clone = args.clone !== false;
+  const dryRun = Boolean(args['dry-run']) || !args.yes;
+
+  const source = {
+    name,
+    role: String(args.role || 'service'),
+    repo,
+    ref,
+    path: sourcePath,
+    pull: {
+      policy: String(args['pull-policy'] || defaults.pull_policy || 'manual'),
+      dirty_policy: String(args['dirty-policy'] || defaults.dirty_policy || 'skip'),
+      rebase: Boolean(args.rebase),
+      prune: args.prune !== false,
+    },
+  };
+  if (args['service-key']) {
+    source.profile_service_key = String(args['service-key']);
+  }
+  validateSource(source);
+  ensureNoDuplicateSource(doc, source);
+
+  const existing = checkExistingPath(workspaceRoot, source);
+  if (existing.exists && !existing.ok) {
+    fail(existing.message);
+  }
+
+  printPlan('[GATE-SOURCE-ADD] source add preview', [
+    ['workspace', workspaceRoot],
+    ['name', source.name],
+    ['repo', source.repo],
+    ['ref', `${source.ref.type}:${source.ref.name}`],
+    ['role', source.role],
+    ['path', source.path],
+    ['pull policy', source.pull.policy],
+    ['clone', clone ? 'yes' : 'no'],
+    ['target exists', existing.exists ? 'yes' : 'no'],
+    ['write', dryRun ? 'no (--yes required)' : 'yes'],
+  ]);
+
+  if (dryRun) {
+    console.log('\nNo files were written. Re-run with --yes to update sources.yaml.');
+    return;
+  }
+
+  const remote = remoteCheck(source.repo, source.ref, Boolean(args['skip-remote-check']));
+  if (!remote.ok) {
+    fail(`remote check failed: ${remote.message}`);
+  }
+
+  doc.sources.push(source);
+  writeSources(workspaceRoot, doc);
+
+  if (clone && !existing.exists) {
+    const cloned = cloneSource(workspaceRoot, source, defaults);
+    if (!cloned.ok) {
+      updateLock(workspaceRoot, source, 'failed', { message: cloned.message });
+      fail(cloned.message);
+    }
+    updateLock(workspaceRoot, source, 'cloned', { commit: cloned.commit });
+    console.log(`Source registered and cloned: ${source.name}`);
+    return;
+  }
+
+  const commit = existing.exists ? gitHead(existing.target) : '';
+  updateLock(workspaceRoot, source, clone ? 'exists' : 'registered', { commit });
+  console.log(`Source registered: ${source.name}`);
+}
+
+main();

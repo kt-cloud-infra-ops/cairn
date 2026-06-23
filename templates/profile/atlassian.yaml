@@ -1,0 +1,46 @@
+# .cairn/profile/atlassian.yaml
+# Atlassian (Jira + Confluence) integration identifiers.
+# Actual tokens/passwords go in .cairn/local.env (gitignore).
+# Schema: cairn.profile.atlassian/v1
+#
+# Values: fill in ${VAR} from .cairn/local.env or system env,
+#         or replace <YOUR_X> placeholders directly.
+
+schema: "cairn.profile.atlassian/v1"
+
+base_url: "${ATLASSIAN_BASE_URL}"        # 예: https://yourcompany.atlassian.net
+
+jira:
+  default_project: "${JIRA_PROJECT_KEY}" # 예: PROJ
+
+  projects:
+    # 프로젝트 alias → key 매핑. 스킬/hook이 이 alias로 참조.
+    primary: "${JIRA_PROJECT_KEY}"
+    # secondary: "${JIRA_PROJECT_KEY_2}"
+
+  fields:
+    # 커스텀 필드 ID. Jira 인스턴스별로 다름.
+    acceptance_criteria: "${JIRA_AC_FIELD_ID}"     # 예: customfield_10000
+    # epic_link: "${JIRA_EPIC_LINK_FIELD_ID}"
+    # start_date: "${JIRA_START_DATE_FIELD_ID}"
+
+  issue_types:
+    task: "Task"
+    epic: "Epic"
+    bug: "Bug"
+
+  transitions:
+    # 전환 ID는 Jira 인스턴스별로 다름. /rest/api/3/issue/{key}/transitions 로 조회.
+    in_review: "${JIRA_TRANSITION_IN_REVIEW_ID}"   # 예: "5"
+    done: "${JIRA_TRANSITION_DONE_ID}"             # 예: "6"
+
+confluence:
+  default_space: "${CONFLUENCE_SPACE_KEY}"         # 예: TEAM
+
+  spaces:
+    team: "${CONFLUENCE_SPACE_KEY}"
+    # docs: "${CONFLUENCE_DOCS_SPACE_KEY}"
+
+  # 주요 페이지 ID. /rest/api/content?spaceKey={key}&title={title} 로 조회.
+  # pages:
+  #   home: "${CONFLUENCE_HOME_PAGE_ID}"

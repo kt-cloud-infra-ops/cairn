@@ -12,7 +12,7 @@
 | 커맨드 | `agents/skills/` | O | `/review-rules` |
 | 통합 지침 | `AGENTS.md` | O | `/review-rules` |
 | 서비스 문서 | `base/services/` | O | 자유 커밋 |
-| 개인 문서 | `base/personal/{사번}/` | O | 본인만 수정 |
+| 개인 문서 | `base/personal/<YOUR_EMPLOYEE_ID>/` | O | 본인만 수정 |
 | 워크스페이스 | `workspace/` | X | 코드+프로젝트 문서 전용 |
 | 임시 파일 | `temp/` | X | 작업 후 삭제 |
 
@@ -29,13 +29,13 @@
 
 ### 적용 대상 (하네스 선행 의무)
 - 신규 기능 구현 / 버그 수정 / 리팩터링
-- 보안 취약점 분석 + 대응 (예: 모의해킹 PT 후속)
+- 보안 취약점 분석 + 대응
 - 외부 API 연동 변경
 - DB 쿼리/스키마 변경
 
 ### 예외 (하네스 발화 X)
 - **Jira 티켓 단순 조회/현황 확인** — 모든 Jira 티켓이 개발건은 아님
-- **통합요청 / 데이터 보정** — `luppiter-datachange-request-automation` 사용
+- **팀 특화 데이터 보정 요청** — 팀 특화 스킬이 있으면 해당 스킬 사용
 - **운영 SQL 1회성 적용** — 운영 변경 SOP에 따라 별도
 - **단순 질문/검색** — 코드 변경 없음
 - **문서(`docs/`) 수정** — 작업일지, 메모, 리마인더
@@ -51,8 +51,8 @@
 
 - `guard-charter.sh`(PreToolUse Edit/Write/MultiEdit)가 코드 파일 편집 전 `.harness/state.json`을 검사
 - **state.json 없음 → BLOCK** (orchestrator/GATE 0 미진입). Lite여도 state.json은 요구 (산출물 면제 ≠ GATE 0 면제)
-- `~/.claude/settings.json`(user 레벨)에서 절대경로로 발동하므로 **ai-team-standards 밖 git worktree(예: luppiter_web)에서도 강제**된다 — 코드작업 위치 무관
-- 가드 대상: ai-team-standards / `.harness/` 보유 프로젝트 / origin이 `kt-cloud-infra-ops`인 repo. 무관 repo는 통과
+- `${CLAUDE_HOME:-$HOME/.claude}/settings.json`(user 레벨)에서 절대경로로 발동하므로 **standards 저장소 밖 git worktree에서도 강제**된다 — 코드작업 위치 무관
+- 가드 대상: standards 저장소 / `.harness/` 보유 프로젝트 / origin이 `${GIT_ORG}`인 repo. 무관 repo는 통과
 - 신규 환경 onboarding 시 `/workspace-setup`이 user settings hook을 멱등 등록
 
 ### 위반 시 처리
@@ -105,7 +105,7 @@
 
 응답에 외부 시스템 상태(서비스 운영 여부, Jira 상태, 큐 길이, 옆 세션 완성도 등) 또는 owner/소유자/사실을 단정하는 내용이 들어가면:
 
-1. 해당 사실을 **도구 호출로 확인했는가** 검토 (jira-rest-ops / cmux read-screen / git log / Read / Grep / Bash)
+1. 해당 사실을 **도구 호출로 확인했는가** 검토 (jira-rest-ops / git log / Read / Grep / Bash)
 2. 확인 안 됐으면 → `[미확인]` 또는 `[TBD]` 마킹으로 전환
 3. 또는 사용자에게 질문으로 전환 ("X 상태가 확인 안 됨, 알려주실래요?")
 
@@ -113,14 +113,14 @@
 
 | 패턴 | 사고 예시 |
 |------|---------|
-| 사용자 의도 추정 | ADR-007 작성 시 "owner skill 직접 호출" 의도라고 추정 → 당일 폐기, PR 4건 정정 |
-| 외부 시스템 상태 추정 | "infraops-api 운영 중", "Jira 상태 In Progress" 등 확인 없이 단정 |
-| 인상비평 | "옆 세션 70% 완성", "큐 OI-1~12" 등 측정 없이 어림 |
-| owner 추정 | modified 파일 작성자 추측 (cmux로 검증한 경우는 모범 사례) |
+| 사용자 의도 추정 | 설계 문서 작성 시 사용자 의도를 임의 판단 → 당일 폐기, PR 다수 정정 |
+| 외부 시스템 상태 추정 | "<YOUR_SERVICE> 운영 중", "Jira 상태 In Progress" 등 확인 없이 단정 |
+| 인상비평 | "옆 세션 70% 완성", "큐 N건" 등 측정 없이 어림 |
+| owner 추정 | modified 파일 작성자 추측 (화면 확인으로 검증한 경우는 모범 사례) |
 
 #### 모범 사례
 
-- modified 파일 작성자 의심 → `cmux read-screen`으로 옆 세션 확인 후 정정
+- modified 파일 작성자 의심 → 화면/로그로 옆 세션 확인 후 정정
 - Jira 상태 의심 → jira-rest-ops로 조회
 - 코드 동작 의심 → Read + Grep으로 실제 코드 확인
 

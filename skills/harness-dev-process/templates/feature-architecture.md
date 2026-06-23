@@ -8,7 +8,7 @@
 | 항목 | 내용 |
 |------|------|
 | PRD 문서 | [feature-prd.md 경로] |
-| Jira 티켓 | [TECHIOPS26-XXX] |
+| Jira 티켓 | [${JIRA_PROJECT_KEY}-XXX] |
 | 상태 | `draft` / `review` / `approved` |
 
 ## 시스템 구조

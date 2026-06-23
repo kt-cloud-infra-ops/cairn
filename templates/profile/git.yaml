@@ -1,0 +1,36 @@
+# .cairn/profile/git.yaml
+# Git organization, branch strategy, and wiki conventions.
+# Schema: cairn.profile.git/v1
+#
+# Values: fill in ${VAR} from .cairn/local.env or system env,
+#         or replace <YOUR_X> placeholders directly.
+
+schema: "cairn.profile.git/v1"
+
+org: "${GIT_ORG}"                             # 예: your-org (GitHub/GitLab org 이름)
+host: "${GIT_HOST}"                           # 예: github.com
+
+defaults:
+  branch: "develop"                           # 기본 작업 브랜치
+  main_branch: "main"                         # 릴리즈 기록 브랜치
+  release_branch_pattern: "release/*"
+  hotfix_branch_pattern: "hotfix/*"
+  feature_branch_pattern: "feature/*"
+  fix_branch_pattern: "fix/*"
+
+clone:
+  default_depth: 1                            # shallow clone. 0 = full
+  ssh_key: "${GIT_SSH_KEY_PATH}"              # SSH 키 경로 (optional)
+
+wiki:
+  # git wiki repo 네이밍 규칙
+  pattern: "${GIT_ORG}/{repo}.wiki.git"
+  operations_path: "operations"               # ops SQL/이력 발행 경로
+  # ITIL 2카테고리: request=요청충족, change=변경관리
+  itil_categories: ["request", "change"]
+
+commit:
+  # 커밋 메시지 규칙. core에서는 타입만 정의, 조직 규칙은 여기서 확장.
+  types: ["feat", "fix", "refactor", "docs", "test", "chore", "rules", "commands"]
+  # scope_required: false
+  # ticket_required: true   # Jira 티켓 키 필수 여부

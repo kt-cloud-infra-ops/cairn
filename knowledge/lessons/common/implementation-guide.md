@@ -19,7 +19,7 @@ tags:
 
 ### 1.1 관계 맵 구조 정의
 
-파일: `/Users/jiwoong.kim/Documents/ai-team-standards/.claude/meta/related-rules-map.json`
+파일: `<YOUR_PLUGIN_ROOT>/.claude/meta/related-rules-map.json`
 
 ```json
 {
@@ -30,7 +30,7 @@ tags:
   },
   "sync_pairs": [
     {
-      "project": "/Users/jiwoong.kim/Documents/ai-team-standards/agents/rules/",
+      "project": "<YOUR_PLUGIN_ROOT>/agents/rules/",
       "home": "~/.claude/rules/",
       "files": ["agents.md", "coding-style.md", "doc-organization.md",
                 "git-workflow.md", "hooks.md", "patterns.md",

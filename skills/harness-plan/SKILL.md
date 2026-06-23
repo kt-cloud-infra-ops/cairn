@@ -77,7 +77,7 @@ Use `/plan` when:
 ## Example Usage
 
 ```
-User: /plan TECHIOPS26-999 변경 계획 정리해줘
+User: /plan ${JIRA_PROJECT_KEY}-999 변경 계획 정리해줘
 
 Agent (planner):
 # PLAN Package

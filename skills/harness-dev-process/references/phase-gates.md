@@ -142,7 +142,7 @@ Gate 통과 증거를 `checks.*` boolean 대신 `evidence.*` pointer로 기록�
 ```json
 {
   "harnessLevel": "standard",
-  "ticket": "TECHIOPS26-XXX",
+  "ticket": "${JIRA_PROJECT_KEY}-XXX",
   "phase": "INIT",
   "docs": {
     "cps": "feature-cps.md",

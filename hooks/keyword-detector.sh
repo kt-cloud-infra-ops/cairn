@@ -1,13 +1,12 @@
 #!/bin/bash
 # Cross-repo self-guard (ADR-011): 가드 대상 repo만, 무관 repo 즉시 통과
-# user 레벨(~/.claude/settings.json) 절대경로 실행 → worktree 포함 모든 cwd 발동.
+# user 레벨(${CLAUDE_HOME:-$HOME/.claude}/settings.json) 절대경로 실행 → worktree 포함 모든 cwd 발동.
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 is_guarded_repo() {
   local root="$1"
   [ -z "$root" ] && return 1
-  [ -f "$root/AGENTS.md" ] && [ -d "$root/agents/skills" ] && return 0   # ai-team-standards
+  [ -f "$root/AGENTS.md" ] && [ -d "$root/agents/skills" ] && return 0   # cairn plugin repo
   [ -d "$root/.harness" ] && return 0                                     # 하네스 활성 프로젝트
-  git -C "$root" remote get-url origin 2>/dev/null | grep -qE 'kt-cloud-infra-ops/' && return 0  # known 코드 repo
   return 1
 }
 is_guarded_repo "$repo_root" || exit 0

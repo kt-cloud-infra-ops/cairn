@@ -95,10 +95,9 @@ Claude 메인 프로젝트의 계층적 문서 구조 설계 가이드입니다.
 
 ```
 /claude/projects/
-├── luppiter-web -> /develop/workspace/luppiter-web
-├── morning_report -> /develop/workspace/morning_report
-├── zabbix_api -> /develop/workspace/zabbix_api
-└── luppiter_inv -> /develop/workspace/luppiter_inv
+├── <service-a> -> /develop/workspace/<service-a>
+├── <service-b> -> /develop/workspace/<service-b>
+└── <service-c> -> /develop/workspace/<service-c>
 ```
 
 **특징**:

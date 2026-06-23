@@ -1,0 +1,18 @@
+# .cairn/profile/org.yaml
+# Organization and team identity.
+# Used for display names, timezone defaults, and language settings.
+# Schema: cairn.profile.org/v1
+#
+# Values: fill in ${VAR} from .cairn/local.env or system env,
+#         or replace <YOUR_X> placeholders directly.
+
+schema: "cairn.profile.org/v1"
+
+org:
+  display_name: "${ORG_DISPLAY_NAME}"    # 예: "Acme Corp"
+  short_name: "${ORG_SHORT_NAME}"        # 예: "acme". URL/kebab용
+
+team:
+  display_name: "${TEAM_DISPLAY_NAME}"   # 예: "Platform Engineering"
+  timezone: "${TEAM_TIMEZONE}"           # 예: "Asia/Seoul", "UTC"
+  language: "${TEAM_LANGUAGE}"           # 예: "ko", "en"

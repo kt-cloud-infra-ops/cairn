@@ -62,7 +62,7 @@ tags:
 
 ```bash
 # 하네스 초기화
-./agents/skills/harness-dev-process/scripts/init-harness-run.sh /path/to/project --level standard --ticket TECHIOPS26-XXX
+./agents/skills/harness-dev-process/scripts/init-harness-run.sh /path/to/project --level standard --ticket ${JIRA_PROJECT_KEY}-XXX
 
 # 문서 검증
 node agents/skills/harness-dev-process/scripts/validate-doc-contracts.mjs feature-cps.md --type cps

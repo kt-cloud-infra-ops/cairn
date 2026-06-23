@@ -7,7 +7,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| Jira 티켓 | [TECHIOPS26-XXX] |
+| Jira 티켓 | [${JIRA_PROJECT_KEY}-XXX] |
 | PRD 참조 | [feature-prd.md#FR-N] |
 | Architecture 참조 | [feature-architecture.md#섹션] |
 | 담당 에이전트/역할 | [backend / frontend / dba / ...] |

@@ -1,11 +1,11 @@
 #!/bin/bash
 # skill-sync-claude-2-codex / sync.sh
-# Claude Code의 스킬(agents/skills/*)을 Codex가 인식하도록 ~/.codex/skills/에 심볼릭 링크
+# Claude Code의 스킬(agents/skills/*)을 Codex가 인식하도록 ${CODEX_HOME:-$HOME/.codex}/skills/에 심볼릭 링크
 #
 # 주의:
 #   - vendor/ 는 제외
 #   - skill-sync-claude-2-codex 자신은 제외 (자기 참조 방지)
-#   - ~/.codex/skills/.system/ 은 건드리지 않음
+#   - ${CODEX_HOME:-$HOME/.codex}/skills/.system/ 은 건드리지 않음
 #   - 이미 링크된 것은 재링크 (-f)
 
 set -euo pipefail
@@ -13,7 +13,7 @@ set -euo pipefail
 # scripts/sync.sh → skill-sync-claude-2-codex/ → skills/ → agents/ → repo root
 REPO_ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/agents/skills"
-CODEX_DIR="$HOME/.codex/skills"
+CODEX_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
 
 if [ ! -d "$CODEX_DIR" ]; then
   mkdir -p "$CODEX_DIR"

@@ -1,12 +1,12 @@
-# CINM 인시던트 description 표준 양식 (8섹션 ADF)
+# 인시던트 관리 시스템 description 표준 양식 (8섹션 ADF)
 
-KT cloud CINM 프로젝트(인시던트 관리) 표준. 다른 CINM 종료 이슈(CINM-22, CINM-138) 패턴 + 본 사고(CINM-149) 보완.
+인시던트 관리 시스템 표준 양식. 조직의 incident management 도구에 맞게 조정하여 사용한다.
 
 ## 8섹션 구조
 
 | 순서 | 섹션 | 작성 주체 | 필수 |
 |------|------|---------|------|
-| 가 | 타임 테이블 | 상황반장(Cloud통합관제팀) | O |
+| 가 | 타임 테이블 | 상황반장 (관제팀) | O |
 | 나 | 인시던트 내부 공지 내용(해소) | 상황반장 | O |
 | 다 | (선택) 발생 이벤트 정보 | 신고자 / 외부 운영팀 | △ |
 | 라 | 참고/첨부 | 상황반장 | O (상황창 링크 등) |
@@ -60,10 +60,10 @@ KT cloud CINM 프로젝트(인시던트 관리) 표준. 다른 CINM 종료 이�
 - {시스템 정상화 확인} (시각)
 ```
 
-예 (CINM-149):
+예:
 ```
-- Zabbix DB에서 깨진 row(eventid=713802965) 삭제로 임시 회피
-- COPY 적재 재개 + x01_if_event_data 정상 적재 확인, 시스템 정상화(17:05)
+- (예: 특정 모니터링 DB에서 장애 row 격리로 임시 회피)
+- (예: 적재 재개 + 데이터 정상 처리 확인, 시스템 정상화(HH:MM))
 ```
 
 ### 바. 원인분석내용
@@ -85,7 +85,7 @@ KT cloud CINM 프로젝트(인시던트 관리) 표준. 다른 CINM 종료 이�
 1) {개선 항목 1} — {구체 코드 변경} (기한 ~YYYY.MM.DD)
 2) {개선 항목 2} — {구체 변경} (기한 ~YYYY.MM.DD)
 - 주관: {담당팀}
-- 관련 운영개선 태스크: {TECHIOPS26-N 또는 devops 프로젝트 키}
+- 관련 운영개선 태스크: {${JIRA_PROJECT_KEY}-NNN}
 ```
 
 ### 아. 비고
@@ -140,40 +140,43 @@ desc['content'].extend(append_blocks)
 ## Jira REST API 업데이트
 
 ```bash
-EMAIL=$(jq -r '.email' ~/.jira-credentials.json)
-TOKEN=$(jq -r '.apiToken' ~/.jira-credentials.json)
-BASE=$(jq -r '.baseUrl' ~/.jira-credentials.json)
+CREDS_FILE="${JIRA_CREDENTIALS_FILE:-~/.jira-credentials.json}"
+EMAIL=$(jq -r '.email' "$CREDS_FILE")
+TOKEN=$(jq -r '.apiToken' "$CREDS_FILE")
+BASE=$(jq -r '.baseUrl' "$CREDS_FILE")
 AUTH=$(echo -n "$EMAIL:$TOKEN" | base64)
 
 # 1. 현재 description 가져오기 (ADF JSON 그대로)
 curl -s -H "Authorization: Basic $AUTH" \
-  "${BASE}/rest/api/3/issue/CINM-{N}?fields=description" \
-  | jq '.fields.description' > /tmp/cinm_desc.json
+  "${BASE}/rest/api/3/issue/INCIDENT-{N}?fields=description" \
+  | jq '.fields.description' > /tmp/incident_desc.json
 
 # 2. Python으로 마/바/사/아 append (위 예시)
 
 # 3. PUT
-payload='{"fields": {"description": '$(cat /tmp/cinm_desc.json)'}}'
-echo "$payload" > /tmp/cinm_payload.json
+payload='{"fields": {"description": '$(cat /tmp/incident_desc.json)'}}'
+echo "$payload" > /tmp/incident_payload.json
 
 curl -s -X PUT \
   -H "Authorization: Basic $AUTH" \
   -H "Content-Type: application/json" \
-  -d @/tmp/cinm_payload.json \
-  "${BASE}/rest/api/3/issue/CINM-{N}"
+  -d @/tmp/incident_payload.json \
+  "${BASE}/rest/api/3/issue/INCIDENT-{N}"
 # HTTP 204 = 성공
 ```
 
 ## 운영팀 기록 우선
 
-가/나/다/라 4섹션은 **상황반장(Cloud통합관제팀)이 작성한 내용을 절대 수정하지 않는다**. 본 스킬은 **끝에 마/바/사/아 4섹션을 append**만 수행. 운영팀 권위 있는 기록 보존.
+가/나/다/라 4섹션은 **상황반장(관제팀)이 작성한 내용을 절대 수정하지 않는다**. 본 스킬은 **끝에 마/바/사/아 4섹션을 append**만 수행. 운영팀 권위 있는 기록 보존.
 
 이미 마/바/사/아 중 일부가 작성되어 있으면 사용자 확인 후 update 또는 skip.
 
 ## 참고 이슈
 
+(사용 환경의 대표 인시던트 이슈로 교체)
+
 | 이슈 | summary | 비고 |
 |------|---------|------|
-| CINM-22 | [260301\|장애3등급]C-HUB 이용 고객 일시적 서비스 불가 | 표준 가/나/다/라 구조 |
-| CINM-138 | [260514\|이상징후]aih012.nexr.com 외 다수 Dedication 장비 접속 불가 해소 | 이상징후 사례 |
-| CINM-149 | [260521\|관리장애] m1-jpt-prd-mon-d01에서 Zabbix 이벤트 DB문제로 유피테르 이벤트 삽입 불가 현상 종료 | 본 사고, 마/바/사/아 append 적용 사례 |
+| INCIDENT-N | [YYMMDD\|장애등급] 장애 내용 요약 | 표준 가/나/다/라 구조 사례 |
+| INCIDENT-N | [YYMMDD\|이상징후] 이상징후 사례 요약 | 이상징후 사례 |
+| INCIDENT-N | [YYMMDD\|관리장애] 마/바/사/아 append 적용 사례 | 복구반 작성 append 사례 |

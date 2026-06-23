@@ -8,7 +8,7 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
 - 도메인 에이전트 먼저 읽기: `agents/subagents/{서비스}/`
 - 피처 문서 검색: `docs/features/` — 이미 판정된 항목 재지적 금지
 - 보안 체크리스트, Cross-cutting 8항목, Cross-layer 데이터 흐름 추적
-- kt cloud 시큐어 코딩 가드레일 (`agents/rules-on-demand/security.md`)
+- <YOUR_ORG> 시큐어 코딩 가드레일 (`agents/rules-on-demand/security.md`)
 - 언어별 점검: `references/language-checklist.md`
 - 리포트 출력: `references/report-template.md` 6단 형식
 - 커밋 단위 판정: 목적 단일성 (`agents/rules/git-workflow.md` 기능 단위 분리 기준)
@@ -55,7 +55,7 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
    - 시크릿 노출 (토큰/비밀번호/키/세션)
    - 입력 검증 / 권한 체크 / SQL injection / 경로 조작
    - 에러 응답 내부 구조 노출 금지
-   - kt cloud 가드레일 (Pbkdf2/Jasypt/RFC 7807/Tika/Spring Security 6.x)
+   - <YOUR_ORG> 가드레일 (Pbkdf2/Jasypt/RFC 7807/Tika/Spring Security 6.x)
 
 6. **Cross-cutting 8항목 + Cross-layer 데이터 흐름** (`agents/rules-on-demand/impact-analysis.md`)
 
@@ -92,7 +92,7 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
 - `references/language-checklist.md` — Java/JSP/JS/SQL 언어별 점검 매트릭스
 - `references/report-template.md` — 6단 리포트 + 분리 권고 + evidence JSON 스키마
 - `agents/rules/git-workflow.md` — 기능 단위 커밋 분리 기준 + Runtime/Non-runtime + Jira 티켓 + 머지 순서
-- `agents/rules-on-demand/security.md` — kt cloud 시큐어 코딩 가드레일
+- `agents/rules-on-demand/security.md` — <YOUR_ORG> 시큐어 코딩 가드레일
 - `agents/rules-on-demand/coding-style.md` — 불변성/함수 크기/파일 크기
 - `agents/rules-on-demand/impact-analysis.md` — Cross-cutting 8항목 + Cross-layer 데이터 흐름
 - `agents/skills/dev-build-fix/SKILL.md` — lint/포맷 자동 수정 (옵트인)
@@ -126,6 +126,6 @@ push/PR
 | 외부 출처 | 팀원 제안 `review-and-commit` SKILL.md |
 | 흡수 판정 | MERGE (skill-governance.md Step 2: 60~70% 중복 → 기존 스킬 확장) |
 | 흡수 가치 | 언어별 점검 매트릭스 / 6단 리포트 템플릿 / 커밋 단위 판정 / evidence 기반 강제 |
-| 우리 룰 보강 | Jira 티켓 필수 / kt cloud 가드레일 / 도메인 에이전트 선행 / 영문 conventional / 자동 수정 옵트인 / Co-Authored-By |
+| 우리 룰 보강 | Jira 티켓 필수 / <YOUR_ORG> 가드레일 / 도메인 에이전트 선행 / 영문 conventional / 자동 수정 옵트인 / Co-Authored-By |
 | 제외 | 한글 commit type / 자동 lint 적용 / 무조건 commit 호출 (ADR-008 우회 위험) |
 | ADR | [ADR-008](../../../base/guides/decisions/008-orchestrator-mandatory.md) — orchestrator 의무 통과 |

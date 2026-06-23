@@ -15,8 +15,8 @@ model: haiku
 
 ## 데이터 소스
 다음 경로를 순서대로 확인해 존재하는 경로만 사용:
-- `.claude/projects/` 또는 `~/.claude/projects/` - 프로젝트별 세션 기록 (*.jsonl)
-- `.claude/todos/` 또는 `~/.claude/todos/` - TODO 기록
+- `.claude/projects/` 또는 `${CLAUDE_HOME:-~/.claude}/projects/` - 프로젝트별 세션 기록 (*.jsonl)
+- `.claude/todos/` 또는 `${CLAUDE_HOME:-~/.claude}/todos/` - TODO 기록
 
 ## 분석 항목
 
@@ -89,13 +89,13 @@ timestamp의 시간대를 분석하여:
 └─ 심야 (00-06): █ 5%
 
 📁 프로젝트별 활동 (Top 5)
-├─ luppiter-web: 25 sessions (마지막: 2시간 전)
-├─ morning_report: 10 sessions (마지막: 1일 전)
+├─ <your_service>: 25 sessions (마지막: 2시간 전)
+├─ <your_other_service>: 10 sessions (마지막: 1일 전)
 └─ ...
 
 🕐 최근 세션
 ├─ [01/19 09:00] claude - "메인 프로젝트 설정..."
-├─ [01/18 15:30] luppiter-web - "테스트 코드 작성..."
+├─ [01/18 15:30] <your_service> - "테스트 코드 작성..."
 └─ ...
 
 ╚══════════════════════════════════════════════════════════════╝

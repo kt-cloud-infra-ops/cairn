@@ -14,7 +14,7 @@
 ### 1. 변경 요약
 - 파일: {N}건 staged
 - 주요 변경: {기능/버그수정/리팩터링/문서/보안 분류}
-- Jira: {TECHIOPS26-xxx | LUPR-xxx | N/A}
+- Jira: {${JIRA_PROJECT_KEY}-xxx | N/A}
 
 ### 2. 검사 실행 결과
 | 검사 | 실행 | 결과 |
@@ -34,13 +34,13 @@
 
 ### 5. 보안
 - 시크릿 노출 ✅ / 입력 검증 ✅ / 권한 체크 ✅
-- kt cloud 가드레일 적용 ✅
+- <YOUR_ORG> 가드레일 적용 ✅
 
 ### 6. 커밋 단위 판정
 - 목적 단일성 ✅ (또는 분리 권고 — 아래 분리안)
 - 제안 커밋 메시지:
   ```
-  feat: TECHIOPS26-xxx {변경 요약}
+  feat: ${JIRA_PROJECT_KEY}-xxx {변경 요약}
 
   Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
   ```
@@ -70,7 +70,7 @@
 
 ### 4. 위치
 - {파일:라인 또는 파일 묶음}
-- 예: `workspace/luppiter_web/src/.../XxxService.kt:120`
+- 예: `workspace/<your_service>/src/.../XxxService.kt:120`
 
 ### 5. 권장 조치
 - {구체적 수정 방향}
@@ -96,22 +96,22 @@
 
 #### Commit 1
 - 파일: {목록}
-- 메시지: `feat: TECHIOPS26-xxx {목적}`
+- 메시지: `feat: ${JIRA_PROJECT_KEY}-xxx {목적}`
 
 #### Commit 2
 - 파일: {목록}
-- 메시지: `fix: TECHIOPS26-xxx {목적}`
+- 메시지: `fix: ${JIRA_PROJECT_KEY}-xxx {목적}`
 
 ### 작업 순서
 ```bash
 git reset HEAD
 git add {commit 1 파일}
 # review-and-commit 재실행
-git commit -m "feat: TECHIOPS26-xxx ..."
+git commit -m "feat: ${JIRA_PROJECT_KEY}-xxx ..."
 
 git add {commit 2 파일}
 # review-and-commit 재실행
-git commit -m "fix: TECHIOPS26-xxx ..."
+git commit -m "fix: ${JIRA_PROJECT_KEY}-xxx ..."
 ```
 ```
 
@@ -126,7 +126,7 @@ git commit -m "fix: TECHIOPS26-xxx ..."
   "reviewedAt": "2026-05-19T10:30:00Z",
   "stagedFiles": [
     {
-      "path": "workspace/luppiter_web/src/.../XxxService.java",
+      "path": "workspace/<your_service>/src/.../XxxService.java",
       "sha": "abc123..."
     }
   ],
@@ -140,7 +140,7 @@ git commit -m "fix: TECHIOPS26-xxx ..."
     "secretLeak": "pass",
     "inputValidation": "pass",
     "authCheck": "pass",
-    "ktCloudGuardrail": "pass"
+    "orgGuardrail": "pass"
   },
   "cleanCode": {
     "functionSize": "pass",
@@ -150,8 +150,8 @@ git commit -m "fix: TECHIOPS26-xxx ..."
   "commitPurpose": {
     "singular": true,
     "type": "feat",
-    "jiraTicket": "TECHIOPS26-379",
-    "suggestedMessage": "feat: TECHIOPS26-379 IP startsWith 검색 추가"
+    "jiraTicket": "${JIRA_PROJECT_KEY}-XXX",
+    "suggestedMessage": "feat: ${JIRA_PROJECT_KEY}-XXX {변경 요약}"
   },
   "autoFixed": []
 }

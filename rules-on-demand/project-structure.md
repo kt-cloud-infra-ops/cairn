@@ -1,7 +1,7 @@
 # Project Structure Standards (DRAFT)
 
 > **status: draft** — 초안 단계. 팀 검토 후 확정 예정.
-> 기준 템플릿: `kt-cloud-infra-ops/demo-backend-kt`, `kt-cloud-infra-ops/demo-frontend` (김정남 작성)
+> 기준 템플릿: `${GIT_ORG}/demo-backend-kt`, `${GIT_ORG}/demo-frontend` (팀 내 기준 템플릿 저장소)
 
 ## CRITICAL: 에이전트 트리거
 
@@ -18,8 +18,8 @@
 
 | 역할 | 저장소 | 상태 |
 |------|--------|------|
-| 백엔드 | `kt-cloud-infra-ops/demo-backend-kt` | 활성 (is_template: true) |
-| 프론트엔드 | `kt-cloud-infra-ops/demo-frontend` | 활성 (is_template: true) |
+| 백엔드 | `${GIT_ORG}/demo-backend-kt` | 활성 (is_template: true) |
+| 프론트엔드 | `${GIT_ORG}/demo-frontend` | 활성 (is_template: true) |
 
 새 서비스 생성 시 GitHub "Use this template"으로 저장소를 생성하고 `rename-service.py`로 서비스명을 일괄 치환한다.
 
@@ -36,14 +36,14 @@ python3 rename-service.py <새서비스명>
 ```
 {서비스명}/
 ├── {서비스명}-application/   # 공통 비즈니스 로직
-│   └── src/main/kotlin/com/ktc/infraops/{서비스명}/
+│   └── src/main/kotlin/com/<YOUR_ORG>/<YOUR_TEAM>/{서비스명}/
 │       ├── entity/           # JPA Entity
 │       ├── repository/       # Spring Data Repository
 │       ├── service/          # 비즈니스 Service
 │       └── config/           # JPA, DB 설정
 │
 ├── {서비스명}-api/           # HTTP API 진입점
-│   └── src/main/kotlin/com/ktc/infraops/{서비스명}/
+│   └── src/main/kotlin/com/<YOUR_ORG>/<YOUR_TEAM>/{서비스명}/
 │       ├── controller/
 │       │   ├── internal/     # /api/v1/** (시스템 간 통신)
 │       │   ├── public/       # /public-api/v1/** (공개 API)
@@ -53,7 +53,7 @@ python3 rename-service.py <새서비스명>
 │       └── filter/           # RequestLoggingFilter 등
 │
 ├── {서비스명}-batch/         # 배치 모듈 (선택)
-│   └── src/main/kotlin/com/ktc/infraops/{서비스명}/
+│   └── src/main/kotlin/com/<YOUR_ORG>/<YOUR_TEAM>/{서비스명}/
 │
 ├── doc/
 │   ├── ddl/                  # DB 스키마 DDL
@@ -161,15 +161,15 @@ Service가 2개 이상 조합 → Facade 생성하여 조합 로직 위임
 ### 패키지 네이밍
 
 ```
-com.ktc.infraops.{서비스명}     # 메인 패키지
-com.ktc.infraops.{서비스명}.entity
-com.ktc.infraops.{서비스명}.repository
-com.ktc.infraops.{서비스명}.service
-com.ktc.infraops.{서비스명}.controller.internal
-com.ktc.infraops.{서비스명}.controller.public
-com.ktc.infraops.{서비스명}.controller.admin
-com.ktc.infraops.{서비스명}.config
-com.ktc.infraops.{서비스명}.security
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}     # 메인 패키지
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.entity
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.repository
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.service
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.controller.internal
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.controller.public
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.controller.admin
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.config
+com.<YOUR_ORG>.<YOUR_TEAM>.{서비스명}.security
 ```
 
 ---
@@ -217,7 +217,7 @@ com.ktc.infraops.{서비스명}.security
 | 모니터링 | Actuator (health, prometheus) | |
 | 컨테이너 | Docker (멀티스테이지, Temurin 21) | |
 | CI/CD | GitHub Actions → Harbor | GitOps 패턴 |
-| 레지스트리 | Harbor (`harbor-cicd.ktcloud.com`) | |
+| 레지스트리 | Harbor (`${HARBOR_REGISTRY}`) | |
 
 ### 프론트엔드
 
@@ -226,7 +226,7 @@ com.ktc.infraops.{서비스명}.security
 | 프레임워크 | React 19 | |
 | 언어 | TypeScript 5 | |
 | 빌드 | Vite 7 | |
-| UI 라이브러리 | Ant Design 6 | 추후 KT CDS(디자인시스템) 적용 예정 |
+| UI 라이브러리 | Ant Design 6 | 조직 디자인시스템으로 교체 예정 시 별도 마이그레이션 |
 | 라우팅 | React Router DOM 7 | |
 | 엑셀 | xlsx (SheetJS) | |
 | 린트 | ESLint 9 + Prettier | |
@@ -254,7 +254,7 @@ com.ktc.infraops.{서비스명}.security
 ```
 master push
 → GitHub Actions: 빌드 + Harbor push
-→ infraops-service-values 레포 values.yaml tag 자동 업데이트
+→ ${REPO_NAME}-service-values 레포 values.yaml tag 자동 업데이트
 → Argo CD 감지 → 배포
 ```
 
@@ -309,7 +309,7 @@ master push
 
 ## 레거시 프로젝트 대응
 
-기존 프로젝트(luppiter_web 등)는 이 표준과 다른 구조를 가진다.
+기존 프로젝트(`<YOUR_SERVICE>_web` 등 레거시 프로젝트)는 이 표준과 다른 구조를 가진다.
 레거시 프로젝트 작업 시에는 **해당 프로젝트의 기존 패턴을 따르고**, 이 표준을 강제 적용하지 않는다.
 
 | 구분 | 적용 |

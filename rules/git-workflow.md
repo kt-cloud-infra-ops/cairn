@@ -16,8 +16,8 @@
 
 ### CRITICAL: Jira 티켓 키 필수
 
-코드/서비스 관련 커밋에는 **Jira 티켓 키(TECHIOPS26-xxx, LUPR-xxx)**를 반드시 포함한다.
-- 예: `feat: TECHIOPS26-379 관제삭제 zenius 장비 지원`
+코드/서비스 관련 커밋에는 **Jira 티켓 키(예: `${JIRA_PROJECT_KEY}-xxx`)**를 반드시 포함한다.
+- 예: `feat: PROJ-379 이벤트 삭제 기능 추가`
 - 예외: 작업일지, 하네스 규칙, 개인 메모 등 Jira 티켓이 없는 순수 문서 커밋
 
 > 커밋 예시·BREAKING CHANGE 샘플 → `agents/rules-on-demand/git-advanced.md`
@@ -26,7 +26,7 @@
 
 ### CRITICAL: 개인/서비스 문서는 main 직접 커밋
 
-작업일지, 리마인더, 개인 문서(`base/personal/`), 서비스 문서(`base/services/`), 지원 프로젝트(`base/support-projects/`) 등 **Git 배포에 영향이 없는 일상 작업은 `main` 브랜치에 직접 커밋·푸시**한다. 브랜치/PR 만들지 않음 (과거 `work/{사번}/YYYY-MM-DD` 관례 폐기). `daily-work-start`/`daily-work-end`도 이 원칙을 따른다.
+작업일지, 리마인더, 개인 문서(`base/personal/`), 서비스 문서(`base/services/`), 지원 프로젝트(`base/support-projects/`) 등 **Git 배포에 영향이 없는 일상 작업은 `main` 브랜치에 직접 커밋·푸시**한다. 브랜치/PR 만들지 않음. `daily-work-start`/`daily-work-end`도 이 원칙을 따른다.
 
 ### CRITICAL: Runtime / Non-runtime 분리
 
@@ -35,7 +35,7 @@
 | 구분 | 대상 | 권장 브랜치 |
 |------|------|------------|
 | **Runtime** (서비스 동작·배포·운영DB 변경) | Java/JSP/JS/CSS/MyBatis/API/테스트, 배포·빌드·실행 스크립트, DDL/DML/프로시저 | `feature/` `fix/` `refactor/` |
-| **Non-runtime** (배포 영향 없음) | `docs/`, `agents/`, README/TASKS, 작업일지/분석 메모 | `docs/` `agents/` `chore/` `work/{사번}/YYYY-MM-DD` |
+| **Non-runtime** (배포 영향 없음) | `docs/`, `agents/`, README/TASKS, 작업일지/분석 메모 | `docs/` `agents/` `chore/` `work/<YOUR_EMPLOYEE_ID>/YYYY-MM-DD` |
 
 판단 기준 보강:
 - `docs/features/{TICKET}-*` 설계 문서 = 그 티켓 **구현 코드와 1:1** → 코드와 **같은 브랜치 흐름**으로 함께 관리(설계만 main 직접하면 코드와 단절·추적 불가). 구현 계획이 없는 순수 분석 메모만 main 직접.
@@ -47,7 +47,7 @@
 3. owner 불명확 → 임의 커밋 말고 HOLD 후 확인
 4. `.DS_Store`, `.claude/`, `application-local.properties` 로컬성 파일은 의도된 경우만 포함
 
-> 예외: `ai-team-standards`처럼 저장소 자체가 non-runtime 자산이면 일상 작업은 `work/{사번}/YYYY-MM-DD` 브랜치 사용.
+> 예외: standards 저장소처럼 저장소 자체가 non-runtime 자산이면 일상 작업은 `work/<YOUR_EMPLOYEE_ID>/YYYY-MM-DD` 브랜치 사용.
 
 ### CRITICAL: 기능 단위 커밋 분리 기준
 
@@ -96,8 +96,8 @@ sql/**/*.sql, ddl/**/*.sql              # DDL/DML
 
 ### CRITICAL: 코드 레포에 `.claude/` 비커밋 (ADR-011)
 
-- 코드 레포(luppiter_web 등) **어느 브랜치에도 `.claude/settings.json`·hooks를 커밋하지 않는다** (모든 코드 브랜치에 `.claude`가 퍼지면 머지 사고 위험).
-- 하네스 가드는 **`~/.claude/settings.json`(user 레벨)에서 ai-team-standards hook을 절대경로로 직접 실행**하여 worktree까지 강제. 신규 환경은 `/workspace-setup`이 멱등 등록.
+- 코드 레포 **어느 브랜치에도 `.claude/settings.json`·hooks를 커밋하지 않는다** (모든 코드 브랜치에 `.claude`가 퍼지면 머지 사고 위험).
+- 하네스 가드는 **`${CLAUDE_HOME:-$HOME/.claude}/settings.json`(user 레벨)에서 standards hook을 절대경로로 직접 실행**하여 worktree까지 강제. 신규 환경은 `/workspace-setup`이 멱등 등록.
 - `.harness/`는 로컬 상태 디렉토리 — git 추적 대상 아님(gitignore 권장).
 
 ### CRITICAL: 공통룰 변경은 별도 브랜치

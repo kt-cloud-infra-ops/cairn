@@ -1,0 +1,357 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cairn.dev/schemas/profile.schema.json",
+  "title": "Cairn Profile",
+  "description": "Organization profile contract. Cairn core defines shape only; real organization values belong in workspace profile files.",
+  "oneOf": [
+    { "$ref": "#/$defs/profileBundle" },
+    { "$ref": "#/$defs/orgProfile" },
+    { "$ref": "#/$defs/atlassianProfile" },
+    { "$ref": "#/$defs/gitProfile" },
+    { "$ref": "#/$defs/infraProfile" },
+    { "$ref": "#/$defs/teamsProfile" },
+    { "$ref": "#/$defs/hooksProfile" }
+  ],
+  "$defs": {
+    "profileBundle": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cairn.profile/v1" },
+        "org": { "$ref": "#/$defs/orgSection" },
+        "team": { "$ref": "#/$defs/teamSection" },
+        "atlassian": { "$ref": "#/$defs/atlassianBody" },
+        "git": { "$ref": "#/$defs/gitBody" },
+        "infra": { "$ref": "#/$defs/freeformObject" },
+        "teams": { "$ref": "#/$defs/teamsBody" },
+        "hooks": { "$ref": "#/$defs/hooksMap" }
+      }
+    },
+    "orgProfile": {
+      "type": "object",
+      "required": ["schema", "org"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cairn.profile.org/v1" },
+        "org": { "$ref": "#/$defs/orgSection" },
+        "team": { "$ref": "#/$defs/teamSection" }
+      }
+    },
+    "atlassianProfile": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cairn.profile.atlassian/v1" },
+        "base_url": { "type": "string", "minLength": 1 },
+        "credentials_file": { "type": "string", "minLength": 1 },
+        "jira": { "$ref": "#/$defs/jiraSection" },
+        "confluence": { "$ref": "#/$defs/confluenceSection" }
+      }
+    },
+    "gitProfile": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cairn.profile.git/v1" },
+        "org": { "type": "string", "minLength": 1 },
+        "host": { "type": "string", "minLength": 1 },
+        "providers": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/gitProvider" }
+        },
+        "defaults": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "branch": { "type": "string", "minLength": 1 },
+            "main_branch": { "type": "string", "minLength": 1 },
+            "release_branch_pattern": { "type": "string", "minLength": 1 },
+            "hotfix_branch_pattern": { "type": "string", "minLength": 1 },
+            "feature_branch_pattern": { "type": "string", "minLength": 1 },
+            "fix_branch_pattern": { "type": "string", "minLength": 1 },
+            "refactor_branch_pattern": { "type": "string", "minLength": 1 },
+            "docs_branch_pattern": { "type": "string", "minLength": 1 },
+            "rules_branch_pattern": { "type": "string", "minLength": 1 }
+          }
+        },
+        "clone": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "default_depth": { "type": "integer", "minimum": 0 },
+            "ssh_key": { "type": "string", "minLength": 1 }
+          }
+        },
+        "wiki": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pattern": { "type": "string", "minLength": 1 },
+            "operations_path": { "$ref": "#/$defs/relativePath" },
+            "itil_categories": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            }
+          }
+        },
+        "commit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "types": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "ticket_required": { "type": "boolean" },
+            "ticket_patterns": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            }
+          }
+        },
+        "branch_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "runtime_patterns": { "$ref": "#/$defs/stringArray" },
+            "non_runtime_direct_commit_paths": { "$ref": "#/$defs/stringArray" }
+          }
+        }
+      }
+    },
+    "infraProfile": {
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "schema": { "const": "cairn.profile.infra/v1" }
+      },
+      "additionalProperties": {
+        "type": ["string", "number", "integer", "boolean", "object", "array", "null"]
+      }
+    },
+    "teamsProfile": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cairn.profile.teams/v1" },
+        "roles": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "properties": {
+            "role_descriptions": { "$ref": "#/$defs/stringMap" }
+          }
+        },
+        "aliases": { "$ref": "#/$defs/stringMap" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/member" }
+        },
+        "tasks_assignee_format": { "type": "string", "minLength": 1 },
+        "slack": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "workspace": { "type": "string", "minLength": 1 },
+            "default_channel": { "type": "string", "minLength": 1 },
+            "channels": { "$ref": "#/$defs/stringMap" }
+          }
+        }
+      }
+    },
+    "hooksProfile": {
+      "type": "object",
+      "required": ["schema", "hooks"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cairn.profile.hooks/v1" },
+        "hooks": { "$ref": "#/$defs/hooksMap" }
+      }
+    },
+    "orgSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/key" },
+        "display_name": { "type": "string", "minLength": 1 },
+        "short_name": { "$ref": "#/$defs/key" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "language": { "type": "string", "minLength": 2 },
+        "variables": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "teamSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "display_name": { "type": "string", "minLength": 1 },
+        "short_name": { "$ref": "#/$defs/key" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "language": { "type": "string", "minLength": 2 },
+        "aliases": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "atlassianBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base_url": { "type": "string", "minLength": 1 },
+        "credentials_file": { "type": "string", "minLength": 1 },
+        "jira": { "$ref": "#/$defs/jiraSection" },
+        "confluence": { "$ref": "#/$defs/confluenceSection" }
+      }
+    },
+    "jiraSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_project": { "type": "string", "minLength": 1 },
+        "projects": { "$ref": "#/$defs/stringMap" },
+        "fields": { "$ref": "#/$defs/stringMap" },
+        "issue_types": { "$ref": "#/$defs/stringMap" },
+        "transitions": { "$ref": "#/$defs/stringMap" },
+        "reporter_email": { "type": "string", "minLength": 1 },
+        "cache": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "issue_ttl_minutes": { "type": "integer", "minimum": 0 },
+            "search_ttl_minutes": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "confluenceSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_space": { "type": "string", "minLength": 1 },
+        "spaces": { "$ref": "#/$defs/stringMap" },
+        "pages": {
+          "oneOf": [
+            { "$ref": "#/$defs/stringMap" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "gitBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "org": { "type": "string", "minLength": 1 },
+        "host": { "type": "string", "minLength": 1 },
+        "providers": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/gitProvider" }
+        }
+      }
+    },
+    "gitProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "host": { "type": "string", "minLength": 1 },
+        "default_org": { "type": "string", "minLength": 1 },
+        "default_branch": { "type": "string", "minLength": 1 },
+        "wiki_suffix": { "type": "string", "default": ".wiki.git" }
+      }
+    },
+    "teamsBody": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "integer", "boolean", "object", "array", "null"]
+      }
+    },
+    "member": {
+      "type": "object",
+      "required": ["email_id", "display_name", "role"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/key" },
+        "email_id": { "type": "string", "minLength": 1 },
+        "display_name": { "type": "string", "minLength": 1 },
+        "employee_id": { "type": ["string", "integer"] },
+        "role": { "type": "string", "minLength": 1 },
+        "jira_account_env": { "$ref": "#/$defs/envVarName" },
+        "email_env": { "$ref": "#/$defs/envVarName" },
+        "account_id_env": { "$ref": "#/$defs/envVarName" }
+      }
+    },
+    "hooksMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["enabled"],
+        "additionalProperties": false,
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "command": { "$ref": "#/$defs/relativePath" },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["UserPromptSubmit", "PreToolUse", "PostToolUse", "Stop", "user-prompt", "pre-tool", "post-tool", "stop"]
+            },
+            "uniqueItems": true,
+            "default": []
+          },
+          "project_keys": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "ticket_patterns": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "require_bootstrap_state": { "type": "boolean" },
+          "config": { "$ref": "#/$defs/freeformObject" }
+        }
+      }
+    },
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "envVarName": {
+      "type": "string",
+      "pattern": "^(\\$\\{)?[A-Z][A-Z0-9_]*(\\})?$"
+    },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "freeformObject": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "integer", "boolean", "object", "array", "null"]
+      }
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          { "pattern": "^/" },
+          { "pattern": "(^|/)\\.\\.($|/)" },
+          { "pattern": "\\s" },
+          { "pattern": "\\u0000" }
+        ]
+      }
+    }
+  }
+}

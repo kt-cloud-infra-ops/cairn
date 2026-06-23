@@ -13,7 +13,7 @@ tags:
 2026-01-30
 
 ## 세션/프로젝트
-luppiter_web_e2e (E2E 테스트 자동화)
+E2E 테스트 자동화
 
 ## 배운 것
 
@@ -181,7 +181,7 @@ await section.locator('button:has-text("확인")').click()
 ## 적용 가능한 상황
 
 ### 즉시 적용
-- Luppiter Web E2E 테스트 작성
+- <YOUR_SERVICE> Web E2E 테스트 작성
 - 팝업/모달 관련 테스트
 - 테이블/그리드 데이터 검증 테스트
 - 버그 검출 테스트
@@ -204,8 +204,8 @@ await section.locator('button:has-text("확인")').click()
 - `docs/learnings/e2e-testing-guide.md` (필요시 신규 작성)
 
 ### 프로젝트 참고
-- `luppiter_web_e2e/tests/` - E2E 테스트 구현 예시
-- `luppiter_web_e2e/README.md` - 테스트 작성 가이드
+- `<your_service>_e2e/tests/` - E2E 테스트 구현 예시 (프로젝트에 맞게 교체)
+- `<your_service>_e2e/README.md` - 테스트 작성 가이드
 
 ---
 

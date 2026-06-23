@@ -1,0 +1,43 @@
+{
+  "_comment": "서비스 매핑 설정 예시 — 실제 팀 서비스에 맞게 수정하세요.",
+  "_format": "Jira 에픽 summary의 접두사(파이프 '|' 앞 부분)를 서비스 폴더에 매핑합니다.",
+
+  "mappings": [
+    {
+      "prefixes": ["<YOUR_SERVICE_A>"],
+      "folder": "team/<YOUR_SERVICE_A_FOLDER>",
+      "note": "예: 공통 데이터베이스 서비스"
+    },
+    {
+      "prefixes": ["<YOUR_SERVICE_B>", "<YOUR_SERVICE_B_ALIAS>"],
+      "folder": "infra/<YOUR_SERVICE_B_FOLDER>",
+      "note": "예: API 게이트웨이"
+    },
+    {
+      "prefixes": ["<YOUR_SERVICE_C>"],
+      "folder": "infra/<YOUR_SERVICE_C_FOLDER>",
+      "note": "예: 배치/스케줄러 서비스"
+    }
+  ],
+
+  "jira_project_defaults": [
+    {
+      "project_key": "${JIRA_PROJECT_KEY}",
+      "default_service": "<YOUR_PRIMARY_SERVICE>",
+      "note": "이 프로젝트의 기본 서비스 매핑 (접두사로 세분화 가능)"
+    }
+  ],
+
+  "common_prefixes": [
+    {
+      "prefix": "[공통]",
+      "description": "팀 공통 업무 — 특정 서비스 TASKS.md에 반영하지 않음"
+    },
+    {
+      "prefix": "인프라",
+      "description": "인프라 운영 업무"
+    }
+  ],
+
+  "on_mapping_fail": "미매핑으로 표시하고 사용자에게 매핑 추가 여부를 질문한다."
+}

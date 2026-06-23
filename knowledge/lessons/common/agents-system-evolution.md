@@ -34,7 +34,7 @@ aliases: []
 | 04-13 | `agents/` → `subagents/` 이름 변경 | "agent" 단어가 도메인/레이어/라우터/스킬에 모두 쓰여 의미 분화 |
 | 04-13~14 | Phase 0~8 (commands → skills 통합, ADR-006) | 명령 체계 단일화, Claude/Codex 공유 |
 | 04-15 | 스킬 양식 표준화 (27개 SKILL.md 일괄 적용) | 양식 표류 방지, 가드 자동화 기반 |
-| 04-16 | Luppiter 도메인 에이전트 프로젝트 레포 이관 (8개) | 프로젝트별 자기완결 원칙 |
+| 04-16 | <YOUR_SERVICE> 도메인 에이전트 프로젝트 레포 이관 (8개) | 프로젝트별 자기완결 원칙 |
 | 04-21~24 | Superpowers vendor 4개 도입 + 우리 스킬 4개 생성 | 외부 자산 명시적 채택, 출처(origin) 표기 |
 | 04-23~28 | Runtime 배포 순서 규칙 / Obsidian 링크 감사 / PR 묶음 원칙 | 운영 사고 방지(공통룰 즉시 머지·배포 우회) |
 | 04-29~30 | ADR-006 마이그레이션 완료, vendor 판정 갱신 | 통합 종결 |
@@ -82,11 +82,11 @@ aliases: []
 
 ### 3.3 도메인 에이전트 위치 — 프로젝트 레포 vs 중앙 (04-16, e4a8c2f)
 
-**고민**: Luppiter 도메인 에이전트 8종(evt/icd/ctl/dash/stt/mng/zab/common)을 어디에 둘 것인가.
+**고민**: <YOUR_SERVICE> 도메인 에이전트 8종(evt/icd/ctl/dash/stt/mng/zab/common)을 어디에 둘 것인가.
 - 중앙(`ai-team-standards`)에 두면 한곳에서 보기 쉬우나, 프로젝트별 격리 안 됨
 - 프로젝트 레포에 두면 자기완결이지만, 중앙 라우터에서 정방향 링크만 유지 필요
 
-**결정**: 본체는 프로젝트 레포, 중앙엔 라우터(`agents/subagents/{서비스}/README.md`)만. 단 Luppiter는 **임시로 중앙에 보관** 중(이전 예정).
+**결정**: 본체는 프로젝트 레포, 중앙엔 라우터(`agents/subagents/{서비스}/README.md`)만. 단 <YOUR_SERVICE>는 **임시로 중앙에 보관** 중(이전 예정).
 
 **레슨런**:
 - "임시 위치"가 6개월 이상 살아남을 가능성 → 임시라고 적어두면 후임자가 신뢰함. **이전 기한(deadline) 명시**가 필요.
@@ -125,7 +125,7 @@ aliases: []
 **고민 2 (결과 일치성)**: 동일 스킬을 Claude vs Codex가 실행할 때 결과가 다름.
 
 **결정 (05-07, d863e38)**: GATE 패턴 도입.
-- Phase 1 (HIGH 3개): 외부 변경 직전 GATE 강제 — `cicd-deploy`, `luppiter-release-e2e-sync`, `luppiter-datachange-request-automation`
+- Phase 1 (HIGH 3개): 외부 변경 직전 GATE 강제 — `cicd-deploy`, `<your_service>-release-e2e-sync`, `<your_service>-datachange-request-automation`
 - Phase 2 (MEDIUM 2개): 사용자 승인 GATE — `harness-plan`, `dev-subagent-driven`
 - Phase 3: 템플릿/거버넌스에 GATE 필수 영역 룰 추가
 
@@ -145,7 +145,7 @@ aliases: []
 
 **결정**:
 - `agents/rules/` — 매 세션 자동 로드 (core, security, git-workflow, testing, doc-organization 등 13개)
-- `agents/rules-on-demand/` — 키워드 트리거 시 로드 (apidog, project-docs, performance, luppiter/* 등)
+- `agents/rules-on-demand/` — 키워드 트리거 시 로드 (apidog, project-docs, performance, <your_service>/* 등)
 
 **레슨런**:
 - 항상 필요한 룰과 가끔 필요한 룰의 분리는 **컨텍스트 토큰 사용량을 직접 줄이는 가장 효과적인 수단**.
@@ -186,12 +186,12 @@ aliases: []
 
 | 항목 | 현재 상태 | 다음 단계 |
 |------|----------|----------|
-| Luppiter 도메인 에이전트 8종 이전 | 중앙 임시 보관 | 프로젝트 레포로 이관 (기한 미정) |
+| 도메인 에이전트 이전 | 중앙 임시 보관 | 프로젝트 레포로 이관 (기한 미정) |
 | `guard-branch-sequence.sh` | 미도입, 룰 문서로만 강제 | 자동 가드 훅 설계 |
 | vendor 정기 점검 | 수동 | `/harnessing vendor` 정기 실행 자동화 |
 | GATE 패턴 적용률 | Phase 1~3 5개 스킬 + 템플릿 | 신규 스킬 자동 검증 hook 도입 검토 |
 | `keyword-detector.sh` 커버리지 | rules-on-demand 일부만 매핑 | 누락 룰 매핑 추가 |
-| AGENTS.md frontmatter | Phase 1 도입(luppiter_web 등) | 전체 프로젝트 확산 |
+| AGENTS.md frontmatter | Phase 1 도입 | 전체 프로젝트 확산 |
 | Codex ↔ Claude 결과 일치 검증 | 수동 비교 | 동일 스킬 회귀 테스트 자동화 |
 
 ---

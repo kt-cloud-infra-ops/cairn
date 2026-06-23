@@ -1,0 +1,17 @@
+{
+  "name": "cairn-engine",
+  "version": "0.1.0",
+  "description": "Cairn engine – schema validator and core tooling",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -20,15 +20,15 @@ tags:
 
 ```xml
 <!-- SQL: alias는 api_token -->
-SELECT token as api_token FROM c01_zabbix_info
+SELECT token as api_token FROM c01_<your_service>_info
 ```
 
 ```java
 // Java: "token"으로 접근 → null 반환!
-String token = zabbix.get("token").toString();  // NPE
+String token = serviceInfo.get("token").toString();  // NPE
 
 // 올바른 접근:
-String token = zabbix.get("api_token").toString();
+String token = serviceInfo.get("api_token").toString();
 ```
 
 ### 검증 방법
@@ -64,6 +64,6 @@ SELECT target_name AS zabbix_ip,   -- 키 타입이 다름 (IP vs 서비스명)
 
 ---
 
-관련: [KT Cloud 스타일](kt-cloud-style.md) · [디자인 패턴](design-patterns.md) · [SRE 코딩](sre-coding.md) · [코드 리뷰 함정](code-review-traps.md) · [DB 최적화](../db/database-optimization.md)
+관련: [<YOUR_ORG> 스타일](kt-cloud-style.md) · [디자인 패턴](design-patterns.md) · [SRE 코딩](sre-coding.md) · [코드 리뷰 함정](code-review-traps.md) · [DB 최적화](../db/database-optimization.md)
 
 *최종 업데이트: 2026-02-10*

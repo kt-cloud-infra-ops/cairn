@@ -1,6 +1,6 @@
 # Service Ops SOP
 
-Confluence page `CL23 / 2000455370 / demo 를 이용한 개발 환경 만들기`에서
+Confluence page `${CONFLUENCE_SPACE_KEY} / ${CONFLUENCE_PAGE_ID} / demo 를 이용한 개발 환경 만들기`에서
 운영 반영 단계에 해당하는 절차만 정규화한 요약이다.
 
 ## 범위

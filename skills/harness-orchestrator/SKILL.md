@@ -21,17 +21,17 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 
 | 시그널 유형 | 패턴 예시 |
 |-----------|---------|
-| 인시던트 ID | `CINM-`, `INM`, `관리장애`, `N등급`, `이상징후` |
-| 외부 신고 | "박부장님", "Cloud서비스운영팀", "통합관제팀", "운영 신고", "장애 신고" |
+| 인시던트 ID | `INC-`, `관리장애`, `N등급`, `이상징후` |
+| 외부 신고 | "운영 신고", "장애 신고", "팀장님", "운영팀" |
 | 장애 상태 | "장애", "사고", "incident", "서비스 중단", "알람 미적재", "이벤트 미적재", "적재 정지" |
 | 회피/분석 의도 | "임시 회피", "원인 분석", "재현", "brute force 재현", "장애 분석" |
-| 운영 흔적 | `x00_batch_event_log`, `BS999`, "unterminated CSV", "ERROR 로그" |
+| 운영 흔적 | "ERROR 로그", "unterminated CSV", "배치 실패" |
 
 위 시그널 감지 시: `service-ops`로 분기 → `harness-service-ops` PRECHECK에서 비계획 장애로 식별 → `ops-incident` sub-owner 적용. 장애 임시 회피 write는 bootstrap/deploy-ready 검증 면제.
 
 예외:
-- 순수 코드 개선 목적("CINM-N 후속 hotfix 구현 시작") — `ops-incident` Phase 4 완료 후 `dev` branch로 명시적 handoff
-- 단순 정보 조회 ("CINM-N 상태 알려줘") — read-only, branch 강제 없이 direct handling 가능
+- 순수 코드 개선 목적("INC-N 후속 hotfix 구현 시작") — `ops-incident` Phase 4 완료 후 `dev` branch로 명시적 handoff
+- 단순 정보 조회 ("INC-N 상태 알려줘") — read-only, branch 강제 없이 direct handling 가능
 
 # Harness Orchestrator
 
@@ -65,7 +65,7 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 2. branch owner 선택
    - `dev` → `harness-brainstorm`, `harness-plan`, `harness-dev-process`, `dev-*`
    - `service-bootstrap` → `harness-service-bootstrap`, `workspace-*`
-   - `service-ops` → `harness-service-ops`, `jira-*`, `cicd-*`, `luppiter-*`, 운영 장애 시 `ops-incident` sub-owner
+   - `service-ops` → `harness-service-ops`, `jira-*`, `cicd-*`, `<your_service>-*`, 운영 장애 시 `ops-incident` sub-owner
    - `harnessing` → `meta-harnessing`
 3. owner 위임
    - owner skill이 phase/gate를 소유
@@ -93,6 +93,19 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 - evidence 없으면 commit 차단 (exit 2)
 
 근거: ADR-008 + `agents/skills/dev-code-review/SKILL.md`
+
+## Capture Loop (cross-cutting, 모든 branch 공통)
+
+owner skill이 작업을 완료한 뒤, 의미 있는 변경/결정/절차가 남았으면 `cairn-capture`를 **제안**한다 (강제 아님 — Cairn의 정체성: "내 업무를 AI에게 학습시켜 팀에 공용화").
+
+- 트리거: 각 branch owner skill 완료 시 + Stop hook(`hooks/cairn-capture-suggest.sh`)
+- 캡처 유형: `lesson`(재사용 패턴) / `decision`(ADR) / `sop`(절차) / `feature`(설계)
+- `.cairn/config.json`의 `capture.proactive`/`capture.frequency` 존중 (`off`면 제안 안 함, 노이즈 방지)
+- solo 모드: 로컬 저장까지. team 모드: 캡처 후 git 커밋/푸시 제안([GATE-SHARE] 사용자 승인 필수)
+- branch별 자연 캡처 지점:
+  - `dev` → Phase 4 SHIP 후 lesson/decision
+  - `service-ops` → 운영 반영/장애 처리 후 sop/decision
+  - `harnessing` → 구조 변경 후 decision(ADR)
 
 ## 상태 파일
 

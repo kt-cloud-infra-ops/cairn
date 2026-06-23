@@ -54,8 +54,12 @@ echo ""
 
 # 4. 피처 문서 존재 여부
 if [ -n "$ISSUE_KEY" ]; then
-  # 프로젝트 레포 docs/features/ 탐색 (workspace 내)
-  FEATURE_DOCS=$(grep -rl "$ISSUE_KEY" "$REPO_ROOT/workspace/"*/docs/features/*.md 2>/dev/null)
+  # docs/features/ 탐색
+  FEATURE_DOCS=$(grep -rl "$ISSUE_KEY" "$REPO_ROOT"/*/docs/features/*.md 2>/dev/null)
+  if [ -z "$FEATURE_DOCS" ]; then
+    # 단일 프로젝트 구조도 지원
+    FEATURE_DOCS=$(grep -rl "$ISSUE_KEY" "$REPO_ROOT/docs/features/"*.md 2>/dev/null)
+  fi
   if [ -n "$FEATURE_DOCS" ]; then
     echo "### 피처 문서"
     echo ""

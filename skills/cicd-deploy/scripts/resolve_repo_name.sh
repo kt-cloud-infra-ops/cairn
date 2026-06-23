@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# GIT_ORG: set to your GitHub organization name (e.g., export GIT_ORG=your-org)
+# If GIT_ORG is unset, the org check is skipped and the detected repo name is returned as-is.
 set -euo pipefail
 
 project_name="${1:-}"
@@ -44,8 +46,8 @@ else
   exit 1
 fi
 
-if [[ "$owner" != "kt-cloud-infra-ops" ]]; then
-  echo "remote owner is not kt-cloud-infra-ops: $owner" >&2
+if [[ -n "${GIT_ORG:-}" && "$owner" != "${GIT_ORG}" ]]; then
+  echo "remote owner is not ${GIT_ORG}: $owner" >&2
   exit 1
 fi
 

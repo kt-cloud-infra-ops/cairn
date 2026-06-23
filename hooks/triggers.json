@@ -18,12 +18,6 @@
     "이슈 조회",
     "티켓 조회",
     "상태 확인",
-    "통합요청",
-    "데이터 보정",
-    "데이터 변경 요청",
-    "운영 SQL",
-    "운영 sql",
-    "주간보고",
     "질문",
     "궁금",
     "검토만"
@@ -75,11 +69,11 @@
         "적재 정지",
         "알람 미적재",
         "이벤트 미적재",
-        "CINM",
+        "ITSM",
         "관리장애",
         "이상징후"
       ],
-      "message": "🧭 service-ops branch\n\n1. `harness-orchestrator`로 intent triage 후 `harness-service-ops` owner로 위임\n2. read-only 점검과 write path를 먼저 분리\n3. Vault / chart-values push / ArgoCD / DB write는 explicit GATE 후 진행\n4. bootstrap 산출물이 없으면 `harness-service-bootstrap`로 되돌림 / 운영 장애(장애·적재 실패·CINM 등)면 service-ops 진입 후 ops-incident sub-owner로 식별, 장애 임시 회피 write는 bootstrap/deploy-ready 검증 면제."
+      "message": "🧭 service-ops branch\n\n1. `harness-orchestrator`로 intent triage 후 `harness-service-ops` owner로 위임\n2. read-only 점검과 write path를 먼저 분리\n3. Vault / chart-values push / ArgoCD / DB write는 explicit GATE 후 진행\n4. bootstrap 산출물이 없으면 `harness-service-bootstrap`로 되돌림 / 운영 장애(장애·적재 실패·ITSM 등)면 service-ops 진입 후 ops-incident sub-owner로 식별, 장애 임시 회피 write는 bootstrap/deploy-ready 검증 면제."
     },
     {
       "command": "harnessing-route",
@@ -121,7 +115,7 @@
         "아이디어 정리",
         "설계 잡자"
       ],
-      "message": "📋 요구사항 수집 + 설계 (Phase 0: INIT, harness-brainstorm)\n\n1. Charter Preflight 작성 (Goal/Context/Constraints/Done When)\n2. CPS 템플릿 사용: agents/skills/harness-dev-process/templates/feature-cps.md\n3. 영향도 분석 8항목 — 서비스 전반 연관관계 검토\n   - 다른 서비스(Gaia, Hera, Hermes 등)에 영향 있는지 확인\n   - base/services/ 하위 관련 서비스 TASKS.md 교차 확인\n4. 해당 서비스 도메인 에이전트 읽기: agents/subagents/{서비스}/*.md\n5. harness-brainstorm Step 1~9 절차 따르기 (질문 한 번에 1개 → 접근안 2-3개 → CPS Charter 9항목 설계 → 사용자 승인 → Step 9에서 init-harness-run.sh 실행)"
+      "message": "📋 요구사항 수집 + 설계 (Phase 0: INIT, harness-brainstorm)\n\n1. Charter Preflight 작성 (Goal/Context/Constraints/Done When)\n2. CPS 템플릿 사용: agents/skills/harness-dev-process/templates/feature-cps.md\n3. 영향도 분석 8항목 — 서비스 전반 연관관계 검토\n   - 관련 서비스에 영향 있는지 확인\n   - 관련 서비스 TASKS.md 교차 확인\n4. 해당 서비스 도메인 에이전트 읽기: agents/subagents/<YOUR_SERVICE>/*.md\n5. harness-brainstorm Step 1~9 절차 따르기 (질문 한 번에 1개 → 접근안 2-3개 → CPS Charter 9항목 설계 → 사용자 승인 → Step 9에서 init-harness-run.sh 실행)"
     },
     {
       "command": "plan",
@@ -149,7 +143,7 @@
         "아키텍처 설계",
         "아키텍처 작성"
       ],
-      "message": "📐 설계 (Phase 1: PLAN)\n\n1. PRD 작성: agents/skills/harness-dev-process/templates/feature-prd.md\n   - 풀스택 8레이어 전부 판정 (해당없음도 명시)\n2. Architecture 작성: agents/skills/harness-dev-process/templates/feature-architecture.md\n3. 서비스 전반 검토:\n   - 다른 서비스/프로젝트에 영향 있는지 cross-check\n   - 공통코드, 권한체계, 배치 연관 확인\n4. 서브에이전트 병렬 투입:\n   - 해당 도메인 에이전트 (agents/subagents/{서비스}/*.md)\n   - frontend-dev: UI/화면 영향\n   - backend-dev: API/서비스 로직 영향\n   - dba: 쿼리/스키마/인덱스 영향\n5. 각 에이전트 검토 결과를 설계 문서에 반영\n6. UI 변경 시 목업 필수 → 사용자 승인"
+      "message": "📐 설계 (Phase 1: PLAN)\n\n1. PRD 작성: agents/skills/harness-dev-process/templates/feature-prd.md\n   - 풀스택 8레이어 전부 판정 (해당없음도 명시)\n2. Architecture 작성: agents/skills/harness-dev-process/templates/feature-architecture.md\n3. 서비스 전반 검토:\n   - 다른 서비스/프로젝트에 영향 있는지 cross-check\n   - 공통코드, 권한체계, 배치 연관 확인\n4. 서브에이전트 병렬 투입:\n   - 해당 도메인 에이전트 (agents/subagents/<YOUR_SERVICE>/*.md)\n   - frontend-dev: UI/화면 영향\n   - backend-dev: API/서비스 로직 영향\n   - dba: 쿼리/스키마/인덱스 영향\n5. 각 에이전트 검토 결과를 설계 문서에 반영\n6. UI 변경 시 목업 필수 → 사용자 승인"
     },
     {
       "command": "workflow",
@@ -188,7 +182,7 @@
         "리팩터링",
         "리팩토링"
       ],
-      "message": "🔄 dev branch 시작 전 전체 Phase 확인 (Harness)\n\nPhase 0 INIT  → CPS 작성: Charter(Goal/Context/Constraints/Done When) + 영향도 분석 8항목\nPhase 1 PLAN  → PRD + Architecture 작성 + 사용자 승인\nPhase 2 IMPL  → Charter/PRD 존재 확인 후 구현 + Task Packet 분해\nPhase 3 VERIFY→ 빌드 + 테스트 + 코드리뷰(code-reviewer) + 보안검토\nPhase 4 SHIP  → 배포 계획 + Jira A.C. DONE(5단계) + 작업일지\n\n현재 상태: .harness/state.json\n템플릿: agents/skills/harness-dev-process/templates/\n새 서비스/운영 반영이면 `harness-service-bootstrap` 또는 `harness-service-ops` branch를 우선 검토"
+      "message": "🔄 dev branch 시작 전 전체 Phase 확인 (Harness)\n\nPhase 0 INIT  → CPS 작성: Charter(Goal/Context/Constraints/Done When) + 영향도 분석 8항목\nPhase 1 PLAN  → PRD + Architecture 작성 + 사용자 승인\nPhase 2 IMPL  → Charter/PRD 존재 확인 후 구현 + Task Packet 분해\nPhase 3 VERIFY→ 빌드 + 테스트 + 코드리뷰(code-reviewer) + 보안검토\nPhase 4 SHIP  → 배포 계획 + Jira A.C. DONE(5단계) + 작업일지\n\n현재 상태: .harness/state.json\n템플릿: agents/skills/harness-dev-process/templates/\n새 서비스 신설이면 `harness-service-bootstrap`, 운영 반영이면 `harness-service-ops` branch를 먼저 검토"
     },
     {
       "command": "impl",
@@ -234,7 +228,7 @@
         "점검하자",
         "검사해"
       ],
-      "message": "🔍 검증 (Phase 3: VERIFY)\n\n0. 피처 문서 확인 (MANDATORY):\n   - 프로젝트 레포 docs/features/ 에서 관련 문서 검색\n   - 이미 판정된 영향도 분석/테스트 설계 결과 참조 → 재지적 금지\n1. 서브에이전트 병렬 검토:\n   - code-reviewer: 코드 품질, CRITICAL/HIGH 이슈 (피처 문서 판정 존중)\n   - security-reviewer: 보안 취약점 (kt cloud 시큐어코딩 기준)\n   - 도메인 에이전트: 비즈니스 로직 정합성\n   - dba: 쿼리 성능, 인덱스 누락\n   - frontend-dev: UI 접근성, 기존 패턴 준수\n2. 서비스 전반 검토:\n   - 변경이 다른 서비스에 영향 주는지\n   - 공통 API/테이블 변경 시 연쇄 영향\n3. 각 에이전트 검토 결과를 작업일지 AI 협업에 출처와 함께 기록\n4. 로컬 검증: DB → API → UI 순서"
+      "message": "🔍 검증 (Phase 3: VERIFY)\n\n0. 피처 문서 확인 (MANDATORY):\n   - 프로젝트 레포 docs/features/ 에서 관련 문서 검색\n   - 이미 판정된 영향도 분석/테스트 설계 결과 참조 → 재지적 금지\n1. 서브에이전트 병렬 검토:\n   - code-reviewer: 코드 품질, CRITICAL/HIGH 이슈 (피처 문서 판정 존중)\n   - security-reviewer: 보안 취약점 (보안 체크리스트: rules-on-demand/security.md)\n   - 도메인 에이전트: 비즈니스 로직 정합성\n   - dba: 쿼리 성능, 인덱스 누락\n   - frontend-dev: UI 접근성, 기존 패턴 준수\n2. 서비스 전반 검토:\n   - 변경이 다른 서비스에 영향 주는지\n   - 공통 API/테이블 변경 시 연쇄 영향\n3. 각 에이전트 검토 결과를 작업일지 AI 협업에 출처와 함께 기록\n4. 로컬 검증: DB → API → UI 순서"
     },
     {
       "command": "tdd",
@@ -276,7 +270,7 @@
         "완료 처리",
         "완료해"
       ],
-      "message": "🚀 배포 (Phase 4: SHIP)\n\n⚠️ 작업일지 반영 먼저 확인 → /worklog\n\n1. 배포 계획 확인 (PRD 배포 섹션)\n2. 롤백 계획 존재 확인\n3. 서비스 전반 체크:\n   - 다른 서비스 배포 순서 의존성\n   - DDL 선행 배포 필요 여부\n   - 환경별(dev/stg/prd) 설정 차이\n4. Jira A.C. 전체 DONE 검증 (준수 규칙: agents/rules-on-demand/domain-jira-ship.md)\n   - 5단계 순서 엄수: 형식→내용→AC DONE→Desc DONE→증적\n   - 미완료 항목 1건이라도 있으면 전환 금지\n5. 완료 증적: 브랜치/환경/스크린샷 Jira 코멘트"
+      "message": "🚀 배포 (Phase 4: SHIP)\n\n⚠️ 작업일지 반영 먼저 확인 → /worklog\n\n1. 배포 계획 확인 (PRD 배포 섹션)\n2. 롤백 계획 존재 확인\n3. 서비스 전반 체크:\n   - 다른 서비스 배포 순서 의존성\n   - DDL 선행 배포 필요 여부\n   - 환경별(dev/stg/prd) 설정 차이\n4. Jira A.C. 전체 DONE 검증\n   - 5단계 순서 엄수: 형식→내용→AC DONE→Desc DONE→증적\n   - 미완료 항목 1건이라도 있으면 전환 금지\n5. 완료 증적: 브랜치/환경/스크린샷 Jira 코멘트"
     },
     {
       "command": "worklog-check",
@@ -293,21 +287,7 @@
         "이만 할게",
         "여기까지"
       ],
-      "message": "📓 작업일지 확인\n\n오늘 작업이 작업일지에 반영됐는지 확인하세요.\n경로: base/personal/{사번}/worklog/2026/MM/MM-DD.md\n명령: /worklog\n\n반영 안 됐으면 지금 바로 기입 후 커밋."
-    },
-    {
-      "command": "service-infra-admin",
-      "phase": "ALL",
-      "keywords": [
-        "infra-admin",
-        "infra admin",
-        "InfraAdmin",
-        "Infra Admin",
-        "인프라 어드민",
-        "인프라 운영 통합",
-        "Infra 운영 통합"
-      ],
-      "message": "🧭 infra-admin 서비스 (InfraOps 파트)\n\n작업 위치 분기:\n1. **repo 자체 코드/문서 작업** → workspace/infraops-infra-admin-backend-kt (B/E) 또는 workspace/infraops-frontend (F/E)\n   - 초기 단계, 자체 README(1995줄) 우선 참조\n   - 우리 표준 적용 여부는 이경미 협의 후 결정 (현재 자율)\n2. **카탈로그 메타 변경** (vision_category/Roadmap 등) → base/services/infraops/infra-admin/\n3. **운영 반영 (Vault/ArgoCD/DB)** → harness-service-ops 진입\n4. **신규 기능 신설** → harness-dev-process Phase 0 INIT\n\n참조:\n- agents/subagents/infraops/infra-admin.md (도메인 에이전트 메타)\n- base/services/infraops/infra-admin/README.md (카탈로그)\n- temp/orchestrator/infra-admin/state.json (orchestrator state)"
+      "message": "📓 작업일지 확인\n\n오늘 작업이 작업일지에 반영됐는지 확인하세요.\n경로: <YOUR_WORKLOG_PATH>\n명령: /worklog\n\n반영 안 됐으면 지금 바로 기입 후 커밋."
     }
   ]
 }

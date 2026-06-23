@@ -35,7 +35,7 @@ List.of(Map.of("active_since", startEpoch, "active_till", endEpoch))
 
 ### 발견 사례
 
-- LUPR-701: MaintenanceAlarmServiceJob.getObservabilityInfo() — ClassCastException 유발
+- `MaintenanceAlarmServiceJob.getObservabilityInfo()` — ClassCastException 유발 사례
 
 ---
 
@@ -57,6 +57,6 @@ List.of(Map.of("active_since", startEpoch, "active_till", endEpoch))
 
 ---
 
-관련: [KT Cloud 스타일](kt-cloud-style.md) · [디자인 패턴](design-patterns.md) · [SRE 코딩](sre-coding.md) · [MyBatis](mybatis-sql-patterns.md)
+관련: [<YOUR_ORG> 스타일](kt-cloud-style.md) · [디자인 패턴](design-patterns.md) · [SRE 코딩](sre-coding.md) · [MyBatis](mybatis-sql-patterns.md)
 
 *최종 업데이트: 2026-02-10*

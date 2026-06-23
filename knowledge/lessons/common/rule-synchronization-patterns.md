@@ -57,7 +57,7 @@ Affects:
 Use when you need project-specific behavior without affecting global rules.
 
 ### Scenario
-`luppiter_scheduler` has stricter performance requirements than the global rule allows.
+`<your_service>` has stricter performance requirements than the global rule allows.
 
 ### Structure
 
@@ -69,7 +69,7 @@ agents/rules/performance.md
   └─ Project: "MUST be <2s for event processing"
 
 CLAUDE.md
-  └─ Context: "luppiter_scheduler has different SLA"
+  └─ Context: "<your_service> has different SLA"
 ```
 
 ### Implementation
@@ -80,7 +80,7 @@ CLAUDE.md
 ## Team Standard
 See [global performance rule](~/.claude/rules/performance.md)
 
-## Project Override: luppiter_scheduler
+## Project Override: <your_service>
 
 This project has stricter requirements due to real-time event processing:
 
@@ -225,7 +225,7 @@ Is the conflict:
 - coding-style.md: Max 800 lines per file
 
 ## Project Rule
-- luppiter_scheduler: Entity classes often 1200+ lines for complex objects
+- <your_service>: Entity classes often 1200+ lines for complex objects
 
 ## Decision
 - KEEP both rules as stated

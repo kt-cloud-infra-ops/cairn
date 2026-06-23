@@ -1,0 +1,38 @@
+{
+  "_comment": "팀원 정보 설정 예시 — 실제 팀원 정보로 교체하세요.",
+  "_warning": "실제 accountId·사번·이메일은 이 파일에 커밋하지 마세요. 환경변수 또는 로컬 전용 파일로 관리하세요.",
+
+  "schema": {
+    "name": "표시 이름 (예: 홍길동)",
+    "email_id": "이메일 접두사 (예: gildong.hong)",
+    "employee_id": "사번 (예: <YOUR_EMPLOYEE_ID>)",
+    "jira_account_id": "Jira accountId (예: <YOUR_JIRA_ACCOUNT_ID>)"
+  },
+
+  "example_members": [
+    {
+      "name": "<YOUR_MANAGER_NAME>",
+      "email_id": "<YOUR_MANAGER_EMAIL_ID>",
+      "employee_id": "<YOUR_EMPLOYEE_ID>",
+      "jira_account_id": "<YOUR_JIRA_ACCOUNT_ID>",
+      "role": "reporter",
+      "note": "보고자(Reporter) — 모든 이슈 공통"
+    },
+    {
+      "name": "<YOUR_MEMBER_NAME>",
+      "email_id": "<YOUR_MEMBER_EMAIL_ID>",
+      "employee_id": "<YOUR_EMPLOYEE_ID>",
+      "jira_account_id": "<YOUR_JIRA_ACCOUNT_ID>",
+      "role": "assignee",
+      "note": "담당자(Assignee) — 실제 작업자"
+    }
+  ],
+
+  "tasks_section_format": "## @{email_id} ({name})",
+  "tasks_section_example": "## @gildong.hong (홍길동)",
+
+  "env_vars": {
+    "JIRA_ACCOUNT_ID": "본인의 Jira accountId를 환경변수로 주입",
+    "JIRA_REPORTER_ACCOUNT_ID": "보고자(팀장)의 Jira accountId를 환경변수로 주입"
+  }
+}

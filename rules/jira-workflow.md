@@ -2,18 +2,15 @@
 
 ## CRITICAL: "지라/Jira" 키워드 감지
 
-### TECHIOPS26 통합요청 우선 라우팅
+사용자가 "지라", "Jira", `${JIRA_PROJECT_KEY}-` 형태의 티켓 키를 사용하면:
 
-- 사용자가 `통합요청`, 데이터 보정, 이벤트 해소, 인벤토리 변경·삭제를 언급하면 일반 Jira 처리 전에 반드시 `agents/skills/luppiter-datachange-request-automation/SKILL.md`를 먼저 읽는다.
-- 통합요청은 **TECHIOPS26 프로젝트 이슈타입**으로 처리된다.
-- `jira-rest-ops` 단독으로 시작하지 않고, 위 skill의 분류/처리 수단/API·DML 규칙을 먼저 따른다.
-
-사용자가 "지라", "Jira", "LUPR-", "TECHIOPS26-" 키워드를 사용하면:
-
-1. **먼저 읽기**: `base/guides/ktcloud/atlassian/jira-rest-api-guide.md`
+1. **먼저 읽기**: 팀 내 Jira REST API 가이드 (예: `base/guides/atlassian/jira-rest-api-guide.md`)
 2. Jira REST 호출 전 `/rest/api/3/myself` 또는 동등한 preflight로 인증 상태를 먼저 확인한다
 3. `agents/skills/jira-rest-ops/` shared helper 또는 curl REST API를 사용한다
 4. 가이드의 필드 ID, 상태 Transition ID, A.C. 형식을 따른다
+
+> **팀별 커스텀 라우팅**: 팀 특화 요청 유형(통합요청, 데이터 보정 등)이 있으면
+> 해당 처리 스킬을 먼저 읽도록 팀 규칙에 추가한다.
 
 ---
 
@@ -39,8 +36,8 @@
 
 ```json
 {
-  "key": "LUPR-683",
-  "cached_at": "2026-02-06T14:30:00+09:00",
+  "key": "${JIRA_PROJECT_KEY}-123",
+  "cached_at": "2026-01-01T09:00:00+09:00",
   "ttl_minutes": 60,
   "data": { ... }
 }
@@ -50,9 +47,11 @@
 
 ## 팀 구조
 
-- **보고자(Reporter)**: 팀장 (김정남/bill.kim) — 모든 이슈 공통
-- **담당자(Assignee)**: 실제 작업자
+- **보고자(Reporter)**: 팀장 (`${JIRA_REPORTER_ACCOUNT_ID}`) — 모든 이슈 공통
+- **담당자(Assignee)**: 실제 작업자 (`${JIRA_ACCOUNT_ID}`)
 - **In Review**: 팀장(보고자) 검토 단계
+
+> 팀장 accountId는 `config/team.example.json` 스키마를 참고하여 환경변수로 주입한다.
 
 ---
 
@@ -62,8 +61,8 @@
 
 | 필드 | 값 | 비고 |
 |------|-----|------|
-| **reporter** | bill.kim (accountId: 712020:1253fda5-0458-4f4d-836a-2646b0576e3c) | 항상 팀장 |
-| **assignee** | 실제 작업자 accountId | 사용자에게 확인 |
+| **reporter** | `${JIRA_REPORTER_ACCOUNT_ID}` | 항상 팀장(보고자) |
+| **assignee** | `${JIRA_ACCOUNT_ID}` (실제 작업자) | 사용자에게 확인 |
 
 ### 상태별 엄격도
 
@@ -77,14 +76,17 @@
 
 - `summary` 존재
 - `description` 존재
-- `customfield_14516` 존재
-- `customfield_14516`가 체크박스(taskList/taskItem) 형식
-- `reporter`가 팀장 `bill.kim` accountId인지 확인
+- A.C. 필드(`customfield_XXXXX` — 팀 환경에 맞게 설정) 존재
+- A.C. 필드가 체크박스(taskList/taskItem) 형식
+- `reporter`가 팀장 accountId인지 확인
 - `assignee`가 실제 작업자인지 확인
-- `customfield_10015` 존재
+- Start date 필드 존재
 - `duedate` 존재
-- `TECHIOPS26`의 `작업` 이슈면 `Epic Link` 존재 여부 확인
+- 해당 프로젝트의 `작업` 이슈면 `Epic Link` 존재 여부 확인
 - 생성 직후 재조회 self-audit 수행
+
+> **커스텀 필드 ID**: `customfield_XXXXX`는 팀 Jira 인스턴스에 따라 다르다.
+> 팀 가이드(예: `base/guides/atlassian/jira-rest-api-guide.md`)에서 확인한다.
 
 ### Backlog 기본 정책
 
@@ -128,9 +130,8 @@
 > **하네스 연계**: 개발 단계 체크박스는 하네스 Phase Gate와 1:1 매핑된다.
 > Canonical 정의: `agents/skills/harness-dev-process/references/phase-gates.md`
 
-> **배포 검증 분리**: stg/운영 배포 검증은 Jira A.C.가 아닌 **Confluence 배포절차서**에서 관리한다.
+> **배포 검증 분리**: stg/운영 배포 검증은 Jira A.C.가 아닌 배포절차서에서 관리한다.
 > 개발 티켓 A.C.는 코드 리뷰까지, 배포 검증은 배포절차서 체크리스트로 분리.
-> 참조: `agents/rules-on-demand/domain-jira-ship.md`
 
 ### 부족하면 반드시 물어본다
 
@@ -147,7 +148,7 @@
 | A.C. 형식 | 체크박스(taskList) 아니면 변환 |
 | A.C. 내용 | 부족하면 보완 제안 |
 | A.C. 개발 단계 | 없으면 추가 (분석→설계→구현→테스트→리뷰→통합) |
-| 보고자 | 팀장(bill.kim) accountId 일치 확인 |
+| 보고자 | 팀장(`${JIRA_REPORTER_ACCOUNT_ID}`) accountId 일치 확인 |
 | Start/Due date | 없으면 설정 |
 | Epic Link | 없으면 연결 |
 | Description skeleton | 배경/범위/영향도 수준이 너무 러프하면 보완 |
@@ -167,11 +168,10 @@
 4. **Description 체크박스 완료** → 모든 taskItem state를 DONE
 5. **상태 변경** → In Review(5) 또는 Done(6)
 
-#
 ### 가드 훅 (자동 강제)
 
 `.claude/hooks/guard-jira-transition.sh` (PreToolUse Bash hook):
-- Jira transition API 호출 시 대상 티켓 A.C. (`customfield_14516`) TODO 잔존 검사
+- Jira transition API 호출 시 대상 티켓 A.C. TODO 잔존 검사
 - In Review(transition id=5) / Done(transition id=6)로 가는 경우 차단
 - 우회 (1회): `touch /tmp/.claude-allow-jira-transition`
 

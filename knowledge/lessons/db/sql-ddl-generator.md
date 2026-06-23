@@ -292,9 +292,9 @@ esac
 
 ## 관련 프로젝트
 
-- `luppiter-web`: 테이블 구조 변경
-- `luppiter_scheduler`: 이벤트 테이블 관리
-- `luppiter_inv`: 인벤토리 데이터 모델
+- `<your_service>`: 테이블 구조 변경
+- `<your_scheduler>`: 이벤트 테이블 관리
+- `<your_inventory_service>`: 인벤토리 데이터 모델
 
 ## 우선순위
 
@@ -302,5 +302,5 @@ esac
 
 ## 관련 문서
 
-- 현재 DDL: `/Users/jiwoong.kim/Documents/ai-team-standards/docs/o11y/02-ddl.sql`
-- 성능 분석: `/Users/jiwoong.kim/Documents/ai-team-standards/docs/o11y/03-performance-analysis.md`
+- 현재 DDL: `<YOUR_PROJECT_ROOT>/docs/02-ddl.sql`
+- 성능 분석: `<YOUR_PROJECT_ROOT>/docs/03-performance-analysis.md`

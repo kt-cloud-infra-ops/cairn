@@ -1,6 +1,6 @@
 ---
 name: jira-rest-ops
-description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변수/~/.jira-credentials.json). 신규 Task 생성(create-task), 이슈 필드 업데이트, 상태 전환, A.C. 체크박스 완료, 에픽 링크, description ADF 조작, weekly-report용 에픽 탐색/초안 생성/댓글 등록을 수행. "지라", "Jira", "LUPR-", "TECHIOPS26-", "weekly-report", "주간보고" 키워드에 반응.
+description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변수/~/.jira-credentials.json). 신규 Task 생성(create-task), 이슈 필드 업데이트, 상태 전환, A.C. 체크박스 완료, 에픽 링크, description ADF 조작, weekly-report용 에픽 탐색/초안 생성/댓글 등록을 수행. Jira 키워드(프로젝트키, 이슈키) 또는 "weekly-report", "주간보고" 키워드에 반응.
 ---
 
 ## 스킬 규칙
@@ -30,8 +30,8 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 
 우선순위:
 1. `ATLASSIAN_BASE_URL` + `ATLASSIAN_EMAIL` + `ATLASSIAN_API_TOKEN`
-2. `JIRA_EMAIL` + `JIRA_API_TOKEN` (+ 선택: `JIRA_BASE_URL`, 없으면 `https://ktcloud.atlassian.net`)
-3. `~/.jira-credentials.json` (email + apiToken + baseUrl) — env 미설정 시 로컬 fallback
+2. `JIRA_EMAIL` + `JIRA_API_TOKEN` (+ 선택: `JIRA_BASE_URL`, 없으면 `${ATLASSIAN_BASE_URL}` — 기본값: 환경에 맞는 URL로 설정)
+3. `${JIRA_CREDENTIALS_FILE:-~/.jira-credentials.json}` (email + apiToken + baseUrl) — env 미설정 시 로컬 fallback
 
 > **권장: 환경변수(1·2번)를 셸 프로파일(`~/.zshrc`)에 export.** MCP 설정 의존은 제거됨 — REST API 직접 인증만 사용. env·파일 모두 없으면 환경변수 설정 안내 에러.
 
@@ -45,7 +45,7 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 진단 원칙:
 - `/myself`가 `401`이면 인증 실패
 - `/myself`는 `200`인데 특정 이슈만 `404`/빈 결과면 이슈 부재 또는 권한 범위 문제
-- stale `~/.jira-credentials.json`이 있으면 env가 우선해야 한다
+- stale `${JIRA_CREDENTIALS_FILE:-~/.jira-credentials.json}`이 있으면 env가 우선해야 한다
 
 ## 지원 기능
 
@@ -78,10 +78,10 @@ read-only 조회(`auth-check`, `search`, `get issue`)는 제외하고, 아래 �
 - [ ] `auth-check` 또는 `/rest/api/3/myself`로 현재 토큰 유효성 확인
 - [ ] 대상 project/issue key/transition/comment 위치 확인
 - [ ] 변경 payload preview 확인 (`summary`, `description`, `A.C.`, `reporter`, `assignee`, `start/due`, `Epic Link`)
-- [ ] `create-task`면 reporter가 팀장 `bill.kim` accountId인지 확인
-- [ ] `TECHIOPS26`의 `작업` 이슈면 `Epic Link` 예외 여부까지 명시
+- [ ] `create-task`면 reporter가 지정된 보고자 accountId(`${JIRA_REPORTER_ACCOUNT_ID}`)인지 확인
+- [ ] `${JIRA_PROJECT_KEY}` 이슈면 `Epic Link` 예외 여부까지 명시
 
-## 상태 전환 ID (TECHIOPS26)
+## 상태 전환 ID (프로젝트별 실제 ID 확인 필요)
 
 | ID | 상태 |
 |----|------|
@@ -107,12 +107,12 @@ read-only 조회(`auth-check`, `search`, `get issue`)는 제외하고, 아래 �
 - `summary`
 - `description` (ADF 또는 plain text → ADF 변환)
 - `customfield_14516` (`taskList/taskItem` ADF)
-- `reporter.accountId` (`bill.kim`, `712020:1253fda5-0458-4f4d-836a-2646b0576e3c`)
+- `reporter.accountId` (지정된 보고자, `${JIRA_REPORTER_ACCOUNT_ID}`)
 - `assignee.accountId`
 - `customfield_10015`
 - `duedate`
 
-### TECHIOPS26 Task 추가 규칙
+### `${JIRA_PROJECT_KEY}` Task 추가 규칙
 
 - `issuetype=작업`이면 `Epic Link(customfield_10014)`를 기본 요구로 본다
 - 에픽 없이 생성해야 하면 명시적 예외 판단을 남긴다
@@ -147,7 +147,7 @@ read-only 조회(`auth-check`, `search`, `get issue`)는 제외하고, 아래 �
 
 - `references/automation-pattern.md` — 상세 코드 예시 (jira-rest-ops references에서 관리)
 - `agents/rules/jira-workflow.md` — Jira 운영 규칙 원본
-- `agents/knowledge/lessons/common/011-weekly-report-epic-comment-automation.md` — 주간보고 자동화 패턴
+- 주간보고 자동화 패턴 — 팀 knowledge base 참조
 
 ## 완료 조건 (DONE WHEN)
 - [ ] [GATE] write 작업 시 [GATE 0] 통과 확인

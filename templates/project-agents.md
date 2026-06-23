@@ -10,8 +10,8 @@ service: demo
 role: backend
 related:
   - workspace/demo-frontend
-repo: kt-cloud-infra-ops/demo-backend-kt
-external: /Users/foo/bar
+repo: ${GIT_ORG}/demo-backend-kt
+external: <YOUR_PATH>/bar
 ---
 ```
 
@@ -30,7 +30,7 @@ external: /Users/foo/bar
 - `workspace/*-mock`
 - `workspace/*-stub`
 - `workspace/ref-*`
-- `workspace/luppiter-local-env/*`
+- `workspace/*-local-env/*`
 
 ## 작성 규칙
 
@@ -49,7 +49,7 @@ service: demo
 role: frontend
 related:
   - workspace/demo-backend-kt
-repo: kt-cloud-infra-ops/demo-frontend
+repo: ${GIT_ORG}/demo-frontend
 ---
 ```
 
@@ -75,7 +75,7 @@ service: demo
 role: backend
 related:
   - workspace/demo-frontend
-repo: kt-cloud-infra-ops/demo-backend-kt
+repo: ${GIT_ORG}/demo-backend-kt
 ---
 ```
 
@@ -101,7 +101,7 @@ service: demo
 role: scheduler
 related:
   - workspace/demo-backend-kt
-repo: kt-cloud-infra-ops/demo-scheduler
+repo: ${GIT_ORG}/demo-scheduler
 ---
 ```
 
@@ -125,7 +125,7 @@ role: e2e
 related:
   - workspace/demo-frontend
   - workspace/demo-backend-kt
-repo: kt-cloud-infra-ops/demo-e2e
+repo: ${GIT_ORG}/demo-e2e
 ---
 ```
 
@@ -149,7 +149,7 @@ role: shared
 related:
   - workspace/demo-backend-kt
   - workspace/demo-frontend
-repo: kt-cloud-infra-ops/demo-shared
+repo: ${GIT_ORG}/demo-shared
 ---
 ```
 
@@ -172,7 +172,7 @@ service: demo
 role: batch
 related:
   - workspace/demo-backend-kt
-repo: kt-cloud-infra-ops/demo-batch
+repo: ${GIT_ORG}/demo-batch
 ---
 ```
 

@@ -59,7 +59,7 @@ base/personal/{사번}/usage-log.jsonl
 # usage-log.jsonl 읽기
 LOGFILE="base/personal/$(git config user.name | sed 's/.*//;')/usage-log.jsonl"
 # 폴백: 사번 직접 사용
-# LOGFILE="base/personal/82253890/usage-log.jsonl"
+# LOGFILE="base/personal/<YOUR_USER_ID>/usage-log.jsonl"
 ```
 
 #### A. 커맨드 사용 빈도
@@ -94,11 +94,11 @@ usage-log에서 `agents_used` 배열을 집계:
 
 #### A. 팀 전체 커맨드 히트맵
 ```
-           김지웅  이종혁  강기주  이경수  이경미
-/work-start  12     8      5      3      2
-/work-tasks  15    10      3      2      1
-/code-review  8     2      0      0      0
-/tdd          3     0      0      0      0
+           <YOUR_NAME>  <YOUR_NAME>  <YOUR_NAME>  <YOUR_NAME>  <YOUR_NAME>
+/work-start  12            8            5            3            2
+/work-tasks  15           10            3            2            1
+/code-review  8            2            0            0            0
+/tdd          3            0            0            0            0
 ```
 
 #### B. 팀원별 활동 요약
@@ -111,7 +111,7 @@ usage-log에서 `agents_used` 배열을 집계:
 
 #### D. 인사이트 제안
 데이터 기반으로 자동 생성:
-- "code-review를 가장 많이 사용하는 김지웅의 설정을 팀에 공유하면?"
+- "code-review를 가장 많이 사용하는 <YOUR_NAME>의 설정을 팀에 공유하면?"
 - "impact-analysis 규칙이 트리거된 적 없음 → 팀 교육 필요?"
 - "/tdd를 사용하는 팀원이 커밋당 버그 수정 비율이 낮음"
 

@@ -1,6 +1,6 @@
 ---
 name: harness-service-bootstrap
-description: "새 서비스/프로젝트 bootstrap 오케스트레이터. template repo 생성 → rename-service.py → workspace/docs/AGENTS → service-charts/service-values 초기화까지를 단계별 GATE로 진행한다."
+description: "새 서비스/프로젝트 bootstrap 오케스트레이터. template repo fork → rename-service.py → workspace/docs/AGENTS → charts/values skeleton 초기화까지를 단계별 GATE로 진행한다."
 ---
 
 ## 스킬 규칙
@@ -25,7 +25,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 
 ## 참조
 
-- `references/bootstrap-sop.md` — Confluence `2000455370` 정규화 요약 + 실제 repo 명령
+- `references/bootstrap-sop.md` — Confluence `${CONFLUENCE_PAGE_ID}` 정규화 요약 + 실제 repo 명령
 - `agents/rules-on-demand/project-structure.md` — template 구조 및 naming
 - `agents/rules-on-demand/project-docs.md` — docs/AGENTS 표준
 - `agents/skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-bootstrap` branch owner
@@ -52,16 +52,16 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - [ ] workspace 연결 방식(`symlink`/`direct`) 확정
 - [ ] 기존 서비스 허브 존재 여부 확인 (`없으면 workspace-create-service`)
 
-##### 비전 정합성 (ADR-009, 팀 비전 Confluence pageId 2038665613)
-- [ ] **파트 분류**: `InfraOps` / `DevOps` / `공통` — `base/services/{파트}/{서비스}/` 위치 결정
-- [ ] **카테고리** (비전 OSS): `공통` / `관제 & 모니터링` / `Infra 운영 자동화` / `CICD 운영` / `작업 관리`
-- [ ] **계층** (비전 분류): `공통 시스템` / `운영 시스템` / `Platform` / `Classic Infra` / `KCP Infra`
-- [ ] **인증 방식**: `okta` / `Keycloak` / `Local` / `TOKEN` / `TOKEN white list` / `KT AD` / `인증서`
-- [ ] **배포 환경**: `POD (메인)` / `POD (KCP Region)` / `VM (Classic Zone)` / `HW`
+##### 비전 정합성 (ADR-009, 팀 비전 Confluence pageId ${CONFLUENCE_PAGE_ID})
+- [ ] **파트 분류**: `<YOUR_PART_A>` / `<YOUR_PART_B>` / `공통` — `base/services/{파트}/{서비스}/` 위치 결정
+- [ ] **카테고리**: 팀 비전 기준 카테고리 선택
+- [ ] **계층**: 팀 비전 기준 계층 선택
+- [ ] **인증 방식**: `SSO` / `Token` / `Local` / `Certificate` / 기타
+- [ ] **배포 환경**: `K8s` / `VM` / `HW` / 기타
 - [ ] **Roadmap 단계**: `1차 YYYY.MM` + 상태(`Yellow/Green/Red`)
 - [ ] **자율 repo 여부 (ADR-009)**:
   - 표준 적용 = 영문 commit + Jira 티켓 + review-evidence + Co-Authored-By 강제
-  - 자율 (예: CMDB 패턴) = repo 자체 룰 보존, 카탈로그 메타만 우리 관리
+  - 자율 (예: 자율 repo 패턴) = repo 자체 룰 보존, 카탈로그 메타만 우리 관리
 - [ ] **service-mapping.md 등록**: `agents/rules/service-mapping.md` 매핑 행 추가
 - [ ] **frontmatter 표준 적용**: `vision_category` / `vision_layer` / `part` / `roadmap_stage` / `auth_method` / `deployment`
 - [ ] **도메인 에이전트 신설 여부**: `agents/subagents/{파트}/{서비스}.md` (자율 repo 필수, 표준 repo 선택)
@@ -89,80 +89,80 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 
 4. `APPLY`
    - `service-charts` skeleton 생성
-     - 실행 주체: 수동 shell 작업 (`workspace-*` 스킬 아님), 작업 repo는 `workspace/infraops-service-charts/`
+     - 실행 주체: 수동 shell 작업 (`workspace-*` 스킬 아님), 작업 repo는 `workspace/<YOUR_CHARTS_REPO>/`
      - 명령:
        ```bash
-       cd workspace/infraops-service-charts
-       cp -R infraops-sample infraops-<service>
-       rg -l "infraops-sample" infraops-<service> | xargs -I{} sed -i '' 's/infraops-sample/infraops-<service>/g' {}
+       cd workspace/<YOUR_CHARTS_REPO>
+       cp -R <YOUR_ORG>-sample <YOUR_ORG>-<service>
+       rg -l "<YOUR_ORG>-sample" <YOUR_ORG>-<service> | xargs -I{} sed -i '' 's/<YOUR_ORG>-sample/<YOUR_ORG>-<service>/g' {}
        ```
-     - 산출물: `workspace/infraops-service-charts/infraops-<service>/Chart.yaml`, `templates/deployment-svc.yaml`, `templates/configmap.yaml`, `templates/secrets-provider.yaml`
+     - 산출물: `workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service>/Chart.yaml`, `templates/deployment-svc.yaml`, `templates/configmap.yaml`, `templates/secrets-provider.yaml`
      - 확인:
        ```bash
-       test -f workspace/infraops-service-charts/infraops-<service>/Chart.yaml
-       rg -n "infraops-sample" workspace/infraops-service-charts/infraops-<service>
+       test -f workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service>/Chart.yaml
+       rg -n "<YOUR_ORG>-sample" workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service>
        ```
        `rg` 결과가 없어야 한다.
    - `service-values` skeleton 생성
-     - 실행 주체: repo 스크립트 실행, 작업 repo는 `workspace/infraops-service-values/`
+     - 실행 주체: repo 스크립트 실행, 작업 repo는 `workspace/<YOUR_VALUES_REPO>/`
      - 명령:
        ```bash
-       cd workspace/infraops-service-values
-       ./create-service.sh infraops-<service> <port>
+       cd workspace/<YOUR_VALUES_REPO>
+       ./create-service.sh <YOUR_ORG>-<service> <port>
        ```
-     - 산출물: `workspace/infraops-service-values/applications/infraops-<service>.yaml`, `workspace/infraops-service-values/infraops-<service>/values.yaml`
+     - 산출물: `workspace/<YOUR_VALUES_REPO>/applications/<YOUR_ORG>-<service>.yaml`, `workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml`
      - 확인:
        ```bash
-       test -f workspace/infraops-service-values/applications/infraops-<service>.yaml
-       test -f workspace/infraops-service-values/infraops-<service>/values.yaml
-       rg -n "name: infraops-<service>|port: <port>|targetPort: <port>" \
-         workspace/infraops-service-values/applications/infraops-<service>.yaml \
-         workspace/infraops-service-values/infraops-<service>/values.yaml
+       test -f workspace/<YOUR_VALUES_REPO>/applications/<YOUR_ORG>-<service>.yaml
+       test -f workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml
+       rg -n "name: <YOUR_ORG>-<service>|port: <port>|targetPort: <port>" \
+         workspace/<YOUR_VALUES_REPO>/applications/<YOUR_ORG>-<service>.yaml \
+         workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml
        ```
    - F/E → B/E 연결값 skeleton 반영
-     - 실행 주체: 수동 values 편집, 작업 repo는 `workspace/infraops-service-values/`
+     - 실행 주체: 수동 values 편집, 작업 repo는 `workspace/<YOUR_VALUES_REPO>/`
      - 명령:
        ```bash
-       $EDITOR workspace/infraops-service-values/infraops-<frontend-service>/values.yaml
+       $EDITOR workspace/<YOUR_VALUES_REPO>/<frontend-service>/values.yaml
        ```
        현재 로컬 표준에서는 `config.bffBaseUrl`, `config.apiBaseUrl` 키를 사용한다. 단일 backend만 있는 UI면 `[TBD - 외부 확인 필요]` 위치에 연결 키를 남기고 handoff evidence에 기록한다.
-     - 산출물: `workspace/infraops-service-values/infraops-<frontend-service>/values.yaml` 내부 `config.*BaseUrl` skeleton
+     - 산출물: `workspace/<YOUR_VALUES_REPO>/<frontend-service>/values.yaml` 내부 `config.*BaseUrl` skeleton
      - 확인:
        ```bash
        rg -n "bffBaseUrl|apiBaseUrl|backendUrl" \
-         workspace/infraops-service-values/infraops-<frontend-service>/values.yaml
+         workspace/<YOUR_VALUES_REPO>/<frontend-service>/values.yaml
        ```
        실제 사용 키는 `references/bootstrap-sop.md`의 "F/E → B/E 연결값" 절과 일치해야 한다.
    - backend configmap / values 초기값 반영
      - 실행 주체: 수동 values 편집, configmap 키는 chart template가 소비
      - 명령:
        ```bash
-       $EDITOR workspace/infraops-service-values/infraops-<backend-service>/values.yaml
+       $EDITOR workspace/<YOUR_VALUES_REPO>/<backend-service>/values.yaml
        ```
-       최소 skeleton은 `config.appBaseUrl` 이고, 현재 로컬 표준에서 공통 `config.profile`은 `infraops-comm/values.yaml`가 제공한다. API/BFF 계열 추가 키는 `references/bootstrap-sop.md`의 "backend configmap / values 초기값" 절을 따른다.
-     - 산출물: `workspace/infraops-service-values/infraops-<backend-service>/values.yaml` 내부 `config`, `secrets` skeleton
+       최소 skeleton은 `config.appBaseUrl` 이고, 현재 로컬 표준에서 공통 `config.profile`은 `<YOUR_ORG>-comm/values.yaml`가 제공한다. API/BFF 계열 추가 키는 `references/bootstrap-sop.md`의 "backend configmap / values 초기값" 절을 따른다.
+     - 산출물: `workspace/<YOUR_VALUES_REPO>/<backend-service>/values.yaml` 내부 `config`, `secrets` skeleton
      - 확인:
        ```bash
        rg -n "appBaseUrl|profile|secretProviderClass|kubernetesSecretName" \
-         workspace/infraops-service-values/infraops-<backend-service>/values.yaml \
-         workspace/infraops-service-values/infraops-comm/values.yaml
+         workspace/<YOUR_VALUES_REPO>/<backend-service>/values.yaml \
+         workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml
        ```
    - HTTPRoute skeleton 파일 준비
      - 실행 주체: 수동 shell 작업, 외부 노출 필요 서비스만 수행. 내부 전용 서비스는 N/A를 handoff evidence에 남긴다.
      - 명령:
        ```bash
        cp \
-         workspace/infraops-service-charts/infraops-bff/templates/httproute.yaml \
-         workspace/infraops-service-charts/infraops-<public-service>/templates/httproute.yaml
-       $EDITOR workspace/infraops-service-charts/infraops-<public-service>/templates/httproute.yaml
+         workspace/<YOUR_CHARTS_REPO>/<your-bff-service>/templates/httproute.yaml \
+         workspace/<YOUR_CHARTS_REPO>/<public-service>/templates/httproute.yaml
+       $EDITOR workspace/<YOUR_CHARTS_REPO>/<public-service>/templates/httproute.yaml
        ```
-       `infraops-frontend/templates/httproute.yaml`를 복제해도 되지만, 현재 로컬 repo 기준으로 외부 노출 패턴 확인용 기준 파일은 `infraops-bff`와 `infraops-frontend` 두 개다.
-     - 산출물: `workspace/infraops-service-charts/infraops-<public-service>/templates/httproute.yaml`
+       `<YOUR_ORG>-frontend/templates/httproute.yaml`를 복제해도 되지만, 현재 로컬 repo 기준으로 외부 노출 패턴 확인용 기준 파일은 BFF 서비스와 frontend 서비스 두 개다.
+     - 산출물: `workspace/<YOUR_CHARTS_REPO>/<public-service>/templates/httproute.yaml`
      - 확인:
        ```bash
-       test -f workspace/infraops-service-charts/infraops-<public-service>/templates/httproute.yaml
-       rg -n "kind: HTTPRoute|name: infraops-<public-service>|port:" \
-         workspace/infraops-service-charts/infraops-<public-service>/templates/httproute.yaml
+       test -f workspace/<YOUR_CHARTS_REPO>/<public-service>/templates/httproute.yaml
+       rg -n "kind: HTTPRoute|name: <public-service>|port:" \
+         workspace/<YOUR_CHARTS_REPO>/<public-service>/templates/httproute.yaml
        ```
 
 5. `VERIFY`
@@ -192,9 +192,9 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs bootstrap-complete {service} \
   --project-root workspace/{frontend_repo} \
   --project-root workspace/{backend_repo} \
-  --charts workspace/infraops-service-charts/infraops-{service} \
-  --values workspace/infraops-service-values/infraops-{service} \
-  --httproute workspace/infraops-service-charts/infraops-{service}/templates/httproute.yaml
+  --charts workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-{service} \
+  --values workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-{service} \
+  --httproute workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-{service}/templates/httproute.yaml
 ```
 
 ## 완료 조건 (DONE WHEN)

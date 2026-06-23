@@ -9,25 +9,11 @@ tags:
 
 # Common Guides & Learning Resources
 
-Cross-language and cross-project guides that apply to all teams at KT Cloud.
+Cross-language and cross-project guides.
 
 ## Documents
 
 ### System & Process
-
-#### [Apidog Spec Sync Gap Analysis](apidog-spec-sync-gap-analysis.md)
-**Type**: Integration Analysis | **Complexity**: Intermediate
-**When to Read**: Estimating effort for luppiter_web ↔ Apidog spec synchronization
-
-Provides:
-- Current gap snapshot (code paths vs exported OpenAPI paths)
-- Missing/extra path interpretation
-- Practical 3-phase remediation plan (3.5~6 days)
-- Immediate execution checklist
-
-**Key Insight**: Path-level sync can be done quickly, but schema-level completeness dominates total effort.
-
----
 
 #### [Apidog Token Security Playbook](apidog-token-security-playbook.md)
 **Type**: Security Guide | **Complexity**: Beginner
@@ -40,20 +26,6 @@ Covers:
 - Post-incident validation checklist
 
 **Key Insight**: Fast token rotation and explicit storage rules are more important than ad-hoc masking.
-
----
-
-#### [Luppiter System Code Relationship](luppiter-system-code-relationship.md)
-**Type**: Service Data Flow Guide | **Complexity**: Intermediate
-**When to Read**: Before changing O11y/Zenius/Zabbix routing, inventory, maintenance, or event combine logic
-
-Covers:
-- Why `system_code` is a hidden relationship key rather than a display field
-- Current differences between O11y, Zenius, and Zabbix handling
-- The 5 anchor tables to inspect together
-- A practical inspection order for AI agents
-
-**Key Insight**: In Luppiter, `system_code` behaves like a cross-project routing key even when ERD does not show an FK.
 
 ---
 
@@ -117,13 +89,12 @@ Includes structural guidelines, anti-patterns, governance model, and metrics.
 | 문서 | 설명 |
 |------|------|
 | [cross-reference-rules-automation.md](cross-reference-rules-automation.md) | 규칙 파일 교차참조 자동화 |
-| [deploy-checklist-o11y.md](deploy-checklist-o11y.md) | 배포 시 o11y 연동 확인 체크리스트 |
 | [documentation-architecture.md](documentation-architecture.md) | 문서 아키텍처 가이드 |
 | [implementation-guide.md](implementation-guide.md) | 규칙 파일 자동화 구현 가이드 |
 | [jira-management-rules.md](jira-management-rules.md) | Jira 관리 규칙 |
 | [jira-mcp-limitations.md](jira-mcp-limitations.md) | Jira MCP 도구 한계와 해결책 |
 | [jira-task-completion-rules.md](jira-task-completion-rules.md) | Jira 태스크 완료 처리 규칙 |
-| [luppiter-backend-overview.md](luppiter-backend-overview.md) | Luppiter 백엔드 프로젝트 개요 |
+| [k8s-cluster-migration-crosscheck-ops.md](k8s-cluster-migration-crosscheck-ops.md) | K8s 클러스터 이관 — 크로스체크 명령어 사례집 |
 | [mcp-tools-guide.md](mcp-tools-guide.md) | MCP Tools Integration Guide |
 | [performance-issue-doc.md](performance-issue-doc.md) | 성능 이슈 분석 문서 템플릿 |
 | [playwright-e2e-patterns.md](playwright-e2e-patterns.md) | Playwright E2E 테스트 패턴 및 베스트 프랙티스 |
@@ -135,7 +106,6 @@ Includes structural guidelines, anti-patterns, governance model, and metrics.
 
 ## Learning Session Context
 
-**Date**: 2026-01-30
 **Session Focus**: Analyzing and documenting rule system architecture
 
 ### What This Session Revealed
@@ -169,21 +139,11 @@ A layered architecture with:
 ## Related Documents
 
 ### In This Repository
-- **서비스별 문서**: `base/services/luppiter/`
-- **Java Guides**: `agents/knowledge/lessons/java/`
-- **Database Guides**: `agents/knowledge/lessons/db/`
+- **Java Guides**: `knowledge/lessons/java/`
+- **Database Guides**: `knowledge/lessons/db/`
 
 ### Team Rules (canonical)
-팀 규칙은 `agents/rules/`(매 세션 자동 로드)와 `agents/rules-on-demand/`(키워드/파일 트리거 로드)에 있다. 진입점은 `AGENTS.md`.
-- 자동 로드(`agents/rules/`): `core.md`, `agents.md`, `git-workflow.md`, `jira-workflow.md`, `doc-organization.md`, `service-mapping.md`, `skill-governance.md`
-- On-demand(`agents/rules-on-demand/`): `coding-style.md`, `testing.md`, `security.md`, `impact-analysis.md`, `current-state-analysis-harness.md`, `git-advanced.md` 등
-- 개인 글로벌(`~/.claude/rules/`): `hooks.md` 등 개인 IDE/환경 설정만 (팀 공유 X)
-
-> 위 목록은 2026-06 컨텍스트 스퀴징 기준. 자동/on-demand 경계는 `AGENTS.md` "On-Demand 규칙" 테이블이 SSOT.
-
-### Related Projects
-- **luppiter_scheduler**: `base/services/luppiter/luppiter_scheduler/`
-- **luppiter_web**: `base/services/luppiter/luppiter_web/`
+팀 규칙은 `rules/`(매 세션 자동 로드)와 `rules-on-demand/`(키워드/파일 트리거 로드)에 있다. 진입점은 `AGENTS.md`.
 
 ## How to Use These Documents
 
@@ -196,11 +156,6 @@ A layered architecture with:
 1. Review [Rule Design Principles](rule-design-principles.md) before creating team-wide rules
 2. Use [Rule Synchronization Patterns](rule-synchronization-patterns.md) to update shared rules
 3. Reference [Rule System Architecture](rule-system-architecture.md) when onboarding new teams
-
-### For Architects
-1. Study [Rule Design Principles](rule-design-principles.md) for governance model and metrics
-2. Use [Rule System Architecture](rule-system-architecture.md) for understanding layering
-3. Reference [Rule Synchronization Patterns](rule-synchronization-patterns.md) for implementation details
 
 ## Implementation Checklist
 
@@ -219,18 +174,7 @@ When establishing rule systems in your team:
 - [ ] Establish governance (who approves what)
 ```
 
-## Feedback & Improvements
-
-These documents capture learnings from one implementation cycle. As you use them:
-- Note what works well
-- Flag what's unclear or incomplete
-- Suggest improvements via PR or discussion
-- Share adaptations for other contexts
-
 ---
 
-**Created**: 2026-01-30
 **Type**: Guide Index
 **Status**: Active
-**Maintained By**: Claude Code Team
-**Last Updated**: 2026-01-30

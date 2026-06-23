@@ -137,8 +137,8 @@ workspace/                    docs/projects/
 Context-based automatic document placement:
 
 ```
-if (workingOnProject(luppiter_scheduler))
-  → save to docs/projects/luppiter_scheduler/
+if (workingOnProject(<your_service>))
+  → save to docs/projects/<your_service>/
 else if (workingOnSharedPolicy)
   → save to base/guides/decisions/
 else if (workingOnLanguagePattern)

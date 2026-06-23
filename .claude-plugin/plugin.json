@@ -1,0 +1,23 @@
+{
+  "name": "cairn",
+  "displayName": "Cairn",
+  "version": "0.1.0",
+  "description": "Learn your work, share it with your team. An AI development harness with a branch-routing orchestrator, a knowledge Capture Loop (work → md → git), Phase Gates, and guardrail hooks. Atlassian evidence integration via env vars.",
+  "author": { "name": "KT Cloud InfraOps" },
+  "homepage": "https://github.com/kt-cloud-ai/ai-plugin-marketplace/tree/main/plugins/cairn#readme",
+  "repository": "https://github.com/kt-cloud-ai/ai-plugin-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "harness",
+    "orchestrator",
+    "knowledge-capture",
+    "phase-gate",
+    "tdd",
+    "code-review",
+    "atlassian",
+    "guardrails"
+  ],
+  "skills": "./skills/",
+  "agents": ["./agents/"],
+  "hooks": "./hooks/hooks.json"
+}

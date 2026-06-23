@@ -1,0 +1,41 @@
+# .cairn/profile/infra.yaml
+# Infrastructure tool naming rules and addresses.
+# Actual secrets (passwords, tokens) go in .cairn/local.env (gitignore).
+# Schema: cairn.profile.infra/v1
+#
+# Values: fill in ${VAR} from .cairn/local.env or system env,
+#         or replace <YOUR_X> placeholders directly.
+#
+# CRITICAL: host, port, password는 local.env 전용. 이 파일에 직접 기재 금지.
+
+schema: "cairn.profile.infra/v1"
+
+vault:
+  address: "${VAULT_ADDR}"                         # 예: https://vault.yourcompany.com
+  path_prefix: "${VAULT_PATH_PREFIX}"              # 예: secret/data/myteam
+  # auth_method: "token"                           # token | approle | kubernetes
+
+argocd:
+  server: "${ARGOCD_SERVER}"                       # 예: argocd.yourcompany.com
+  app_name_pattern: "${ARGOCD_APP_PATTERN}"        # 예: {service}-{env}
+  # namespaces: ["default", "apps"]
+
+registry:
+  host: "${REGISTRY_HOST}"                         # 예: registry.yourcompany.com
+  project_prefix: "${REGISTRY_PROJECT_PREFIX}"     # 예: myteam/{service}
+
+ci:
+  server: "${CI_SERVER_URL}"                       # 예: https://ci.yourcompany.com
+  job_name_pattern: "${CI_JOB_PATTERN}"            # 예: {service}/build
+
+k8s:
+  cluster: "${K8S_CLUSTER}"                        # 예: prod-cluster
+  namespace_pattern: "${K8S_NAMESPACE_PATTERN}"    # 예: {service}-{env}
+  # kubeconfig: "${KUBECONFIG}"                    # local.env 또는 env var
+
+db:
+  # host/port/password는 local.env 전용 — 여기 기록 금지
+  default_port: 5432                               # 기본 포트만 허용
+  naming:
+    table_prefix: "<YOUR_TABLE_PREFIX>"            # 예: cmon_, iops_
+  # type: "postgresql"

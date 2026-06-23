@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cairn.dev/schemas/services.schema.json",
+  "title": "Cairn Services Profile",
+  "description": "Service catalog schema for a Cairn workspace profile.",
+  "type": "object",
+  "required": ["schema"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cairn.services/v1"
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "jira_project": { "type": "string", "minLength": 1 },
+        "tasks_file": { "$ref": "#/$defs/relativePath", "default": "TASKS.md" },
+        "sop_dir": { "$ref": "#/$defs/relativePath", "default": "sop" },
+        "docs_dir": { "$ref": "#/$defs/relativePath", "default": "docs" }
+      }
+    },
+    "catalog": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/catalogService" },
+      "default": []
+    },
+    "services": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/serviceMapEntry" },
+      "default": {}
+    },
+    "project_defaults": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "null"]
+      },
+      "default": {}
+    },
+    "common_prefixes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["prefix", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "prefix": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        }
+      },
+      "default": []
+    },
+    "unmapped_policy": {
+      "type": "string",
+      "enum": ["ask", "skip", "error"],
+      "default": "ask"
+    },
+    "on_mapping_fail": {
+      "type": "string",
+      "enum": ["ask", "mark-unmapped", "fail"],
+      "default": "ask"
+    }
+  },
+  "$defs": {
+    "catalogService": {
+      "type": "object",
+      "required": ["key", "display_name", "folder", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "display_name": { "type": "string", "minLength": 1 },
+        "jira_prefix": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "jira_project": { "type": "string", "minLength": 1 },
+        "repo": { "type": "string", "minLength": 1 },
+        "folder": { "$ref": "#/$defs/relativePath" },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/key" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "inactive", "planned", "archived"]
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "serviceMapEntry": {
+      "type": "object",
+      "required": ["display_name"],
+      "additionalProperties": false,
+      "properties": {
+        "display_name": { "type": "string", "minLength": 1 },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "default": []
+        },
+        "category": { "$ref": "#/$defs/key" },
+        "owner_team": { "$ref": "#/$defs/key" },
+        "project_sources": {
+          "type": "array",
+          "description": "Names from .cairn/sources.yaml.",
+          "items": { "$ref": "#/$defs/key" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "docs": { "$ref": "#/$defs/relativePath" },
+        "tasks": { "$ref": "#/$defs/relativePath" },
+        "runbooks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relativePath" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "atlassian": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "project_key": { "$ref": "#/$defs/key" },
+            "issue_prefixes": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true,
+              "default": []
+            },
+            "component": { "type": "string", "minLength": 1 }
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/key" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number", "integer", "boolean", "null"]
+          },
+          "default": {}
+        }
+      }
+    },
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          { "pattern": "^/" },
+          { "pattern": "(^|/)\\.\\.($|/)" },
+          { "pattern": "\\u0000" }
+        ]
+      }
+    }
+  }
+}

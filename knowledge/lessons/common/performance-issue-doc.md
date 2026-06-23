@@ -227,9 +227,9 @@ THEN
 
 ## 관련 프로젝트
 
-- `luppiter-web`: 이벤트 처리 성능
-- `luppiter_scheduler`: 배치 작업 성능
-- `morning_report`: 리포트 생성 성능
+- `<your_service>`: 이벤트 처리 성능
+- `<your_scheduler>`: 배치 작업 성능
+- `<your_report_service>`: 리포트 생성 성능
 
 ## 우선순위
 
@@ -238,4 +238,4 @@ THEN
 ## 참고
 
 기존 성능 이슈 분석 문서:
-- 파일: `/Users/jiwoong.kim/Documents/ai-team-standards/docs/o11y/03-performance-analysis.md`
+- 파일: `<YOUR_PROJECT_ROOT>/docs/03-performance-analysis.md`

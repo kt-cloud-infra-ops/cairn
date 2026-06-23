@@ -21,7 +21,7 @@ Jira Description만으로 CPS를 작성하면 정확도가 떨어진다.
 3. **피처 문서 있으면** → 피처 문서를 CPS 입력으로 수용 (Jira Description보다 우선)
 4. **피처 문서 없으면** → 도메인 에이전트 검토 결과를 기반으로 CPS 작성
 
-> **교훈**: TECHIOPS26-379에서 Jira Description(SQL 1줄 수정)과 피처 문서(5개 파일 수정 + action 분기)가 불일치.
+> **교훈**: Jira Description(SQL 1줄 수정)과 피처 문서(5개 파일 수정 + action 분기)가 불일치.
 > Jira만 보고 "Lite"로 판정했으나 실제는 "Standard" 레벨이었음.
 
 ## MANDATORY: 4요소 확인

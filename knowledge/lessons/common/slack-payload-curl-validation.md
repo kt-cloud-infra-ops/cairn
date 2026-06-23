@@ -39,8 +39,8 @@ aliases: []
 ### 1. 토큰 + 사용자 ID 확보
 
 ```bash
-# Bot token 위치 (luppiter)
-# workspace/message_bridge/config/message_bridge/application-{env}.properties
+# Bot token 위치
+# config/<your_service>/application-{env}.properties
 # slack.token=xoxb-...
 TOKEN='xoxb-...'
 
@@ -97,11 +97,11 @@ curl -sS -X POST https://slack.com/api/chat.postMessage \
 
 → webhook 발송이 필요하면 rich_text 를 section + mrkdwn 으로 평탄화.
 
-## 실제 적용 사례 (TECHIOPS26-543 세션, 2026-04-28)
+## 실제 적용 사례
 
 - mb-mock log raw 페이로드를 Block Kit Builder UI 에 넣으니 `invalid additional property: text` 에러
 - chat.postMessage API 로 직접 발송 → `ok:true, warning:null, deprecation:null, scopes_warning:null` 깨끗
-- **결론**: payload 100% valid. stg 발송 실패는 mb 코드 측 (mb-mock 의 unmatched endpoint `/slack/sendDirect/blockkit` 가 단서)
+- **결론**: payload 100% valid. stg 발송 실패는 mb 코드 측 (mb-mock 의 unmatched endpoint 가 단서)
 
 ## 안티패턴
 

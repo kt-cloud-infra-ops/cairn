@@ -14,14 +14,14 @@
 
 ## repo 기준 확인 포인트
 
-- `workspace/infraops-service-values/infraops-<service>/values.yaml`
+- `workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml`
   - `secrets.enabled`
   - `secrets.secretProviderClass`
   - `secrets.secretObjects`
   - `secrets.kubernetesSecretName`
-- `workspace/infraops-service-values/infraops-comm/values.yaml`
+- `workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml` (`<YOUR_ORG>-comm` 공통 values)
   - 공통 Vault 설정 존재 여부
-- `workspace/infraops-service-charts/infraops-<service>/templates/secrets-provider.yaml`
+- `workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service>/templates/secrets-provider.yaml`
 
 ## preview 절차
 
@@ -29,18 +29,18 @@
 
 ```bash
 rg -n "secrets:|secretProviderClass|secretObjects|kubernetesSecretName|secretPath|secretKey" \
-  workspace/infraops-service-values/infraops-<service>/values.yaml \
-  workspace/infraops-service-values/infraops-comm/values.yaml
+  workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml \
+  workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml
 ```
 
 2. chart가 `SecretProviderClass`를 렌더링하는지 확인한다.
 
 ```bash
-test -f workspace/infraops-service-charts/infraops-<service>/templates/secrets-provider.yaml
-helm template infraops-<service> \
-  workspace/infraops-service-charts/infraops-<service> \
-  -f workspace/infraops-service-values/infraops-comm/values.yaml \
-  -f workspace/infraops-service-values/infraops-<service>/values.yaml \
+test -f workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service>/templates/secrets-provider.yaml
+helm template <YOUR_ORG>-<service> \
+  workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service> \
+  -f workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml \
+  -f workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml \
   | rg -n "SecretProviderClass|secretProviderClass|secretObjects|kubernetesSecretName"
 ```
 

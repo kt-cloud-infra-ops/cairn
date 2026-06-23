@@ -7,8 +7,8 @@
 
 | 항목 | 내용 |
 |------|------|
-| Jira 티켓 | [TECHIOPS26-XXX 또는 LUPR-XXX] |
-| 서비스 | [luppiter / gaia / hera / ...] |
+| Jira 티켓 | [${JIRA_PROJECT_KEY}-XXX] |
+| 서비스 | [<YOUR_SERVICE>] |
 | CPS 문서 | [feature-cps.md 경로] |
 | 작성자 | [이름] |
 | 상태 | `draft` / `review` / `approved` |

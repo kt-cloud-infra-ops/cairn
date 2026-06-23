@@ -3,14 +3,14 @@
 Jira REST API Helper Class
 
 Jira REST API를 직접 호출합니다 (MCP 의존 없음).
-인증 정보는 환경변수(JIRA_*/ATLASSIAN_*) → ~/.jira-credentials.json 순으로 로드됩니다.
+인증 정보는 환경변수(JIRA_*/ATLASSIAN_*) → ${JIRA_CREDENTIALS_FILE:-~/.jira-credentials.json} 순으로 로드됩니다.
 
 Usage:
     from jira_rest_api import JiraRestAPI
 
     jira = JiraRestAPI()
     jira.create_task(
-        project_key='TECHIOPS26',
+        project_key='YOUR_PROJECT',
         summary='예시 Task',
         description='배경/범위 요약',
         acceptance_criteria=['구체적 완료 기준 1', '요구사항 분석'],
@@ -18,7 +18,7 @@ Usage:
         assignee_account_id='assignee-id',
         start_date='2026-05-08',
         due_date='2026-05-15',
-        epic_link='TECHIOPS26-482',
+        epic_link='YOUR_PROJECT-NNN',
     )
     jira.update_issue('PROJ-123', {'duedate': '2026-02-09'})
     jira.transition_issue('PROJ-123', '4')  # In Progress
@@ -31,8 +31,10 @@ from pathlib import Path
 from typing import Optional, Any
 from datetime import datetime, timedelta
 
-TEAM_LEAD_REPORTER_ACCOUNT_ID = '712020:1253fda5-0458-4f4d-836a-2646b0576e3c'
-TEAM_LEAD_REPORTER_NAME = 'bill.kim'
+# Set JIRA_REPORTER_ACCOUNT_ID env var to enforce reporter on task creation.
+# If unset, reporter validation is skipped (useful for unconfigured environments).
+TEAM_LEAD_REPORTER_ACCOUNT_ID = os.environ.get('JIRA_REPORTER_ACCOUNT_ID', '')
+TEAM_LEAD_REPORTER_NAME = os.environ.get('JIRA_REPORTER_NAME', 'reporter')
 
 
 class JiraRestAPI:
@@ -42,8 +44,8 @@ class JiraRestAPI:
         self._load_auth()
 
     def _load_auth(self):
-        """인증 정보 로드: 환경변수 우선(JIRA_*/ATLASSIAN_*) → ~/.jira-credentials.json. MCP 의존 없음."""
-        jira_credentials_path = Path.home() / '.jira-credentials.json'
+        """인증 정보 로드: 환경변수 우선(JIRA_*/ATLASSIAN_*) → ${JIRA_CREDENTIALS_FILE:-~/.jira-credentials.json}. MCP 의존 없음."""
+        jira_credentials_path = Path(os.environ.get('JIRA_CREDENTIALS_FILE', str(Path.home() / '.jira-credentials.json')))
         env = os.environ
 
         if (
@@ -60,7 +62,7 @@ class JiraRestAPI:
             return
 
         if env.get('JIRA_EMAIL') and env.get('JIRA_API_TOKEN'):
-            self.base_url = env.get('JIRA_BASE_URL', 'https://ktcloud.atlassian.net').rstrip('/')
+            self.base_url = env.get('JIRA_BASE_URL', env.get('ATLASSIAN_BASE_URL', 'https://yourcompany.atlassian.net')).rstrip('/')
             self.email = env['JIRA_EMAIL']
             self.token = env['JIRA_API_TOKEN']
             self.auth_source = 'env:JIRA_*'
@@ -82,7 +84,7 @@ class JiraRestAPI:
             "Jira 인증 정보를 찾을 수 없습니다. 환경변수를 설정하세요:\n"
             "  export JIRA_EMAIL='you@kt.com'\n"
             "  export JIRA_API_TOKEN='<id.atlassian.com/manage-profile/security/api-tokens 발급>'\n"
-            "  export JIRA_BASE_URL='https://ktcloud.atlassian.net'   # 선택(기본값 동일)\n"
+            "  export JIRA_BASE_URL='https://yourcompany.atlassian.net'   # 선택(기본값)\n"
             f"또는 {jira_credentials_path} 에 email/apiToken/baseUrl 작성.\n"
             "(MCP 설정 의존은 제거됨 — REST API 직접 인증만 사용)"
         )
@@ -195,7 +197,11 @@ class JiraRestAPI:
         if require_epic_link is not None:
             return require_epic_link
         project = fields.get('project') or {}
-        return project.get('key') == 'TECHIOPS26' and self._is_task_issue(fields)
+        # Set JIRA_EPIC_REQUIRED_PROJECT to enforce epic link for a specific project key
+        epic_required_project = os.environ.get('JIRA_EPIC_REQUIRED_PROJECT', '')
+        if not epic_required_project:
+            return False
+        return project.get('key') == epic_required_project and self._is_task_issue(fields)
 
     @staticmethod
     def _is_expected_reporter(reporter: Any, expected_account_id: Optional[str]) -> bool:
@@ -204,7 +210,8 @@ class JiraRestAPI:
         reporter_account_id = str(reporter.get('accountId', '')).strip()
         if not reporter_account_id:
             return False
-        if expected_account_id is None:
+        # If expected_account_id is None or empty string, skip reporter enforcement
+        if not expected_account_id:
             return True
         return reporter_account_id == expected_account_id
 
@@ -236,7 +243,7 @@ class JiraRestAPI:
             reporter = fields.get('reporter') or {}
             if not reporter.get('accountId'):
                 errors.append('reporter.accountId is required for task creation')
-            elif not self._is_expected_reporter(reporter, expected_reporter_account_id):
+            elif expected_reporter_account_id and not self._is_expected_reporter(reporter, expected_reporter_account_id):
                 errors.append(
                     'reporter.accountId must match '
                     f'{TEAM_LEAD_REPORTER_NAME} ({expected_reporter_account_id})'
@@ -282,7 +289,7 @@ class JiraRestAPI:
             reporter = issue_fields.get('reporter') or {}
             if not reporter:
                 missing.append('reporter')
-            elif not self._is_expected_reporter(reporter, expected_reporter_account_id):
+            elif expected_reporter_account_id and not self._is_expected_reporter(reporter, expected_reporter_account_id):
                 violations.append(
                     f'reporter.accountId must match {TEAM_LEAD_REPORTER_NAME} '
                     f'({expected_reporter_account_id})'
@@ -706,12 +713,16 @@ def main():
     # create-task 명령
     create_parser = subparsers.add_parser('create-task', help='Create task with required field validation')
     create_parser.add_argument('summary', help='Task summary')
-    create_parser.add_argument('--project', default='TECHIOPS26', help='Project key')
+    create_parser.add_argument(
+        '--project',
+        default=os.environ.get('JIRA_PROJECT_KEY', ''),
+        help='Project key (e.g., PROJ); set JIRA_PROJECT_KEY env var or pass explicitly'
+    )
     create_parser.add_argument('--issue-type', default='작업', help='Issue type name')
     create_parser.add_argument(
         '--reporter-account-id',
         required=True,
-        help=f'Reporter accountId (must be {TEAM_LEAD_REPORTER_NAME})'
+        help='Reporter accountId (set JIRA_REPORTER_ACCOUNT_ID to configure expected reporter)'
     )
     create_parser.add_argument('--assignee-account-id', required=True, help='Assignee accountId')
     create_parser.add_argument('--start-date', required=True, help='Start date YYYY-MM-DD')

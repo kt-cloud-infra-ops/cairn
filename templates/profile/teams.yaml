@@ -1,0 +1,35 @@
+# .cairn/profile/teams.yaml
+# Team roles and aliases.
+# Personal accountId (Jira, etc.) goes in .cairn/local.env — not here.
+# Schema: cairn.profile.teams/v1
+#
+# Values: fill in ${VAR} from .cairn/local.env or system env,
+#         or replace <YOUR_X> placeholders directly.
+
+schema: "cairn.profile.teams/v1"
+
+roles:
+  # 개인 accountId는 local.env에서 env var로 참조
+  reporter: "${JIRA_REPORTER_ACCOUNT_ID}"          # 보고자 (팀장 등)
+  default_assignee: "${JIRA_ASSIGNEE_ACCOUNT_ID}"  # 담당자 기본값
+
+  # 역할별 권한 설명 (optional)
+  # role_descriptions:
+  #   reporter: "이슈 보고자. 팀장 역할."
+  #   assignee: "실제 작업 담당자."
+
+aliases:
+  # 팀 alias. 표시용이며 secret이 아닌 정보만 기재.
+  # 예: team_lead: "team-lead-display-name"
+  #     dev_team: "dev-team-alias"
+
+slack:
+  workspace: "${SLACK_WORKSPACE}"                  # 예: yourcompany
+  default_channel: "${SLACK_DEFAULT_CHANNEL}"      # 예: C0123456789 (채널 ID)
+  # bot_token: "${SLACK_BOT_TOKEN}"                # local.env 전용
+
+# 팀원 목록 (accountId 포함 금지 — 개인 secret)
+# 표시명/이메일 정도는 선택적으로 기재 가능하나 조직 정책 따름.
+# members:
+#   - email: "${TEAM_MEMBER_1_EMAIL}"
+#     role: "assignee"

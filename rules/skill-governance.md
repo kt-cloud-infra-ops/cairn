@@ -7,7 +7,7 @@
 ### Step 1: 중복 확인
 
 1. 기존 스킬 목록 확인: `ls -d agents/skills/*/`
-2. prefix 그룹 내 유사 기능 검색 (daily-*, jira-*, dev-*, harness-*, cicd-*, workspace-*, analytics-*, meta-*, luppiter-*, service-ops-*)
+2. prefix 그룹 내 유사 기능 검색 (daily-*, jira-*, dev-*, harness-*, cicd-*, workspace-*, analytics-*, meta-*, service-ops-*, `{서비스}-*`)
 3. vendor/ 스킬에 동일 기능 있는지 확인: `ls agents/skills/vendor/`
 4. 기존 스킬의 description과 새 스킬 목적 비교
 
@@ -94,9 +94,9 @@ vendor가 hook, script, MCP middleware, subagent 정의에 의존하면 SKILL.md
 | `workspace-` | 환경 설정 | workspace-init, workspace-setup |
 | `analytics-` | 분석/학습 | analytics-usage-report |
 | `meta-` | 하네스/규칙 관리 | meta-harnessing, meta-review-rules |
-| `luppiter-` | Luppiter 서비스 특화 | luppiter-datachange-request-automation |
+| `{서비스}-` | 서비스 특화 (팀 환경에 맞게 추가) | `<YOUR_SERVICE>-datachange`, `<YOUR_SERVICE>-release` |
 | `service-ops-` | service-ops branch helper (Vault/Observability/HTTPRoute 등) | service-ops-config |
-| `{서비스}-` | 서비스 특화 (신규) | hermes-*, gaia-* |
+| `{서비스}-` | 추가 서비스 특화 (신규) | `<YOUR_SERVICE>-*` |
 | (없음) | 독립 도구 | apidog-openapi-sync |
 
 ---
@@ -147,10 +147,12 @@ vendor가 hook, script, MCP middleware, subagent 정의에 의존하면 SKILL.md
 - 신규 스킬: PR 리뷰에서 GATE 누락 지적 → 보강 후 재제출
 - 기존 스킬: 마이그레이션 Phase에 따라 단계적 보강 (Phase 1 HIGH → Phase 2 MEDIUM)
 
-### Phase 1/2/3 마이그레이션 현황 (2026-05-06 기준)
+### Phase 1/2/3 마이그레이션 현황
 
-| Phase | 대상 | 상태 |
-|-------|------|------|
-| Phase 1 (HIGH) | cicd-deploy / luppiter-release-e2e-sync / luppiter-datachange-request-automation / jira-weekly-report | ✅ 완료 |
-| Phase 2 (MEDIUM) | harness-plan / dev-subagent-driven | ✅ 완료 |
+GATE 마이그레이션은 팀 환경에 맞게 HIGH → MEDIUM → template+governance 순서로 진행한다.
+
+| Phase | 대상 기준 | 비고 |
+|-------|----------|------|
+| Phase 1 (HIGH) | 외부 시스템 돌이킬 수 없는 변경 스킬 (예: cicd-deploy, 릴리즈 동기화, 데이터 변경 요청 자동화, 주간보고) | 팀 환경에 해당하는 스킬 목록으로 대체 |
+| Phase 2 (MEDIUM) | 계획/검증 스킬 (예: harness-plan, dev-subagent-driven) | 팀 환경에 해당하는 스킬 목록으로 대체 |
 | Phase 3 (template + governance) | skill-template.md / skill-governance.md (본 파일) | ✅ 완료 |

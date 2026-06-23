@@ -1,0 +1,219 @@
+#!/usr/bin/env node
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const {
+  checkExistingPath,
+  cloneSource,
+  fail,
+  git,
+  gitCurrentBranch,
+  gitHead,
+  parseArgs,
+  printPlan,
+  readSources,
+  requireGit,
+  updateLock,
+  validateSource,
+  workspaceRootFromArgs,
+} = require('./lib/cairn-workspace-lib.cjs');
+
+function usage() {
+  console.log(`Usage:
+  cairn-project-pull --all | --source <name> | --role <role>
+                     [--policy manual|auto|on-start|scheduled]
+                     [--dry-run] [--yes]
+
+Defaults to preview only. Add --yes to clone/update. Dirty worktrees are skipped.`);
+}
+
+function sourcePolicy(source, defaults) {
+  return source.pull?.policy || defaults.pull_policy || 'manual';
+}
+
+function dirtyPolicy(source, defaults) {
+  return source.pull?.dirty_policy || defaults.dirty_policy || 'skip';
+}
+
+function selectSources(doc, args) {
+  const defaults = doc.defaults || {};
+  let sources = doc.sources || [];
+  if (args.source) {
+    sources = sources.filter((source) => source.name === String(args.source));
+  }
+  if (args.role) {
+    sources = sources.filter((source) => source.role === String(args.role));
+  }
+  if (args.policy) {
+    sources = sources.filter((source) => sourcePolicy(source, defaults) === String(args.policy));
+  }
+  return sources;
+}
+
+function planSource(root, source, defaults) {
+  validateSource(source);
+  const existing = checkExistingPath(root, source);
+  if (!existing.exists) {
+    return { source, action: 'clone', status: 'planned', message: 'path missing' };
+  }
+  if (!existing.ok) {
+    if (existing.dirty) {
+      const policy = dirtyPolicy(source, defaults);
+      return {
+        source,
+        action: policy === 'fail' ? 'fail' : 'skip',
+        status: policy === 'fail' ? 'failed' : 'dirty',
+        target: existing.target,
+        message: existing.message,
+      };
+    }
+    return { source, action: 'fail', status: 'failed', target: existing.target, message: existing.message };
+  }
+  return { source, action: 'update', status: 'planned', target: existing.target, message: 'clean worktree' };
+}
+
+function updateBranch(target, source) {
+  const prune = source.pull?.prune !== false;
+  const fetchArgs = ['fetch'];
+  if (prune) {
+    fetchArgs.push('--prune');
+  }
+  fetchArgs.push('origin');
+  const fetch = git(fetchArgs, { cwd: target, stdio: 'inherit' });
+  if (!fetch.ok) {
+    return { ok: false, message: 'git fetch failed' };
+  }
+
+  const branch = source.ref.name;
+  if (gitCurrentBranch(target) !== branch) {
+    let checkout = git(['checkout', branch], { cwd: target, stdio: 'inherit' });
+    if (!checkout.ok) {
+      checkout = git(['checkout', '-b', branch, `origin/${branch}`], { cwd: target, stdio: 'inherit' });
+    }
+    if (!checkout.ok) {
+      return { ok: false, message: `git checkout ${branch} failed` };
+    }
+  }
+
+  const pullArgs = source.pull?.rebase ? ['pull', '--rebase', 'origin', branch] : ['pull', '--ff-only', 'origin', branch];
+  const pull = git(pullArgs, { cwd: target, stdio: 'inherit' });
+  if (!pull.ok) {
+    return { ok: false, message: `git ${pullArgs.join(' ')} failed` };
+  }
+  return { ok: true, commit: gitHead(target) };
+}
+
+function updateTag(target, source) {
+  const fetch = git(['fetch', '--tags', 'origin'], { cwd: target, stdio: 'inherit' });
+  if (!fetch.ok) {
+    return { ok: false, message: 'git fetch --tags failed' };
+  }
+  const checkout = git(['checkout', `tags/${source.ref.name}`], { cwd: target, stdio: 'inherit' });
+  if (!checkout.ok) {
+    return { ok: false, message: `git checkout tag ${source.ref.name} failed` };
+  }
+  return { ok: true, commit: gitHead(target) };
+}
+
+function updateCommit(target, source) {
+  const fetch = git(['fetch', 'origin'], { cwd: target, stdio: 'inherit' });
+  if (!fetch.ok) {
+    return { ok: false, message: 'git fetch failed' };
+  }
+  const checkout = git(['checkout', source.ref.name], { cwd: target, stdio: 'inherit' });
+  if (!checkout.ok) {
+    return { ok: false, message: `git checkout ${source.ref.name} failed` };
+  }
+  return { ok: true, commit: gitHead(target) };
+}
+
+function updateSource(target, source) {
+  if (source.ref.type === 'tag') {
+    return updateTag(target, source);
+  }
+  if (source.ref.type === 'commit') {
+    return updateCommit(target, source);
+  }
+  return updateBranch(target, source);
+}
+
+function main() {
+  const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    usage();
+    return;
+  }
+  if (!args.all && !args.source && !args.role) {
+    usage();
+    fail('choose --all, --source <name>, or --role <role>');
+  }
+  requireGit();
+
+  const workspaceRoot = workspaceRootFromArgs(args);
+  const doc = readSources(workspaceRoot);
+  const defaults = doc.defaults || {};
+  const sources = selectSources(doc, args);
+  if (sources.length === 0) {
+    fail('no sources matched the requested filters');
+  }
+
+  const plans = sources.map((source) => planSource(workspaceRoot, source, defaults));
+  const dryRun = Boolean(args['dry-run']) || !args.yes;
+
+  console.log('\n[GATE-PULL-DIRTY] project pull preview');
+  console.log('--------------------------------------');
+  for (const plan of plans) {
+    const ref = `${plan.source.ref.type}:${plan.source.ref.name}`;
+    console.log(`${plan.source.name.padEnd(24)} ${plan.action.padEnd(8)} ${ref.padEnd(24)} ${plan.source.path}`);
+    if (plan.message && plan.action !== 'update') {
+      console.log(`  - ${plan.message.split('\n')[0]}`);
+    }
+  }
+  printPlan('Execution', [
+    ['workspace', workspaceRoot],
+    ['sources', String(plans.length)],
+    ['write', dryRun ? 'no (--yes required)' : 'yes'],
+    ['dirty handling', 'skip/fail only; no reset'],
+  ]);
+
+  if (dryRun) {
+    console.log('\nNo repositories were changed. Re-run with --yes to clone/update.');
+    return;
+  }
+
+  const results = [];
+  for (const plan of plans) {
+    const { source } = plan;
+    if (plan.action === 'skip' || plan.action === 'fail') {
+      updateLock(workspaceRoot, source, plan.status, { message: plan.message });
+      results.push({ name: source.name, status: plan.status, message: plan.message });
+      continue;
+    }
+    if (plan.action === 'clone') {
+      const cloned = cloneSource(workspaceRoot, source, defaults);
+      if (cloned.ok) {
+        updateLock(workspaceRoot, source, 'cloned', { commit: cloned.commit });
+        results.push({ name: source.name, status: 'cloned', commit: cloned.commit });
+      } else {
+        updateLock(workspaceRoot, source, 'failed', { message: cloned.message });
+        results.push({ name: source.name, status: 'failed', message: cloned.message });
+      }
+      continue;
+    }
+    const updated = updateSource(plan.target, source);
+    if (updated.ok) {
+      updateLock(workspaceRoot, source, 'updated', { commit: updated.commit });
+      results.push({ name: source.name, status: 'updated', commit: updated.commit });
+    } else {
+      updateLock(workspaceRoot, source, 'failed', { message: updated.message });
+      results.push({ name: source.name, status: 'failed', message: updated.message });
+    }
+  }
+
+  console.log('\nSummary');
+  console.log('-------');
+  for (const result of results) {
+    console.log(`${result.name.padEnd(24)} ${result.status}${result.commit ? ` ${result.commit}` : ''}${result.message ? ` ${result.message.split('\n')[0]}` : ''}`);
+  }
+}
+
+main();

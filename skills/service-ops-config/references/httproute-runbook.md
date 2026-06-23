@@ -14,9 +14,9 @@
 
 ## preview 대상
 
-- `workspace/infraops-service-charts/infraops-<service>/templates/httproute.yaml`
-- `workspace/infraops-service-values/infraops-<service>/values.yaml`
-- `workspace/infraops-service-values/infraops-comm/values.yaml`
+- `workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service>/templates/httproute.yaml`
+- `workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml`
+- `workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml` (`<YOUR_ORG>-comm` 공통 values)
 
 내부 전용 서비스는 HTTPRoute를 만들지 않고 `N/A (internal only)`로 기록한다.
 
@@ -24,26 +24,26 @@
 
 ```bash
 git diff -- \
-  workspace/infraops-service-charts/infraops-<service> \
-  workspace/infraops-service-values/infraops-<service>
+  workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service> \
+  workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>
 ```
 
 ## key preview
 
 ```bash
 rg -n "HTTPRoute|appBaseUrl|bffBaseUrl|apiBaseUrl|profile|secretProviderClass" \
-  workspace/infraops-service-charts/infraops-<service> \
-  workspace/infraops-service-values/infraops-<service> \
-  workspace/infraops-service-values/infraops-comm/values.yaml
+  workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service> \
+  workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service> \
+  workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml
 ```
 
 ## rendered preview
 
 ```bash
-helm template infraops-<service> \
-  workspace/infraops-service-charts/infraops-<service> \
-  -f workspace/infraops-service-values/infraops-comm/values.yaml \
-  -f workspace/infraops-service-values/infraops-<service>/values.yaml \
+helm template <YOUR_ORG>-<service> \
+  workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-<service> \
+  -f workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-comm/values.yaml \
+  -f workspace/<YOUR_VALUES_REPO>/<YOUR_ORG>-<service>/values.yaml \
   | rg -n "kind: HTTPRoute|kind: ConfigMap|APP_BASE_URL|BFF_BASE_URL|API_BASE_URL|PROFILE"
 ```
 

@@ -18,7 +18,7 @@
 
 ✅
 ```
-feat: TECHIOPS26-128 add GET /users/:id/profile
+feat: PROJ-128 add GET /users/:id/profile
 
 Mobile client needs profile data without full user payload
 to reduce LTE bandwidth on cold-launch screens.
@@ -29,7 +29,7 @@ Closes #128
 **BREAKING CHANGE 예시**:
 
 ```
-feat: TECHIOPS26-200 rename /v1/orders to /v1/checkout
+feat: PROJ-200 rename /v1/orders to /v1/checkout
 
 BREAKING CHANGE: clients on /v1/orders must migrate to /v1/checkout
 before 2026-06-01. Old route returns 410 after that date.

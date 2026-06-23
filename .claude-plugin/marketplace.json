@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "cairn-marketplace",
+  "description": "Cairn — AI development harness for in-house systems. Learn your work, share it with your team.",
+  "owner": { "name": "<YOUR_ORG>" },
+  "plugins": [
+    {
+      "name": "cairn",
+      "description": "Learn your work, share it with your team. Orchestrator + knowledge Capture Loop + Phase Gates + guardrail hooks. Atlassian evidence via env vars.",
+      "category": "development",
+      "keywords": ["harness", "orchestrator", "knowledge-capture", "phase-gate", "tdd"],
+      "source": {
+        "source": "git-subdir",
+        "url": "<YOUR_GIT_URL>",
+        "path": ".",
+        "ref": "main"
+      },
+      "version": "0.1.0"
+    }
+  ]
+}

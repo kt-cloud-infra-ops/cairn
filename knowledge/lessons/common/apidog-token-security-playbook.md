@@ -88,7 +88,7 @@ python3 agents/skills/apidog-openapi-sync/scripts/apidog_rest_api.py export-open
   --scope all \
   --oas-version 3.1 \
   --export-format JSON \
-  --output /tmp/luppiter-openapi.json
+  --output /tmp/<your_service>-openapi.json
 ```
 
 ---

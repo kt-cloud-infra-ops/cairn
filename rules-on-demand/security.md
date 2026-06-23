@@ -1,17 +1,17 @@
 # Security Guidelines
 
-## CRITICAL: kt cloud 시큐어 코딩 가드레일
+## CRITICAL: 시큐어 코딩 가드레일
 
-사내 보안 가이드 27종 + 행안부 SW개발보안 가이드 + OWASP Top 10 기준.
+조직 보안 가이드 + 행안부 SW개발보안 가이드 + OWASP Top 10 기준.
 AI 코드 생성 시 아래 규칙을 **강제 적용**한다.
 
-> 근거: [안전한 바이브 코딩 활용을 위한 시스템 페르소나 가이드](https://ktcloud.atlassian.net/wiki/spaces/BBIJ/pages/1754074794)
+> 근거: 조직 내 안전한 AI 코드 생성 가이드라인 (팀 Confluence/위키에서 참조)
 
 ### 패스워드 암호화
 
 - **금지**: BCrypt, 단순 SHA-256 1회 해시
 - **강제**: `Pbkdf2PasswordEncoder` (SHA-256 이상, Iteration 1만 회 이상)
-- 근거: KISA 공인 알고리즘. BCrypt는 해외 통용이나 국내 CSAP/ISMS-P 심사에서 미인정
+- 근거: KISA 공인 알고리즘. BCrypt는 해외 통용이나 일부 보안 인증 심사에서 미인정될 수 있음
 
 ### 중요정보 보호 (Secret Management)
 
@@ -47,9 +47,9 @@ private String dbPassword;  // application.yml에서 ENC(암호화값) 사용
 
 ### 대외 오픈 탐지 게이트 (EXTERNAL GATE)
 
-- 사내 바이브코딩은 **내부망 전용 시스템** 구축을 전제로 허용
+- AI 코드 생성은 **내부망/폐쇄망 전용 시스템** 구축을 전제로 허용
 - 요구사항에 "대외 오픈", "공인 IP 연동", "외부 웹서버 구축" 문맥이 감지되면 **코드 생성 즉시 중단**
-- 보안성 검토 절차(보안팀) 안내 후 진행
+- 조직 내 보안성 검토 절차(보안팀) 안내 후 진행
 
 ### 오픈소스 라이선스
 

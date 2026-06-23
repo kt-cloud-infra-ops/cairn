@@ -25,7 +25,7 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 
 ## 참조
 
-- `references/ops-sop.md` — Confluence `2000455370` 운영 반영 요약
+- `references/ops-sop.md` — Confluence `${CONFLUENCE_SPACE_KEY} / ${CONFLUENCE_PAGE_ID}` 운영 반영 요약
 - `agents/skills/service-ops-config/SKILL.md`
 - `agents/skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-ops` branch owner
 - `agents/skills/harness-orchestrator/scripts/service-orchestration.mjs` — `validate`/`ops-precheck` CLI
@@ -38,7 +38,7 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 
 1. `PRECHECK`
    - 요청이 read-only인지 write인지 판정
-   - **비계획 장애(incident) 식별**: 요청이 정상 운영 반영(Vault/배포/DDL)인지, 비계획 장애 대응(장애·적재 실패·알람 미적재·CINM 등)인지 1차 분기
+   - **비계획 장애(incident) 식별**: 요청이 정상 운영 반영(Vault/배포/DDL)인지, 비계획 장애 대응(장애·적재 실패·알람 미적재·ITSM alert 등)인지 1차 분기
      - 비계획 장애면 → `ops-incident` sub-owner로 위임 (Phase 0 인지·분류부터). 이때 **bootstrap/deploy-ready 검증 면제** (운영 중 서비스 = 이미 bootstrap 완료 전제, 장애 시급성 우선)
      - 정상 운영 반영이면 → 아래 GATE 0 흐름 진행
    - 대상 env / namespace / chart repo / values repo / deployment / DB / hostname 확인
@@ -94,9 +94,9 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
    - 정상 기동 + 기능 검증 결과 사용자 보고
 
 6. `RELEASE-CLOSE` (VERIFY 통과 후 사용자 명시 승인 필요)
-   - **luppiter 계열** (`TECHIOPS26-*`, fixVersion = `LUPPITER_*`):
-     - `luppiter-release-e2e-sync` 스킬의 `[GATE RELEASED]` 진입 → `--mark-released --confirmed-release-date YYYY-MM-DD` 실행으로 fixVersion `released=true` 마킹
-     - 미실행 시 release report 페이지가 미릴리즈 상태로 노출되어 추적 누락 (TECHIOPS26-643 사례)
+   - **대상 서비스 계열** (`${JIRA_PROJECT_KEY}-*`, fixVersion = `${RELEASE_VERSION_PREFIX}_*`):
+     - 해당 서비스 release 스킬의 `[GATE RELEASED]` 진입 → `--mark-released --confirmed-release-date YYYY-MM-DD` 실행으로 fixVersion `released=true` 마킹
+     - 미실행 시 release report 페이지가 미릴리즈 상태로 노출되어 추적 누락 (`${JIRA_PROJECT_KEY}-NNN` 사례)
    - **다른 서비스**: 해당 서비스의 release 스킬로 위임 (없으면 Jira UI 수동 처리 + 후속 신설 검토)
    - 완료 조건: `[MANUAL] fixVersion released=true 마킹 완료`
 

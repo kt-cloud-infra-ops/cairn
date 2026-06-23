@@ -10,7 +10,7 @@ tags:
 
 # SRE 코딩 가이드
 
-> KT Cloud Java 프로젝트 공통 가이드 - 운영/회복력 관점
+> <YOUR_ORG> Java 프로젝트 공통 가이드 - 운영/회복력 관점
 
 ---
 
@@ -442,4 +442,4 @@ public class FeatureFlagService {
 
 ---
 
-관련: [KT Cloud 스타일](kt-cloud-style.md) · [디자인 패턴](design-patterns.md) · [MyBatis](mybatis-sql-patterns.md) · [코드 리뷰 함정](code-review-traps.md)
+관련: [<YOUR_ORG> 스타일](kt-cloud-style.md) · [디자인 패턴](design-patterns.md) · [MyBatis](mybatis-sql-patterns.md) · [코드 리뷰 함정](code-review-traps.md)

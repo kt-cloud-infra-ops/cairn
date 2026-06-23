@@ -1,7 +1,7 @@
 #!/bin/bash
 # init-harness-run.sh — 하네스 작업 시작 시 폴더 + state 자동 생성
 #
-# Usage: ./init-harness-run.sh <project-dir> [--level lite|standard|full] [--ticket TECHIOPS26-XXX]
+# Usage: ./init-harness-run.sh <project-dir> [--level lite|standard|full] [--ticket ${JIRA_PROJECT_KEY}-XXX]
 
 set -euo pipefail
 

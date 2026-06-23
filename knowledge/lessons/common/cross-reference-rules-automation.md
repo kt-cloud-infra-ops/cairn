@@ -48,7 +48,7 @@ tags:
 
 ### 3. 두 위치의 파일 동기화
 - `~/.claude/rules/` (개인 홈)
-- `/Users/jiwoong.kim/Documents/ai-team-standards/agents/rules/` (프로젝트 repo)
+- `<YOUR_PLUGIN_ROOT>/agents/rules/` (프로젝트 repo)
 - 동일한 변경을 양쪽에 모두 반영
 
 ## 자동화 가능한 작업
@@ -160,6 +160,6 @@ SYNC_PAIRS=(
 
 ## 참고
 
-- 기존 규칙 관계: `/Users/jiwoong.kim/agents/rules/` 참조
+- 기존 규칙 관계: `<YOUR_PLUGIN_ROOT>/agents/rules/` 참조
 - 동기화 규칙: `doc-organization.md` - "공통 설정 변경 시 동기화 필수" 섹션
 - 관련 자동화: `agents/knowledge/lessons/common/` 폴더의 다른 자동화 패턴들

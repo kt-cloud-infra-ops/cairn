@@ -110,17 +110,17 @@ SQL(값 생성) → Mapper(전달) → Service(DTO 변환) → Controller(응답
 
 > **하네스 적용 시**: cross-cutting 8항목은 CPS(`## 영향도 분석`)에 1차 기록하고, 설계 상세는 PRD(`## 풀스택 레이어 설계`)/Architecture에 확장한다. → `agents/skills/harness-dev-process/`
 
-## 교훈 (Observability 사례)
+## 교훈 (테이블 추가 사례)
 
-- `cmon_service_inventory_master` 추가 시, `inventory_master`를 JOIN하는 30+ 쿼리 수정 필요
-- 공통코드(CONTROL_AREA), zone 매핑, 권한그룹, 엑셀, 대시보드 등 8개 횡단 항목 발견
-- 기능 설계서에 이 내용이 빠져 있어 사후에 cross-cutting 점검 티켓(TECHIOPS26-271) 생성
-- Claude Code vs 개발사 비교에서 확인된 갭: 풀스택 레이어 누락, 외부 API 스펙 유추, 로컬 검증 미수행
+- 신규 테이블(`<YOUR_TABLE>`) 추가 시, 기존 테이블을 JOIN하는 쿼리를 30+ 건 수정해야 할 수 있음
+- 공통코드, 구역 매핑, 권한그룹, 엑셀, 대시보드 등 8개 이상의 횡단 항목이 연쇄 영향받음
+- 기능 설계서에 이 내용이 빠져 있어 사후에 cross-cutting 점검 티켓 추가 생성
+- AI 코드 생성 vs 개발사 비교에서 확인된 갭: 풀스택 레이어 누락, 외부 API 스펙 유추, 로컬 검증 미수행
 
-## 교훈 (inventory_master_sub 누락 사례)
+## 교훈 (연관 테이블 누락 사례)
 
-- `inventory_master` DB 직접 SQL 작업 시 `inventory_master_sub` 처리를 누락해도 DB 오류 없이 통과 (제약 없음)
-- `control_area`에 `_` 포함 시 sub 테이블 필수 — 판단 기준이 Java 코드에만 존재, 비가시적
-- **DB 직접 작업 요청이 와도 반드시 도메인 서브에이전트(luppiter-platform-dev 등)와 사전 확인**
-- 상세 규칙: `agents/knowledge/lessons/db/luppiter-inventory-master-sub-rules.md`
+- 메인 테이블(`<YOUR_TABLE>`) DB 직접 SQL 작업 시 연관 서브 테이블(`<YOUR_TABLE>_sub`) 처리를 누락해도 DB 오류 없이 통과 (제약 없음)
+- 판단 기준이 애플리케이션 코드에만 존재하여 비가시적 — DB만 보면 놓침
+- **DB 직접 작업 요청이 와도 반드시 도메인 서브에이전트와 사전 확인**
+- 팀별 도메인 규칙: `agents/knowledge/lessons/db/<YOUR_SERVICE>-<YOUR_TABLE>-rules.md`
 

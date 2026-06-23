@@ -28,7 +28,7 @@
 ```
 
 서비스 bootstrap/ops 오케스트레이션의 로컬 상태는 프로젝트 레포가 아니라
-`ai-team-standards/temp/orchestrator/{service}/state.json` 에 둔다.
+standards 저장소의 `temp/orchestrator/{service}/state.json` 에 둔다.
 이 파일은 git/Confluence 동기화 대상이 아니다.
 
 ### 필수 항목
@@ -56,9 +56,9 @@
 {TICKET}-{descriptive-name}.md
 ```
 
-- `TICKET`: Jira 티켓 키 (TECHIOPS26-XXX, LUPR-XXX)
+- `TICKET`: Jira 티켓 키 (예: `${JIRA_PROJECT_KEY}-XXX`)
 - `descriptive-name`: 기능 설명 (kebab-case, 영문)
-- 예: `TECHIOPS26-347-event-copy-identifier.md`
+- 예: `PROJ-347-event-copy-identifier.md`
 - Jira 티켓 없는 문서 (리뷰, 분석 등): `docs/reviews/` 또는 `docs/specs/`로 분리
 
 ## 기능 스펙 문서 필수 섹션
@@ -101,8 +101,8 @@ base/services/{서비스}/
 ```markdown
 | 프로젝트 | 워크스페이스 | GitHub | 에이전트 | 설명 |
 |---------|-------------|--------|---------|------|
-| luppiter_web | `workspace/luppiter_web/` | kt-cloud-infra-ops/luppiter_web | evt, icd, ctl, stt, mng, zab, dash, common | 메인 웹 (Spring Boot + JSP) |
-| luppiter_scheduler | `workspace/luppiter_scheduler/` | - | scheduler | Quartz 배치 스케줄러 |
+| <YOUR_SERVICE>_web | `workspace/<YOUR_SERVICE>_web/` | ${GIT_ORG}/<YOUR_SERVICE>_web | domain-a, domain-b | 메인 웹 (예: Spring Boot + JSP) |
+| <YOUR_SERVICE>_scheduler | `workspace/<YOUR_SERVICE>_scheduler/` | - | scheduler | 배치 스케줄러 |
 ```
 
 ## 프로젝트 추가 체크리스트
@@ -114,7 +114,7 @@ base/services/{서비스}/
 
 ## 프로젝트명 규칙
 
-- 서비스 접두사 제거: `luppiter_scheduler` → `scheduler`
+- 서비스 접두사 제거: `<YOUR_SERVICE>_scheduler` → `scheduler`
 - 소문자 + 언더스코어: `morning_report`
 - 짧고 명확하게: `web`, `api`, `scheduler`
 

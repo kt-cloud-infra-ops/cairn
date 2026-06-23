@@ -30,7 +30,7 @@
 ### 2. 문서 단위 = 화면/팝업 단위
 
 - trace 기본 단위는 도메인 전체가 아니라 `화면 ID` 기준이다.
-- `EVT-STATE`, `ICD-DETAIL`, `ZAB-OBS-UPDATE`처럼 inventory와 같은 ID를 쓴다.
+- `<DOMAIN>-<SCREEN>`, `<DOMAIN>-DETAIL`, `<DOMAIN>-UPDATE`처럼 서비스 inventory와 같은 ID를 쓴다.
 
 ### 3. 현재 상태 보존
 
@@ -116,7 +116,7 @@
 | Request Chain | `DOM -> param -> API -> SQL` 연결 확인 |
 | Auth/Session | 권한/세션/메뉴 노출과 서버 가드 확인 |
 | Common Source | 코드값, 드롭다운, 공통 popup source 확인 |
-| External Integration | Zabbix, LDAP, Media, ITSM, O11y 등 확인 |
+| External Integration | 외부 시스템 연동(모니터링, LDAP, 메시지, ITSM 등) 확인 |
 | Cross-Domain | 연관 도메인 테이블/API 영향 확인 |
 | Current-State Difference | 공통처럼 보이지만 다른 규칙 확인 |
 | Unresolved | `[검토필요]`, `[미확인]` 기록 여부 확인 |

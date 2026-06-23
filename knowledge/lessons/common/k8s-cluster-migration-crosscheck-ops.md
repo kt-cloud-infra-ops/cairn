@@ -2,7 +2,6 @@
 tags:
   - type/guide/lesson
   - domain/sre
-  - service/infraops
   - audience/team
 ---
 
@@ -10,7 +9,7 @@ tags:
 
 # K8s 클러스터 이사 — 운영/크로스체크 명령어 사례집
 
-> **맥락**: `svc-dev`(old) → `cluster-mgmt01`(new, dx-dev) InfraOps 서비스 이관 (2026-06).
+> **맥락**: `<old-cluster>`(old) → `<new-cluster>`(new) 서비스 이관 사례.
 > 실제 작업 세션에서 사용한 명령어를 **스터디용 사례**로 정리. 자격증명·구체 IP는 일반화함.
 > 본 사례의 핵심 역할은 **"크로스체크"** — 실제 변경(배포)은 다른 세션이 하고, 이 명령들은 *대조·검증·모니터링* 용도다.
 
@@ -20,8 +19,8 @@ tags:
 
 | 구분 | cluster 이름 | context | API server | 비고 |
 |------|------|---------|-----------|------|
-| OLD | `svc-dev` | `ns-infraops-context` | `kube-api-server.svcdev.next:6443` | 단일 namespace `ns-infraops` |
-| NEW | `cluster-mgmt01` | `ns-oss-*` (8개) | `...dx-dev-md...:9443` | namespace 분리 `ns-oss-{db,cmdb,demo,...}` |
+| OLD | `<old-cluster>` | `<old-context>` | `<old-api-server>` | 단일 namespace |
+| NEW | `<new-cluster>` | `<ns-*>` | `<new-api-server>` | namespace 분리 |
 
 ---
 
@@ -31,11 +30,11 @@ tags:
 
 ```bash
 # 1) old 원본 백업 (항상 먼저)
-cp ~/.kube/kubeconfig-infraops ~/.kube/kubeconfig-infraops.bak.$(date +%Y%m%d)
+cp ~/.kube/kubeconfig-<old-cluster> ~/.kube/kubeconfig-<old-cluster>.bak.$(date +%Y%m%d)
 
 # 2) old + new(combined)를 self-contained 한 파일로 flatten merge
 #    --flatten: 외부 파일 참조 없이 토큰/인증서를 인라인으로 박아 단일 파일로 완결
-KUBECONFIG=~/.kube/kubeconfig-infraops:~/.kube/kubeconfig-mgmt01 \
+KUBECONFIG=~/.kube/kubeconfig-<old-cluster>:~/.kube/kubeconfig-<new-cluster> \
   kubectl config view --flatten > ~/.kube/kubeconfig-merged
 
 chmod 600 ~/.kube/kubeconfig-merged
@@ -49,7 +48,7 @@ ln -sf kubeconfig-merged ~/.kube/config
 - merge = 흩어진 SA 토큰들을 한 지갑에 모은 것. **각 context의 권한 범위(namespace 한정)는 그대로**.
 - `--flatten` 덕분에 원본 조각 파일을 지워도 동작.
 
-**되돌리기**: `ln -sf kubeconfig-infraops ~/.kube/config`
+**되돌리기**: `ln -sf kubeconfig-<old-cluster> ~/.kube/config`
 
 ---
 
@@ -61,11 +60,11 @@ kubectl config get-contexts
 kubectl config get-contexts -o name   # 이름만
 
 # 전환
-kubectl config use-context ns-infraops-context   # OLD
-kubectl config use-context ns-oss-db             # NEW
+kubectl config use-context <old-context>          # OLD
+kubectl config use-context <new-context>          # NEW
 
 # 1회성 전환 없이 특정 context로만 명령 (안전)
-kubectl --context ns-oss-db get pod -n ns-oss-db
+kubectl --context <new-context> get pod -n <new-namespace>
 
 # 지금 어디를 보고 있는지 — 작업 전 습관적으로 확인 (오발사 방지)
 kubectl config current-context
@@ -122,8 +121,7 @@ grep -i skin "$HOME/Library/Application Support/k9s/k9s.log" | tail -20
 
 ```bash
 T="--request-timeout=15s"
-NS_LIST=(ns-oss-db ns-oss-cmdb ns-oss-demo ns-oss-infra-admin \
-         ns-oss-infra-api ns-oss-infra-batch ns-oss-jira-bot ns-oss-mb)
+NS_LIST=(ns-<svc-a> ns-<svc-b> ns-<svc-c>)  # 환경에 맞게 교체
 
 for ns in "${NS_LIST[@]}"; do
   out=$(kubectl --context "$ns" $T -n "$ns" get deploy,sts,cronjob,job,pod,pvc,svc 2>&1)
@@ -136,7 +134,7 @@ done
 ### 4-2. CNPG Postgres / PVC Bound 검증 (배포 성공 + StorageClass 실증)
 
 ```bash
-kubectl --context ns-oss-db -n ns-oss-db \
+kubectl --context <new-db-context> -n <new-db-ns> \
   get cluster.postgresql.cnpg.io,pod,pvc,svc,secret
 # 확인 포인트:
 #  - cluster INSTANCES/READY (예: 3/3 healthy)
@@ -146,7 +144,7 @@ kubectl --context ns-oss-db -n ns-oss-db \
 ### 4-3. old workload 가동 현황 (영향도/이관대상 식별)
 
 ```bash
-kubectl --context ns-infraops-context -n ns-infraops get deploy,sts,cronjob
+kubectl --context <old-context> -n <old-namespace> get deploy,sts,cronjob
 # deployment AGE/READY로 실제 가동 서비스 파악 → 이관 매핑 누락 교차 검증
 ```
 
@@ -156,11 +154,11 @@ kubectl --context ns-infraops-context -n ns-infraops get deploy,sts,cronjob
 
 ```bash
 # 이 context(SA)가 namespace 안에서 뭘 할 수 있나
-kubectl --context ns-oss-db -n ns-oss-db auth can-i --list
+kubectl --context <new-context> -n <new-namespace> auth can-i --list
 # → "*.* [*]" 면 namespace 내 풀권한
 
 # cluster-scoped 리소스는 막힘 (실제 사례)
-kubectl --context ns-oss-db get storageclass
+kubectl --context <new-context> get storageclass
 # Error: ... storageclasses ... is forbidden ... at the cluster scope
 ```
 
@@ -189,7 +187,7 @@ kubectl --context <ctx> -n <ns> exec <pg-pod> -- \
   "SELECT count(*) FROM information_schema.tables WHERE table_schema='public';"
 ```
 
-**실측 baseline 예시 (OLD)**: infraops 9.7GB/422테이블, ktcmon 2.1GB/59테이블 →
+**실측 baseline 예시 (OLD)**: 마이그레이션 전 DB 크기/테이블 수를 기록하고,
 복원 완료 후 NEW가 이 값에 수렴하는지 대조.
 
 ---
@@ -200,16 +198,16 @@ kubectl --context <ctx> -n <ns> exec <pg-pod> -- \
 (foreground sleep은 막혀 있어 `run_in_background`로 실행 — 10분 청크로 끊어 진행보고)
 
 ```bash
-KCTL_ARGS=(--context ns-oss-db --request-timeout=20s -n ns-oss-db \
-           exec shared-postgres-oss-1 -- psql -U postgres -d postgres -tA -c)
+KCTL_ARGS=(--context <new-db-context> --request-timeout=20s -n <new-db-ns> \
+           exec <pg-pod-name> -- psql -U postgres -d postgres -tA -c)
 END=$((SECONDS+560)); last=""
 while [ $SECONDS -lt $END ]; do
   row=$(kubectl "${KCTL_ARGS[@]}" \
-    "SELECT pg_database_size('infraops')||'|'||pg_database_size('ktcmon');" 2>/dev/null | tr -d ' \r')
-  inf=${row%%|*}; ktc=${row##*|}
-  [ -n "$row" ] && last="infraops=$((inf/1024/1024))MB ktcmon=$((ktc/1024/1024))MB"
-  if [ -n "$inf" ] && [ "$inf" -gt 9000000000 ]; then    # 9GB 도달 = 사실상 완료
-    echo "INFRAOPS_RESTORE_DONE $last"; exit 0
+    "SELECT pg_database_size('<db1>')||'|'||pg_database_size('<db2>')" 2>/dev/null | tr -d ' \r')
+  db1=${row%%|*}; db2=${row##*|}
+  [ -n "$row" ] && last="db1=$((db1/1024/1024))MB db2=$((db2/1024/1024))MB"
+  if [ -n "$db1" ] && [ "$db1" -gt <THRESHOLD_BYTES> ]; then  # baseline의 ~93%로 설정
+    echo "RESTORE_DONE $last"; exit 0
   fi
   sleep 60
 done
@@ -262,5 +260,4 @@ cmux send-key --workspace workspace:4 --surface surface:9 enter
 ## 관련 문서
 
 - [브루 PostgreSQL dyld 픽스](brew-postgresql-dyld-fix.md) — 로컬 psql 환경
-- 마이그레이션 계획 원본: `temp/svc-dev-to-cluster-mgmt01-migration-plan-2026-06-05.md`
-- [Luppiter DB 기존서버 데이터복구 SOP](../../../base/services/infraops/luppiter/sop/luppiter-db-기존서버-데이터복구.md)
+- 마이그레이션 계획 원본: `temp/<migration-plan>.md`

@@ -81,14 +81,12 @@ if [ "$ACTION" = "git commit" ]; then
     [ -z "$file" ] && continue
     case "$file" in
       # Runtime 코드 패턴 (evidence 필수)
-      workspace/*.sh|workspace/*/Makefile|workspace/*/Dockerfile|\
-      workspace/*/src/*|workspace/*/test/*|workspace/*/tests/*|\
-      workspace/*/sql/*|workspace/*/ddl/*|workspace/*/resources/*|\
-      workspace/*/*.gradle|workspace/*/*.gradle.kts|workspace/*/pom.xml|\
-      workspace/*/*.java|workspace/*/*.kt|workspace/*/*.kts|\
-      workspace/*/*.jsp|workspace/*/*.js|workspace/*/*.ts|workspace/*/*.tsx|\
-      workspace/*/*.py|workspace/*/*.go|workspace/*/*.rb|\
-      workspace/*/*.sql|workspace/*/*.xml|workspace/*/*.yaml|workspace/*/*.yml|\
+      *.java|*.kt|*.kts|\
+      *.jsp|*.js|*.ts|*.tsx|\
+      *.py|*.go|*.rb|\
+      *.sql|\
+      pom.xml|build.gradle|build.gradle.kts|\
+      Dockerfile|docker-compose.yml|\
       .claude/hooks/*.sh|.claude/settings.json|\
       agents/skills/*/scripts/*)
         REQUIRES_EVIDENCE=true
@@ -155,19 +153,24 @@ except Exception:
   fi  # end of REQUIRES_EVIDENCE else
 fi  # end of git commit block
 
-# 맥락 분류
+# 맥락 분류: REQUIRES_EVIDENCE=true였던 경우 이미 evidence 검증을 거쳤음
+# push/tag/PR 경로에서 런타임 파일이 포함되면 확인 요청
 HAS_CODE=false
 
-while IFS= read -r file; do
-  case "$file" in
-    workspace/*) HAS_CODE=true ;;
-  esac
-done <<< "$FILES"
+if [ "$ACTION" != "git commit" ]; then
+  while IFS= read -r file; do
+    case "$file" in
+      *.java|*.kt|*.kts|*.jsp|*.js|*.ts|*.tsx|*.py|*.go|*.rb|*.sql|\
+      pom.xml|build.gradle|build.gradle.kts|Dockerfile|docker-compose.yml)
+        HAS_CODE=true ;;
+    esac
+  done <<< "$FILES"
+fi
 
-# 개발 코드가 포함되어 있으면 차단
+# 개발 코드가 포함된 push/tag/PR이면 확인 요청
 if [ "$HAS_CODE" = true ]; then
-  echo "$(date +%Y-%m-%dT%H:%M:%S) BLOCKED $ACTION (code: workspace/)" >> "$LOG"
-  echo "⚠️ 개발 코드(workspace/) 변경이 포함된 $ACTION 입니다."
+  echo "$(date +%Y-%m-%dT%H:%M:%S) BLOCKED $ACTION (runtime code detected)" >> "$LOG"
+  echo "⚠️ 런타임 코드 변경이 포함된 $ACTION 입니다."
   echo "사용자에게 확인을 받았다면: touch /tmp/.claude-allow-commit 후 재시도하세요."
   exit 2
 fi

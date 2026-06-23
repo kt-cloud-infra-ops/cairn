@@ -432,8 +432,8 @@ npm run test:report
 
 ## 관련 프로젝트
 
-- **luppiter_web_e2e**: 메인 테스트 프로젝트
-- **luppiter_web**: 테스트 대상 애플리케이션
+- **`<your_service>_e2e`**: 메인 테스트 프로젝트 (프로젝트에 맞게 교체)
+- **`<your_service>`**: 테스트 대상 애플리케이션
 
 ## 참고 문서
 

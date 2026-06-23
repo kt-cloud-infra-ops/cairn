@@ -2,7 +2,7 @@
 
 `dev-code-review` 스킬의 보조 참조. staged 변경 파일의 확장자/경로로 해당 언어 섹션을 로드.
 
-> Origin: 팀원 제안 `review-and-commit` 스킬에서 흡수 (MERGE — `agents/rules/skill-governance.md` Step 2). 우리 룰 정합성을 위해 kt cloud 가드레일 / Jira 티켓 / Runtime 분리 + 영문 conventional commit으로 재작성.
+> Origin: 팀원 제안 `review-and-commit` 스킬에서 흡수 (MERGE — `agents/rules/skill-governance.md` Step 2). 우리 룰 정합성을 위해 <YOUR_ORG> 가드레일 / Jira 티켓 / Runtime 분리 + 영문 conventional commit으로 재작성.
 
 ## 공통 (모든 언어)
 
@@ -32,7 +32,7 @@
 - [ ] JPA 지연 로딩 영향 — N+1 query 위험 검토
 - [ ] 컬렉션 처리 — `Stream` 남용 vs for 가독성 trade-off
 
-### 보안 (kt cloud 가드레일 — `agents/rules-on-demand/security.md`)
+### 보안 (<YOUR_ORG> 가드레일 — `agents/rules-on-demand/security.md`)
 - [ ] 패스워드 암호화 = `Pbkdf2PasswordEncoder` (BCrypt 금지)
 - [ ] 시크릿 = Jasypt + 환경변수 (하드코딩 금지)
 - [ ] 에러 응답 = `@ControllerAdvice` + RFC 7807 (스택트레이스 노출 금지)
@@ -47,7 +47,7 @@
 
 ---
 
-## JSP / jQuery (Luppiter)
+## JSP / jQuery (<YOUR_SERVICE>)
 
 ### 코드 품질
 - [ ] XSS — 사용자 입력 렌더링 시 `<c:out>` 또는 escape 적용
@@ -58,7 +58,7 @@
 - [ ] include popup — caller 화면 의존성 확인 (`agents/rules-on-demand/current-state-analysis-harness.md`)
 
 ### 도메인 정합성
-- [ ] 도메인 준수 규칙 사전 확인 (`agents/rules-on-demand/luppiter/`; 도메인 에이전트 본체는 [미생성])
+- [ ] 도메인 준수 규칙 사전 확인 (`agents/rules-on-demand/<your_service>/`; 도메인 에이전트 본체는 [미생성])
 - [ ] 피처 문서 사전 확인 (`docs/features/{TICKET}-*.md`)
 - [ ] **이미 판정된 항목 재지적 금지**
 
@@ -106,7 +106,7 @@
 
 ### 운영 적용
 - [ ] **운영 데이터 직접 영향 → 별도 커밋 분리 필수**
-- [ ] Luppiter inventory_master 변경 시 `inventory_master_sub` 동반 검토 (`agents/knowledge/lessons/db/luppiter-inventory-master-sub-rules.md`)
+- [ ] 주요 마스터 테이블 변경 시 연관 서브 테이블 동반 검토
 
 ---
 
@@ -115,4 +115,4 @@
 - 외부 제안: `review-and-commit` 스킬 (팀원 작성, 2026-05-19)
 - 흡수 결정: ADR-008 정합 + skill-governance.md Step 2 (60~70% 중복 → MERGE)
 - 핵심 가치: 언어별 점검 매트릭스 (우리 기존 자산 부재)
-- 우리 룰 보강: Jira 티켓 필수 / kt cloud 가드레일 / 도메인 에이전트 선행 참조 / 자동 수정 옵트인
+- 우리 룰 보강: Jira 티켓 필수 / <YOUR_ORG> 가드레일 / 도메인 에이전트 선행 참조 / 자동 수정 옵트인

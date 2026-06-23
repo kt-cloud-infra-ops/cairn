@@ -52,13 +52,13 @@ def load_jira_auth():
 
     if env.get('JIRA_EMAIL') and env.get('JIRA_API_TOKEN'):
         return {
-            'base_url': env.get('JIRA_BASE_URL', 'https://ktcloud.atlassian.net'),
+            'base_url': env.get('JIRA_BASE_URL', 'https://yourcompany.atlassian.net'),  # Set JIRA_BASE_URL env var
             'email': env['JIRA_EMAIL'],
             'token': env['JIRA_API_TOKEN'],
             'source': 'env:JIRA_*',
         }
 
-    cred_path = Path.home() / '.jira-credentials.json'
+    cred_path = Path(os.environ.get('JIRA_CREDENTIALS_FILE', str(Path.home() / '.jira-credentials.json')))
     if cred_path.exists():
         config = json.loads(cred_path.read_text())
         return {
@@ -144,7 +144,7 @@ class JiraRestAPI:
 
 ```python
 jira = JiraRestAPI()
-jira.update_issue('TECHIOPS26-213', {
+jira.update_issue('PROJ-NNN', {
     'duedate': '2026-02-09'
 })
 ```
@@ -152,8 +152,8 @@ jira.update_issue('TECHIOPS26-213', {
 ### 에픽 링크 설정
 
 ```python
-jira.update_issue('TECHIOPS26-213', {
-    'customfield_10014': 'TECHIOPS26-35'  # Epic Link 필드
+jira.update_issue('PROJ-NNN', {
+    'customfield_10014': 'PROJ-NNN'  # Epic Link 필드
 })
 ```
 
@@ -161,12 +161,12 @@ jira.update_issue('TECHIOPS26-213', {
 
 ```python
 # 1. 가능한 전환 확인
-transitions = jira.get_transitions('TECHIOPS26-213')
+transitions = jira.get_transitions('PROJ-NNN')
 for t in transitions:
     print(f"{t['id']}: {t['name']}")
 
 # 2. 전환 실행
-jira.transition_issue('TECHIOPS26-213', '4')  # In Progress
+jira.transition_issue('PROJ-NNN', '4')  # In Progress
 ```
 
 ### ADF 형식 체크박스로 description 업데이트
@@ -195,7 +195,7 @@ description_adf = {
     ]
 }
 
-jira.update_issue('TECHIOPS26-213', {
+jira.update_issue('PROJ-NNN', {
     'description': description_adf
 })
 ```
@@ -226,7 +226,7 @@ def make_done_checklist(items: list[str]):
     }
 
 # A.C. 필드 완료 처리
-jira.update_issue('TECHIOPS26-236', {
+jira.update_issue('PROJ-NNN', {
     'customfield_14516': make_done_checklist([
         'DB만 삭제 프로세스 확정',
         '이력 관리 방식 확정',
@@ -316,12 +316,12 @@ def copy_monthly_issue(source_key: str, new_month: str):
 
 ---
 
-## KT Cloud Jira 참고 정보
+## Jira 참고 정보 (환경별 설정 필요)
 
 ### 프로젝트
-- `TECHIOPS26`: 기술운영 2026
+- `${JIRA_PROJECT_KEY}`: 팀 프로젝트 키
 
-### 상태 전환 ID (TECHIOPS26)
+### 상태 전환 ID (프로젝트별 실제 값 확인 필요)
 | ID | 상태 |
 |----|------|
 | 2 | Backlog(백로그) |
@@ -344,11 +344,11 @@ def copy_monthly_issue(source_key: str, new_month: str):
 
 ```python
 # 비권장: JQL parent 검색
-jql = 'parent = TECHIOPS26-216'  # 결과 없을 수 있음
+jql = 'parent = PROJ-NNN'  # 결과 없을 수 있음
 
 # 권장: 개별 이슈 직접 조회
 for i in range(227, 250):
-    key = f"TECHIOPS26-{i}"
+    key = f"PROJ-{i}"
     response = requests.get(f"{base_url}/rest/api/3/issue/{key}", ...)
     if response.status_code == 200:
         # 처리
@@ -358,5 +358,5 @@ for i in range(227, 250):
 
 ## 관련 문서
 
-- [MCP Tools Guide](../lessons/common/mcp-tools-guide.md)
+- MCP 도구 가이드 — 팀 knowledge base 참조
 - [Jira REST API 공식 문서](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)

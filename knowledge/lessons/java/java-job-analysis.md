@@ -2,7 +2,6 @@
 tags:
   - type/automation
   - domain/java/spring
-  - service/luppiter
   - audience/claude
 ---
 
@@ -16,9 +15,9 @@ tags:
 ## 발견된 반복 작업
 
 세션 중 유사한 Job 클래스를 여러 개 분석:
-- `CombineEventServiceJob` 분석
-- `EventAlarmServiceJob` 분석
-- 향후 ObservabilityEventWorker 분석 예정
+- `<YourBatchJob>` 분석
+- `<YourAlarmJob>` 분석
+- 반복 패턴으로 체크리스트화
 
 각 분석마다 동일한 단계 반복:
 1. 클래스 구조 파악 (implements, extends)
@@ -49,7 +48,7 @@ AST(Abstract Syntax Tree) 파싱을 통한 자동 분석:
 - [x] 분석 템플릿 정의
 - [ ] 자바 정적 분석 스크립트 개발
 - [ ] IDE 플러그인 또는 CLI 도구 생성
-- [ ] `luppiter-web` 프로젝트에 적용
+- [ ] 프로젝트에 적용
 
 ## 분석 체크리스트
 
@@ -224,9 +223,9 @@ if __name__ == '__main__':
 
 ## 관련 프로젝트
 
-- `luppiter-web`: Job 클래스 기반 배치 처리
-- `luppiter_scheduler`: 스케줄 기반 작업 분석
+- `<YOUR_SERVICE>`: Job 클래스 기반 배치 처리 (프로젝트에 맞게 교체)
+- `<YOUR_SCHEDULER>`: 스케줄 기반 작업 분석 (프로젝트에 맞게 교체)
 
 ## 우선순위
 
-**HIGH** - 세션 중 2회 이상 반복되었고, ObservabilityEventWorker 분석 예정
+**HIGH** - 세션 중 2회 이상 반복되었고, 동일 패턴 클래스 분석 예정

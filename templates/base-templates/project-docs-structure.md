@@ -25,7 +25,7 @@ tags:
 
 ## 프로젝트 유형별 추가 폴더
 
-### Web/API 프로젝트 (예: luppiter_web)
+### Web/API 프로젝트 (예: <your_service>_web)
 
 ```
 docs/
@@ -41,7 +41,7 @@ docs/
 └── decisions/                   # ADR
 ```
 
-### 스케줄러/배치 프로젝트 (예: luppiter_scheduler)
+### 스케줄러/배치 프로젝트 (예: <your_service>_scheduler)
 
 ```
 docs/
@@ -51,7 +51,7 @@ docs/
 └── decisions/                   # ADR
 ```
 
-### E2E 테스트 프로젝트 (예: luppiter_web_e2e)
+### E2E 테스트 프로젝트 (예: <your_service>_e2e)
 
 ```
 docs/
@@ -107,7 +107,7 @@ docs/
 
 | 기능 | Jira | 상태 | 배포 버전 | 영향 범위 |
 |------|------|------|----------|----------|
-| {기능명} | TECHIOPS26-xxx | 완료/진행중 | v2.1.x | {영향 요약} |
+| {기능명} | ${JIRA_PROJECT_KEY}-xxx | 완료/진행중 | v2.1.x | {영향 요약} |
 
 ## Cross-Cutting 영향도
 
@@ -153,7 +153,7 @@ tags:
 
 ## Jira 티켓
 
-{TECHIOPS26-xxx}
+{${JIRA_PROJECT_KEY}-xxx}
 
 ## 변경 내용
 
@@ -203,20 +203,16 @@ tags:
 
 ---
 
-## 마이그레이션 매핑 (Luppiter 기준)
+## 마이그레이션 매핑 (예시)
 
 | 현재 위치 (base/) | 이동 대상 (workspace/) |
 |-------------------|----------------------|
-| `projects/web/features/` | `luppiter_web/docs/features/` |
-| `projects/web/operations/` | `luppiter_web/docs/operations/` |
-| `projects/web/refactoring/` | `luppiter_web/docs/refactoring/` |
-| `projects/web/releases/` | `luppiter_web/docs/releases/` |
-| `projects/e2e/` | `luppiter_web_e2e/docs/features/` |
-| `projects/o11y/features/` | `luppiter_scheduler/docs/features/` (또는 별도 o11y 레포) |
-| `projects/zabbix/` | `luppiter_web/docs/features/` (zabbix_lib 포함) |
-| `projects/redesign/` | `luppiter_web/docs/refactoring/` |
-| `projects/luppiter-erd-schema.sql` | `luppiter_web/docs/schema/` |
-| `projects/system-code-relationship-map.*` | `luppiter_web/docs/reference/` |
+| `projects/web/features/` | `<your_service>/docs/features/` |
+| `projects/web/operations/` | `<your_service>/docs/operations/` |
+| `projects/web/refactoring/` | `<your_service>/docs/refactoring/` |
+| `projects/web/releases/` | `<your_service>/docs/releases/` |
+| `projects/e2e/` | `<your_service>_e2e/docs/features/` |
+| `projects/scheduler/features/` | `<your_scheduler>/docs/features/` |
 
 ---
 

@@ -118,14 +118,14 @@ Jira의 description, 댓글 등은 ADF 형식을 사용합니다.
 
 ### 프로젝트 타입별 ADF 지원 차이 (2026-02-10 확인)
 
-| 기능 | TECHIOPS26 (팀관리형) | LUPR (회사관리형) | Confluence |
+| 기능 | ${JIRA_PROJECT_KEY_A} (팀관리형) | ${JIRA_PROJECT_KEY_B} (회사관리형) | Confluence |
 |------|:---:|:---:|:---:|
 | 코멘트 taskList | O | **X** (INVALID_INPUT) | - |
 | 코멘트 bulletList | O | O | - |
 | 코멘트 codeBlock | O | O | - |
 | ac:task-list 매크로 | - | - | O |
 
-**LUPR 대안**: bulletList + ☐/☑ 이모지로 체크박스 표현
+**회사관리형 프로젝트 대안**: bulletList + ☐/☑ 이모지로 체크박스 표현
 
 ```json
 {"type": "listItem", "content": [
@@ -213,8 +213,8 @@ curl -s -L -H "Authorization: Basic $AUTH" \
   "https://example.atlassian.net/wiki/x/75tzZw" \
   -o /dev/null -w "Final URL: %{url_effective}"
 
-# 결과: https://example.atlassian.net/wiki/spaces/SREP/pages/1735629807/26+3+배포
-# → 페이지 ID: 1735629807
+# 결과: https://example.atlassian.net/wiki/spaces/SREP/pages/${CONFLUENCE_PAGE_ID}/26+3+배포
+# → 페이지 ID: ${CONFLUENCE_PAGE_ID}
 ```
 
 - WebFetch 도구는 인증이 필요한 Confluence URL에 실패함 (로그인 리다이렉트)

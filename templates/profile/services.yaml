@@ -1,0 +1,50 @@
+# .cairn/profile/services.yaml
+# Service catalog and Jira prefix mapping.
+# This is the Single Source of Truth for service → folder/repo mapping.
+# Schema: cairn.profile.services/v1
+#
+# Values: fill in ${VAR} from .cairn/local.env or system env,
+#         or replace <YOUR_X> placeholders directly.
+
+schema: "cairn.profile.services/v1"
+
+defaults:
+  jira_project: "${JIRA_PROJECT_KEY}"
+
+catalog:
+  # 서비스 항목 예시
+  - key: "service-a"                              # sources.yaml의 profile_service_key와 매핑
+    display_name: "<YOUR_SERVICE_A_NAME>"
+    jira_prefix: "<YOUR_JIRA_EPIC_PREFIX_A>"      # 에픽 summary 접두사
+    repo: "${GIT_ORG}/service-a"
+    folder: "services/service-a"                  # workspace 내 카탈로그 폴더
+    tags: ["backend", "critical"]
+    status: "active"                              # active | inactive | deprecated
+
+  - key: "service-b"
+    display_name: "<YOUR_SERVICE_B_NAME>"
+    jira_prefix: "<YOUR_JIRA_EPIC_PREFIX_B>"
+    repo: "${GIT_ORG}/service-b"
+    folder: "services/service-b"
+    tags: ["frontend"]
+    status: "active"
+
+  # 추가 서비스 항목
+  # - key: "service-c"
+  #   display_name: "<YOUR_SERVICE_C_NAME>"
+  #   jira_prefix: "<YOUR_JIRA_EPIC_PREFIX_C>"
+  #   repo: "${GIT_ORG}/service-c"
+  #   folder: "services/service-c"
+  #   tags: []
+  #   status: "active"
+
+# 공통 업무 (서비스 매핑 제외 — TASKS.md에 반영하지 않음)
+common_prefixes:
+  - prefix: "<YOUR_COMMON_PREFIX>"
+    description: "팀 공통 업무"
+
+unmapped_policy: "ask"    # ask | skip | error
+# unmapped: 매핑 테이블에 없는 에픽 prefix 발견 시 동작
+# - ask: 사용자에게 매핑 추가 여부 질문
+# - skip: 조용히 건너뜀
+# - error: 오류로 처리

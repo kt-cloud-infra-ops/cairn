@@ -169,7 +169,7 @@ git diff --name-only -- agents/ .claude/
 | 메시지 전송 | **반드시** `cmux send -- "..."` + `cmux send-key ... enter` 분리 실행 (`\n` 방식 금지) |
 | key 전송 대상 | `send-key`는 `pane`가 아니라 `surface` 대상 |
 | 에러 처리 | `Surface is not a terminal`이면 terminal surface를 다시 찾도록 문서화 |
-| 기준 문서 정합성 | 로컬 메모리(`~/.claude/projects/.../memory/*.md`)와 `agents/skills/session-monitor.md`가 충돌하지 않는지 확인 |
+| 기준 문서 정합성 | 로컬 메모리(`${CLAUDE_HOME:-~/.claude}/projects/.../memory/*.md`)와 `agents/skills/session-monitor.md`가 충돌하지 않는지 확인 |
 
 ### 4단계: 개선 제안
 

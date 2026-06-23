@@ -4,7 +4,7 @@
 
 - Team-standard execution must be reproducible from this repository alone.
 - Required sources: `AGENTS.md`, `agents/rules/`, `agents/skills/`.
-- Tool-specific home paths (`~/.claude/...`, `~/.codex/...`) are optional accelerators only.
+- Tool-specific home paths (`${CLAUDE_HOME:-$HOME/.claude}/...`, `${CODEX_HOME:-$HOME/.codex}/...`) are optional accelerators only.
 
 ## Intent Triage
 
@@ -161,27 +161,16 @@ For complex problems, use split role sub-agents:
 ### 배치 원칙
 
 - **도메인 에이전트 본체** → 프로젝트 저장소 (canonical, self-contained)
-- **ai-team-standards** → 공통 자산(rules/commands/레이어 에이전트) + 서비스별 라우터(README.md)
+- **standards 저장소** → 공통 자산(rules/commands/레이어 에이전트) + 서비스별 라우터(README.md)
 - **링크 방향** → 프로젝트 → 중앙 (forward link), 역방향 금지
-- 현재: Luppiter 도메인 에이전트 **본체 8개는 [미생성]**. 생성 시 `workspace/luppiter_web/agents/`에 배치 예정.
-  도메인별 **코드 편집 준수 규칙**은 별도 자산으로 `agents/rules-on-demand/luppiter/`에 존재(evt/icd/ctl/stt/mng/zab/common 등).
+- 서비스별 도메인 에이전트는 `workspace/<YOUR_SERVICE>/agents/`에 배치한다.
+  도메인별 **코드 편집 준수 규칙**은 별도 자산으로 `agents/rules-on-demand/<YOUR_SERVICE>/`에 둘 수 있다.
 
-> 서비스별 라우터: `agents/subagents/{서비스}/README.md` (Luppiter는 `agents/subagents/infraops/luppiter/README.md`)
+> 서비스별 라우터: `agents/subagents/{서비스}/README.md`
 
 ### 구조
 - **레이어 에이전트** (크로스 프로젝트): `frontend-dev`, `backend-dev`, `dba`, `code-reviewer`, `harnessing`
-- **도메인 에이전트** (Luppiter web — Controller 1:1 매핑, **[미생성]** — 아래는 생성 시 매핑 설계):
-
-| 에이전트 | 프로젝트 코드 | Controller | 담당 |
-|---------|-------------|-----------|------|
-| `luppiter-evt` | evt | EvtController | 이벤트 현황/이력, 관제중단 |
-| `luppiter-icd` | icd | IcdController | 인시던트 현황/이력/생성 |
-| `luppiter-ctl` | ctl | CtlController(2) + MktController | 사용자, 설비권한그룹, 계위, 대응관리, M-Kate |
-| `luppiter-dash` | dashboard | DashboardController | 월보드 3종, 관제 대시보드 |
-| `luppiter-stt` | stt | SttController | 인벤토리 CRUD/이력 |
-| `luppiter-mng` | mng | InventoryManagerController | 호스트 수용/삭제 |
-| `luppiter-zab` | zab | ZabController | Zabbix 메인터넌스 |
-| `luppiter-common` | common+lgn+inc | CommonController | 공통코드, 인증, 세션, 레이아웃 |
+- **도메인 에이전트** (서비스별, 사용자 팀 환경에 맞게 정의)
 
 ### 호출 원칙
 1. **도메인 코드 변경** → 해당 도메인 에이전트 참조 (담당 파일, 테이블, API 확인)
@@ -193,10 +182,10 @@ For complex problems, use split role sub-agents:
 
 ### 사용 예시
 ```
-# Luppiter 이벤트 화면 수정 시 (도메인 에이전트 본체 [미생성] → 준수 규칙 참조)
-1. agents/rules-on-demand/luppiter/evt.md 읽기 (담당 파일, 테이블, 준수 규칙 확인)
-2. 인시던트 생성 연관 시 → agents/rules-on-demand/luppiter/icd.md 교차 확인
-3. 필요시 agents/subagents/frontend-dev.md 참조 (TUI Grid 패턴)
+# <YOUR_SERVICE> 이벤트 화면 수정 시
+1. agents/rules-on-demand/<YOUR_SERVICE>/event.md 읽기 (담당 파일, 테이블, 준수 규칙 확인)
+2. 인시던트 생성 연관 시 → agents/rules-on-demand/<YOUR_SERVICE>/incident.md 교차 확인
+3. 필요시 agents/subagents/frontend-dev.md 참조 (UI 패턴)
 4. 필요시 agents/subagents/dba.md 참조 (쿼리 최적화)
 5. 도메인 에이전트 본체 생성 후에는 해당 에이전트의 요구사항 이력에 확인된 스펙 기록
 ```

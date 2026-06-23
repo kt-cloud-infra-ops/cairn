@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cairn.dev/schemas/sources.schema.json",
+  "title": "Cairn Sources",
+  "description": "Managed project registry for clone/pull based workspaces. Symlinks are not the default model.",
+  "type": "object",
+  "required": ["schema", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cairn.sources/v1"
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "$ref": "#/$defs/relativePath",
+          "default": "projects"
+        },
+        "pull_policy": {
+          "$ref": "#/$defs/pullPolicy",
+          "default": "manual"
+        },
+        "dirty_policy": {
+          "$ref": "#/$defs/dirtyPolicy",
+          "default": "skip"
+        },
+        "clone_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 1
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "description": "Each source name and path must be unique; enforce cross-item uniqueness in the validator.",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["name", "role", "repo", "ref", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/key"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["service", "domain", "docs", "wiki", "support", "platform"]
+        },
+        "strategy": {
+          "type": "string",
+          "enum": ["clone", "link"],
+          "default": "clone"
+        },
+        "repo": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Git URL. Credentials and access tokens must not be embedded.",
+          "not": {
+            "anyOf": [
+              { "pattern": "://[^/@]+:[^/@]+@" },
+              { "pattern": "(token|password|passwd|secret)=" }
+            ]
+          }
+        },
+        "ref": {
+          "type": "object",
+          "required": ["type", "name"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["branch", "tag", "commit"]
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "profile_service_key": {
+          "$ref": "#/$defs/key"
+        },
+        "pull": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "policy": {
+              "$ref": "#/$defs/pullPolicy"
+            },
+            "dirty_policy": {
+              "$ref": "#/$defs/dirtyPolicy"
+            },
+            "rebase": {
+              "type": "boolean",
+              "default": false
+            },
+            "prune": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "docs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "project_docs": {
+              "$ref": "#/$defs/relativePath"
+            },
+            "wiki_repo": {
+              "type": "string",
+              "minLength": 1,
+              "not": {
+                "pattern": "://[^/@]+:[^/@]+@"
+              }
+            }
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/key"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "pullPolicy": {
+      "type": "string",
+      "enum": ["manual", "auto", "on-start", "scheduled"]
+    },
+    "dirtyPolicy": {
+      "type": "string",
+      "enum": ["skip", "stash", "fail"]
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          { "pattern": "^/" },
+          { "pattern": "(^|/)\\.\\.($|/)" },
+          { "pattern": "\\u0000" }
+        ]
+      }
+    }
+  }
+}

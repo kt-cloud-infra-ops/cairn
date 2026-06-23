@@ -1,0 +1,56 @@
+{
+  "_comment": "Cairn workspace config 샘플. 복사하여 .cairn/config.json 으로 저장 후 값을 채운다.",
+  "schema": "cairn.config/v1",
+  "mode": "solo",
+  "_mode_options": "solo = 개인 로컬 축적 | team = git push 공용화",
+
+  "capture": {
+    "proactive": true,
+    "_proactive": "true면 오케스트레이터/hook이 캡처 시점을 능동 제안",
+    "frequency": "session-end",
+    "_frequency_options": "off | session-end | per-task | active",
+    "targets": {
+      "_comment": "workspace 루트 기준 상대 경로. cairn-init이 생성하는 폴더와 일치해야 함",
+      "lesson": "knowledge/lessons",
+      "decision": "decisions",
+      "sop": "runbooks",
+      "feature": "projects/{project}/docs/features"
+    },
+    "minSignal": {
+      "_comment": "이 임계 이상일 때만 캡처 제안 (노이즈 방지)",
+      "filesChanged": 2,
+      "hasDecision": true
+    }
+  },
+
+  "projects": {
+    "_comment": "sources.yaml에 등록된 프로젝트들의 기본 동작 정책",
+    "defaultPullPolicy": "manual",
+    "_defaultPullPolicy_options": "manual | auto | on-start | scheduled",
+    "dirtyPolicy": "skip-and-report",
+    "_dirtyPolicy_options": "skip | skip-and-report | stash | fail. destructive reset은 허용하지 않음"
+  },
+
+  "profile": {
+    "_comment": "workspace profile 위치. profile이 있어야 org-specific 기능(Jira/Confluence hook 등) 활성화됨",
+    "path": ".cairn/profile",
+    "required": true,
+    "_required": "false로 두면 profile 없이 core 기능만으로 동작 (solo 개인 사용 시)"
+  },
+
+  "team": {
+    "autoCommitPrompt": true,
+    "_autoCommitPrompt": "team 모드에서 캡처 후 git 커밋/푸시를 제안",
+    "gitRemote": "${GIT_ORG}/${REPO_NAME}",
+    "shareScope": "knowledge,decisions,runbooks"
+  },
+
+  "atlassian": {
+    "_comment": "증적 연동. 미설정 시 해당 연동 비활성화. 실제 값은 env/profile에서 참조",
+    "baseUrl": "${ATLASSIAN_BASE_URL}",
+    "jiraProjectKey": "${JIRA_PROJECT_KEY}",
+    "jiraReporterAccountId": "${JIRA_REPORTER_ACCOUNT_ID}",
+    "confluenceSpaceKey": "${CONFLUENCE_SPACE_KEY}",
+    "credentialsFile": "${JIRA_CREDENTIALS_FILE}"
+  }
+}

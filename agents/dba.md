@@ -71,10 +71,10 @@ WHERE table_schema = 'public' AND data_type IN ('character varying','text','char
 
 ---
 
-## Luppiter DB 정보
+## 서비스 DB 정보
 
-- PostgreSQL — K8s dev DB (port-forward 127.0.0.1:5434/ktcmon) 또는 Docker (localhost:15432/ktcmon)
-- sqlmap 위치: `workspace/luppiter_web/src/main/resources/sqlmap/`
+- PostgreSQL — K8s dev DB (port-forward ${DB_HOST}:${DB_PORT}/<your_db>) 또는 Docker (${DB_HOST}:${DB_PORT}/<your_db>)
+- sqlmap 위치: `workspace/<your_service>/src/main/resources/sqlmap/`
 
 ### 주요 테이블 그룹
 
@@ -126,7 +126,7 @@ WHERE table_schema = 'public' AND data_type IN ('character varying','text','char
 |--------|-----|------|
 | `c00_common_code` | group_code + code | 공통코드 |
 | `c00_system_properties` | prop_group + prop_key | 시스템 속성 |
-| `c01_zabbix_info` | system_code | Zabbix 서버 정보 |
+| `c01_zabbix_info` | system_code | <YOUR_SERVICE> 서버 정보 |
 | `GROUP_CODE_INFO` | code_type + code_key | 그룹코드 |
 
 ### 공유 텍스트 컬럼 의존 관계 (변경 시 전수 확인)
@@ -157,7 +157,7 @@ WHERE table_schema = 'public' AND data_type IN ('character varying','text','char
 | `inventory_master_history` | 동일 |
 | `cmon_event_info` | stdnm, estdnm, l3_nm |
 | `cmon_incident_info` | stdnm, estdnm |
-| `x01_if_event_obs` | stdnm (o11y 인터페이스) |
+| `<YOUR_TABLE>` | stdnm (o11y 인터페이스) |
 
 ### 핵심 쿼리 패턴
 
@@ -225,7 +225,7 @@ ON CONFLICT (group_code, code) DO UPDATE SET code_nm = EXCLUDED.code_nm, ...
 | `sql-dashboard.xml` | | | 대시보드 |
 | `sql-Inventory.xml` | | | 인벤토리 관리 |
 | `sql-stt.xml` | | | 인벤토리 통계 |
-| `sql-zab.xml` | | | Zabbix 메인터넌스 |
+| `sql-zab.xml` | | | <YOUR_SERVICE> 메인터넌스 |
 | `sql-cmm.xml` | | | 공통 |
 | `sql-commonCode.xml` | | | 공통코드 |
 | `sql-api.xml` | | | 외부 API |

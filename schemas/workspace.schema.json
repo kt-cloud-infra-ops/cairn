@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cairn.dev/schemas/workspace.schema.json",
+  "title": "Cairn Workspace",
+  "description": "Workspace contract read by the Cairn core engine. Values may identify a workspace, but organization-specific mappings live in the profile.",
+  "type": "object",
+  "required": ["schema", "workspace", "profile", "storage"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cairn.workspace/v1"
+    },
+    "workspace": {
+      "type": "object",
+      "required": ["name", "mode", "default_project_root"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["multi-project", "solo", "project-local"]
+        },
+        "created_by": {
+          "type": "string",
+          "default": "cairn-init"
+        },
+        "default_project_root": {
+          "$ref": "#/$defs/relativePath",
+          "default": "projects"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": ["name", "path", "schema"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath",
+          "default": ".cairn/profile"
+        },
+        "schema": {
+          "const": "cairn.profile/v1"
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "required": ["knowledge", "decisions", "runbooks", "services", "support_projects"],
+      "additionalProperties": false,
+      "properties": {
+        "knowledge": {
+          "$ref": "#/$defs/relativePath",
+          "default": "knowledge"
+        },
+        "decisions": {
+          "$ref": "#/$defs/relativePath",
+          "default": "decisions"
+        },
+        "runbooks": {
+          "$ref": "#/$defs/relativePath",
+          "default": "runbooks"
+        },
+        "services": {
+          "$ref": "#/$defs/relativePath",
+          "default": "services"
+        },
+        "support_projects": {
+          "$ref": "#/$defs/relativePath",
+          "default": "support-projects"
+        },
+        "templates": {
+          "$ref": "#/$defs/relativePath",
+          "default": "templates"
+        },
+        "projects": {
+          "$ref": "#/$defs/relativePath",
+          "default": "projects"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          { "pattern": "^/" },
+          { "pattern": "(^|/)\\.\\.($|/)" },
+          { "pattern": "\\u0000" }
+        ]
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 ---
 name: cicd-deploy
-description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop에 머지하고, 안전하게 푸시한 뒤, GitHub Actions Publish to Dev Harbor 성공과 ArgoCD 동기화까지 끝까지 확인해야 할 때 사용한다."
+description: "Git 조직 저장소에서 완료된 브랜치를 develop에 머지하고, 안전하게 푸시한 뒤, GitHub Actions 이미지 빌드/배포 워크플로우 성공과 ArgoCD 동기화까지 끝까지 확인해야 할 때 사용한다."
 ---
 
 ## 스킬 규칙
@@ -21,18 +21,18 @@ description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop�
 
 ## 실행 절차
 
-이 스킬은 `kt-cloud-infra-ops` 저장소에서 릴리스 핸드오프 전체 흐름을 처리할 때 사용한다. 전체 경로는 가능하면 `git`, `gh`, `argocd` CLI를 우선 사용한다. 워크플로우를 단순히 실행했다고 작업이 끝난 것이 아니다. `develop`에 의도한 변경이 반영되고, `Publish to Dev Harbor`가 `develop`에서 실행되어 최신 실행이 성공으로 끝나며, 현재 푸시의 영향을 받는 모든 ArgoCD 애플리케이션을 식별하고 동기화했을 때만 완료다.
+이 스킬은 `${GIT_ORG}` 저장소에서 릴리스 핸드오프 전체 흐름을 처리할 때 사용한다. 전체 경로는 가능하면 `git`, `gh`, `argocd` CLI를 우선 사용한다. 워크플로우를 단순히 실행했다고 작업이 끝난 것이 아니다. `develop`에 의도한 변경이 반영되고, 이미지 빌드/배포 워크플로우 (`${CI_WORKFLOW_FILE}`, 예: `publish_to_dev_harbor.yaml`)가 `develop`에서 실행되어 최신 실행이 성공으로 끝나며, 현재 푸시의 영향을 받는 모든 ArgoCD 애플리케이션을 식별하고 동기화했을 때만 완료다.
 
 ## 사전 조건
 
 새 장비나 새 계정에서 이 스킬을 처음 사용할 때는 아래 항목을 모두 확인한다.
 
 - 핵심 도구: `git`, `brew`, `gh`, `argocd`가 설치되어 있다.
-- 저장소 접근 권한: 대상 `kt-cloud-infra-ops` 저장소를 클론하고 푸시할 수 있다.
+- 저장소 접근 권한: 대상 `${GIT_ORG}` 저장소를 클론하고 푸시할 수 있다.
 - GitHub SSH: `ssh -T git@github.com`이 의도한 계정으로 성공한다.
 - GitHub CLI 인증: `gh auth status`가 `github.com`에 대해 성공한다.
-- GitHub 조직 권한: 계정이 대상 저장소에 접근 가능하고 필요한 `kt-cloud-infra-ops` SSO 승인을 끝냈다.
-- ArgoCD CLI 인증: `argocd context`가 동작하거나, 사용자가 `argocd login argocd-md-dev.ktcloud.com --sso`를 완료할 수 있다.
+- GitHub 조직 권한: 계정이 대상 저장소에 접근 가능하고 필요한 `${GIT_ORG}` SSO 승인을 끝냈다.
+- ArgoCD CLI 인증: `argocd context`가 동작하거나, 사용자가 `argocd login ${ARGOCD_HOST} --sso`를 완료할 수 있다.
 - 네트워크 접근: GitHub, Harbor, ArgoCD 및 필요한 사내망/VPN 엔드포인트에 접근 가능하다.
 - 로컬 검증 런타임: 머지 검증 전에 저장소 스택별 선행 조건이 설치되어 있다.
   - 백엔드 예시: JDK, Gradle wrapper 실행 권한, 필요한 로컬 환경 파일
@@ -99,32 +99,33 @@ description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop�
    - 하나 이상 없고 Homebrew를 사용할 수 있으면 `brew install gh argocd` 또는 빠진 도구만 설치한다.
    - Homebrew를 사용할 수 없으면 브라우저 기반 흐름으로 조용히 우회하지 말고, 누락된 선행 조건을 보고하고 중단한다.
 
-7. GitHub Actions `Publish to Dev Harbor`를 실행한다.
+7. GitHub Actions 이미지 빌드/배포 워크플로우를 실행한다.
+   - (예: `publish_to_dev_harbor.yaml` — `${CI_WORKFLOW_FILE}` 환경변수에 실제 워크플로우 파일명 설정)
    - CLI를 우선한다. 먼저 `gh auth status`를 확인한다.
    - `git` SSH 인증만으로는 `gh`가 동작하지 않는다. `gh`가 로그인되지 않았다면 `gh auth login --hostname github.com --git-protocol ssh --web`를 실행한다.
-   - `gh workflow run publish_to_dev_harbor.yaml --repo kt-cloud-infra-ops/<repo> --ref develop`를 실행한다.
+   - `gh workflow run ${CI_WORKFLOW_FILE} --repo ${GIT_ORG}/<repo> --ref develop`를 실행한다.
    - 인증 누락, 스코프 부족, 저장소 접근 문제 등으로 dispatch가 실패하면 정확한 오류를 보고하고 중단한다.
    - 현재 환경에서 `gh`를 사용할 수 없거나 로그인 완료가 불가능할 때만 브라우저 자동화를 최후 수단으로 사용한다.
 
 8. 빌드가 성공적으로 끝났는지 확인한다.
-   - CLI를 우선한다. `gh run list --repo kt-cloud-infra-ops/<repo> --workflow publish_to_dev_harbor.yaml --branch develop -L 1`로 `develop`의 최신 실행을 찾는다.
+   - CLI를 우선한다. `gh run list --repo ${GIT_ORG}/<repo> --workflow ${CI_WORKFLOW_FILE} --branch develop -L 1`로 `develop`의 최신 실행을 찾는다.
    - 기다리기 전에 최신 실행이 기대한 `HEAD` 커밋을 가리키는지 확인한다.
-   - `gh run watch <run-id> --repo kt-cloud-infra-ops/<repo> --exit-status`로 모니터링한다.
+   - `gh run watch <run-id> --repo ${GIT_ORG}/<repo> --exit-status`로 모니터링한다.
    - `gh run view <run-id> --json url`에서 실행 URL을 확보한다.
-   - 성공의 정의는 `develop`용 최신 `Publish to Dev Harbor` 실행이 초록색 완료 상태로 끝나는 것이다.
+   - 성공의 정의는 `develop`용 최신 이미지 빌드/배포 워크플로우 (`"${CI_WORKFLOW_NAME}"`) 실행이 초록색 완료 상태로 끝나는 것이다.
    - `queued`, `in progress`, `cancelled`, `failure` 또는 페이지 상태가 모호하면 실패로 취급한다. 이런 경우 성공이라고 보고하지 않는다.
    - 저장소, 소스 브랜치, 머지 요약, 푸시 결과, 가능하면 워크플로우 URL, 최종 빌드 상태를 보고한다.
 
-#### [GATE 3] Harbor 빌드 성공 후 ArgoCD sync
+#### [GATE 3] 이미지 빌드 성공 후 ArgoCD sync
 이 GATE를 통과해야 단계 9(ArgoCD sync)로 진행한다.
-- [ ] `Publish to Dev Harbor` 최신 실행 status = success
+- [ ] 이미지 빌드/배포 워크플로우 (`"${CI_WORKFLOW_NAME}"`) 최신 실행 status = success
 - [ ] 최신 실행 `headSha` = 푸시된 develop SHA 일치
 - [ ] queued/in_progress/cancelled/failure 0건 — 미통과 시 ArgoCD sync 금지
 - [ ] 워크플로우 URL/실행 ID 확보
 
 9. 빌드 성공 후 대응하는 ArgoCD 애플리케이션을 동기화한다.
    - CLI를 우선한다. 먼저 `argocd context` 또는 `~/.config/argocd/config` 존재 여부를 확인한다.
-   - ArgoCD 로그인이 되어 있지 않으면 `argocd login argocd-md-dev.ktcloud.com --sso`를 실행한다. 환경상 필요하면 `--grpc-web`로 재시도한다.
+   - ArgoCD 로그인이 되어 있지 않으면 `argocd login ${ARGOCD_HOST} --sso`를 실행한다. 환경상 필요하면 `--grpc-web`로 재시도한다.
    - 앱 이름을 추측하기 전에 프로젝트 단서를 먼저 조사한다.
    - 앱 이름을 해석하기 전에 스코프 분석 입력값을 고정한다.
      - 소스 저장소 이름
@@ -133,16 +134,16 @@ description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop�
      - 워크플로우에서 해석한 `IMAGE_NAME`, `IMAGE_BASE`, values 디렉터리/경로
      - `develop` 기준 values 저장소 revision과 values 파일 tag
    - 이 정보가 푸시 전에 수집되지 않았다면, 푸시된 `develop` 상태와 최신 성공 워크플로우 실행으로부터 다시 재구성한다. 오래된 실행의 증거를 섞지 않는다.
-   - 로컬 체크아웃에서 저장소 이름을 읽고 `.github/workflows/publish_to_dev_harbor.yaml`에서 `IMAGE_NAME`, `IMAGE_BASE`, `VALUES_PATH`, values 저장소 하위 경로 같은 배포 단서를 조사한다.
+   - 로컬 체크아웃에서 저장소 이름을 읽고 `.github/workflows/${CI_WORKFLOW_FILE}`에서 `IMAGE_NAME`, `IMAGE_BASE`, `VALUES_PATH`, values 저장소 하위 경로 같은 배포 단서를 조사한다.
    - 현재 푸시를 단일 진실 원천으로 사용한다. 최소 증거 집합은 다음과 같다.
      - `git ls-remote origin refs/heads/develop`로 확인한 푸시된 `develop` SHA
-     - 최신 성공 `Publish to Dev Harbor` 실행과 해당 `headSha`
+     - 최신 성공 이미지 빌드/배포 워크플로우 (`"${CI_WORKFLOW_NAME}"`) 실행과 해당 `headSha`
      - 워크플로우가 갱신한 `develop` 기준 values 파일
      - 현재 ArgoCD 앱 source, values revision, 렌더링된 이미지
    - 빠른 확인 명령:
      - `git ls-remote origin refs/heads/develop`
-     - `gh run list --repo kt-cloud-infra-ops/<repo> --workflow publish_to_dev_harbor.yaml --branch develop -L 1`
-     - `gh api 'repos/kt-cloud-infra-ops/infraops-service-values/contents/<values-dir>/values.yaml?ref=develop' --jq .content | tr -d '\n' | base64 -D`
+     - `gh run list --repo ${GIT_ORG}/<repo> --workflow ${CI_WORKFLOW_FILE} --branch develop -L 1`
+     - `gh api 'repos/${GIT_ORG}/${VALUES_REPO}/contents/<values-dir>/values.yaml?ref=develop' --jq .content | tr -d '\n' | base64 -D`
      - `argocd app list --grpc-web -o name`
      - `argocd app get <app-name> --grpc-web`
      - `argocd app manifests <app-name> --grpc-web`
@@ -153,14 +154,14 @@ description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop�
    - `argocd app list --grpc-web -o name` 결과에서 식별자 후보와 직접 일치하는 앱을 먼저 찾는다.
    - 직접 이름 매칭이 모호하거나 비어 있으면 `argocd app get <app-name> --grpc-web`, `argocd app manifests <app-name> --grpc-web`로 후보를 추가 조사한다.
    - 해석 우선순위:
-     - 가장 강함: app source 또는 렌더링된 values가 같은 `infraops-service-values/<dir>/values.yaml`를 가리킨다.
+     - 가장 강함: app source 또는 렌더링된 values가 같은 `${VALUES_REPO}/<dir>/values.yaml`를 가리킨다.
      - 다음: 렌더링된 manifest 이미지 저장소가 `IMAGE_BASE`와 일치한다.
      - 다음: 렌더링된 manifest 이미지 tag가 워크플로우가 갱신한 values tag와 일치한다.
      - 가장 약함: 앱 이름에 저장소 이름 또는 `IMAGE_NAME`이 포함된다.
    - 선택한 각 앱은 아래와 같은 프로젝트 파생 신호 하나 이상으로 다시 확인한다.
      - 앱 이름에 저장소 이름 또는 `IMAGE_NAME`이 포함된다.
      - 렌더링된 manifest 이미지 저장소가 워크플로우의 `IMAGE_BASE`와 일치한다.
-     - 앱 source 또는 렌더링된 values가 같은 `infraops-service-values/<dir>/values.yaml`를 가리킨다.
+     - 앱 source 또는 렌더링된 values가 같은 `${VALUES_REPO}/<dir>/values.yaml`를 가리킨다.
      - 앱이 현재 푸시에서 생성된 tag 또는 values revision을 참조한다.
    - 프로젝트 증거를 기반으로 최종 앱 목록을 만든다.
    - 일치 앱이 0개면 지금까지 찾은 증거를 보고하고 중단한다.
@@ -184,7 +185,7 @@ description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop�
 
 - `origin/develop`가 의도한 머지를 받았다.
 - 머지 결과가 로컬 검증을 통과했다.
-- `Publish to Dev Harbor`가 `develop`에서 실행되었다.
+- 이미지 빌드/배포 워크플로우 (`"${CI_WORKFLOW_NAME}"`)가 `develop`에서 실행되었다.
 - `develop`의 최신 워크플로우 실행이 성공으로 끝났다.
 - 현재 푸시의 영향을 받는 모든 ArgoCD 애플리케이션이 동기화되었고 `Synced`, `Healthy`가 확인되었다.
 
@@ -206,11 +207,11 @@ description: "kt-cloud-infra-ops 저장소에서 완료된 브랜치를 develop�
 
 ## 예시
 
-- `$infraops-git-image-build-and-deploy`를 사용해서 `cmdb-frontend`의 `develop_cmdb`를 `develop`에 머지하고 `Publish to Dev Harbor` 성공까지 확인해줘.
-- `$infraops-git-image-build-and-deploy`를 현재 저장소에 적용해서 `develop` 푸시, Dev Harbor 빌드 성공 확인, 대응하는 ArgoCD 앱 동기화까지 진행해줘.
+- `$<YOUR_WORKFLOW_ALIAS>`를 사용해서 `<SERVICE>-frontend`의 `develop_<SERVICE>`를 `develop`에 머지하고 이미지 빌드/배포 워크플로우 성공까지 확인해줘.
+- `$<YOUR_WORKFLOW_ALIAS>`를 현재 저장소에 적용해서 `develop` 푸시, 이미지 빌드 성공 확인, 대응하는 ArgoCD 앱 동기화까지 진행해줘.
 
 ## 완료 조건 (DONE WHEN)
 - [ ] [MANUAL] develop 머지 완료
 - [ ] [MANUAL] 로컬 검증 PASS
-- [ ] [MANUAL] Publish to Dev Harbor 성공
+- [ ] [MANUAL] 이미지 빌드/배포 워크플로우 성공
 - [ ] [MANUAL] ArgoCD sync Healthy

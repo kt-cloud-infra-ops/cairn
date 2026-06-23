@@ -52,7 +52,7 @@ curl -s -X PUT \
   -H "Authorization: Basic $AUTH" \
   -H "Content-Type: application/json" \
   -d '{"fields": {"summary": "새 제목"}}' \
-  "https://ktcloud.atlassian.net/rest/api/3/issue/KEY-123"
+  "${ATLASSIAN_BASE_URL}/rest/api/3/issue/${JIRA_PROJECT_KEY}-123"
 ```
 
 ## 교훈
@@ -64,8 +64,8 @@ curl -s -X PUT \
 
 ## 관련 문서
 
-- `base/guides/ktcloud/atlassian/jira-rest-api-guide.md`
-- `agents/knowledge/lessons/common/jira-api-automation.md`
+- `rules/jira-workflow.md`
+- `skills/jira-rest-ops/SKILL.md`
 
 ---
 

@@ -1,0 +1,46 @@
+# .cairn/profile/hooks.yaml
+# Profile-aware hooks enable/disable.
+# Cairn's hook router reads this file to decide which hooks to activate.
+# Schema: cairn.profile.hooks/v1
+#
+# Security rules:
+# - command must be a workspace-relative path (no absolute paths, no '..')
+# - ${CLAUDE_PLUGIN_ROOT} is for core hooks only
+# - secrets must NOT appear in hook argv/env output
+
+schema: "cairn.profile.hooks/v1"
+
+hooks:
+  # Jira transition guard
+  # Blocks In Review/Done transitions when A.C. checkboxes are incomplete.
+  jira_transition_guard:
+    enabled: true                                       # false로 비활성화
+    command: "hooks/guard-jira-transition.sh"           # workspace 상대 경로
+    events: ["PreToolUse"]
+    project_keys: ["${JIRA_PROJECT_KEY}"]
+
+  # Service orchestration guard
+  # Blocks service bootstrap/ops actions without required bootstrap state.
+  service_orchestration_guard:
+    enabled: true
+    command: "hooks/guard-service-orchestration.sh"
+    events: ["PreToolUse"]
+    require_bootstrap_state: true
+
+  # Feature ↔ Jira sync check
+  # Warns when a feature doc exists without a matching Jira ticket prefix.
+  feature_jira_sync:
+    enabled: true
+    command: "hooks/check-feature-jira-sync.sh"
+    events: ["PostToolUse"]
+
+  # Additional hooks (disabled by default — enable as needed)
+  # charter_guard:
+  #   enabled: false
+  #   command: "hooks/guard-charter.sh"
+  #   events: ["PreToolUse"]
+  #
+  # commit_guard:
+  #   enabled: false
+  #   command: "hooks/guard-git-commit.sh"
+  #   events: ["PreToolUse"]

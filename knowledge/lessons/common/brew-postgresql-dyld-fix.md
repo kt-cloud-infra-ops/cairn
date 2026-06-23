@@ -66,8 +66,8 @@ lsof -i :5432 -P | head
 
 # 사용자 + DB 생성
 /opt/homebrew/opt/postgresql@14/bin/psql postgres <<SQL
-CREATE USER ktcmon WITH SUPERUSER PASSWORD '<LOCAL_DB_PASSWORD>';
-CREATE DATABASE ktcmon OWNER ktcmon;
+CREATE USER <your_db_user> WITH SUPERUSER PASSWORD '<LOCAL_DB_PASSWORD>';
+CREATE DATABASE <your_db_user> OWNER <your_db_user>;
 SQL
 ```
 
@@ -75,29 +75,25 @@ SQL
 
 ```bash
 # docker pg 13.5 dump (custom format)
-docker exec luppiter-pg pg_dump -U ktcmon -d ktcmon -Fc --no-owner --no-acl > /tmp/ktcmon.dump
+docker exec <your_docker_pg_container> pg_dump -U <your_db_user> -d <your_db_user> -Fc --no-owner --no-acl > /tmp/<your_db_user>.dump
 
 # native pg 14 restore — pgcrypto extension 사전 생성
-PGPASSWORD='<LOCAL_DB_PASSWORD>' /opt/homebrew/opt/postgresql@14/bin/psql -h 127.0.0.1 -p 5432 -U ktcmon -d ktcmon -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+PGPASSWORD='<LOCAL_DB_PASSWORD>' /opt/homebrew/opt/postgresql@14/bin/psql -h 127.0.0.1 -p 5432 -U <your_db_user> -d <your_db_user> -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
 
 # restore
 PGPASSWORD='<LOCAL_DB_PASSWORD>' /opt/homebrew/opt/postgresql@14/bin/pg_restore \
-  -h 127.0.0.1 -p 5432 -U ktcmon -d ktcmon \
+  -h 127.0.0.1 -p 5432 -U <your_db_user> -d <your_db_user> \
   --no-owner --no-acl --clean --if-exists \
-  /tmp/ktcmon.dump
+  /tmp/<your_db_user>.dump
 ```
 
 13.5 → 14 마이너 업그레이드 dump/restore 호환. PostgreSQL 13 brew disabled 시 14 가 차선.
 
-## 검증 (Luppiter 기준)
+## 검증
 
 ```sql
--- 사용자 매핑
-SELECT user_id, user_name, user_exception, exception_user_init_login 
-FROM cmon_user WHERE user_id IN ('91371126','91395593');
-
--- 미해소 이벤트 카운트
-SELECT COUNT(*) FROM cmon_event_info WHERE event_state IN ('신규','인지','조치중');
+-- 복원 후 주요 테이블 카운트로 검증
+SELECT COUNT(*) FROM <your_key_table>;
 ```
 
 ## 안티패턴
@@ -108,9 +104,8 @@ SELECT COUNT(*) FROM cmon_event_info WHERE event_state IN ('신규','인지','�
 
 ## 적용 사례 (2026-04-28)
 
-postgresql@13 brew disabled (upstream 종료) → postgresql@14 설치 → dyld libpq + share/postgres.bki + dict_snowball 3 단계 에러 → 위 절차로 해결, ktcmon DB 운영 dump(139MB) 복원 성공.
+postgresql@13 brew disabled (upstream 종료) → postgresql@14 설치 → dyld libpq + share/postgres.bki + dict_snowball 3 단계 에러 → 위 절차로 해결, <your_db_user> DB 운영 dump(139MB) 복원 성공.
 
 ## 관련 문서
 
 - [database-optimization.md](../db/database-optimization.md)
-- [luppiter-inventory-master-sub-rules.md](../db/luppiter-inventory-master-sub-rules.md)

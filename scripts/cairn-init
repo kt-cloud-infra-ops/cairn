@@ -1,0 +1,304 @@
+#!/usr/bin/env node
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const fs = require('fs');
+const path = require('path');
+const {
+  assertSafeRelativePath,
+  copyDir,
+  ensureDir,
+  fail,
+  fileExists,
+  findWorkspaceRoot,
+  git,
+  gitCurrentBranch,
+  gitRemote,
+  gitTopLevel,
+  inferNameFromRepo,
+  isGitRepo,
+  listDirSafe,
+  parseArgs,
+  printPlan,
+  requireGit,
+  serializeSourcesYaml,
+} = require('./lib/cairn-workspace-lib.cjs');
+
+function usage() {
+  console.log(`Usage:
+  cairn-init [--path <dir>] [--mode multi-project|solo|project-local]
+             [--profile <name|path>] [--from <git-url>] [--register-current]
+             [--dry-run] [--yes] [--force]
+
+Defaults to preview only. Add --yes to create files.`);
+}
+
+function yamlWorkspace({ name, mode, profileName }) {
+  return `schema: "cairn.workspace/v1"
+workspace:
+  name: "${name}"
+  mode: "${mode}"
+  created_by: "cairn-init"
+  default_project_root: "projects"
+
+profile:
+  name: "${profileName}"
+  path: ".cairn/profile"
+  schema: "cairn.profile/v1"
+
+storage:
+  knowledge: "knowledge"
+  decisions: "decisions"
+  runbooks: "runbooks"
+  services: "services"
+  support_projects: "support-projects"
+  templates: "templates"
+  projects: "projects"
+`;
+}
+
+function configJson(mode) {
+  const configMode = mode === 'solo' ? 'solo' : 'team';
+  return `${JSON.stringify({
+    schema: 'cairn.config/v1',
+    mode: configMode,
+    capture: {
+      proactive: true,
+      frequency: 'session-end',
+      targets: {
+        lesson: 'knowledge/lessons',
+        decision: 'decisions',
+        sop: 'runbooks',
+        feature: 'projects/{project}/docs/features',
+      },
+    },
+    projects: {
+      defaultPullPolicy: 'manual',
+      dirtyPolicy: 'skip',
+    },
+    profile: {
+      path: '.cairn/profile',
+      required: true,
+    },
+  }, null, 2)}\n`;
+}
+
+function rootAgentsMd(workspaceName, profileName) {
+  return `---
+workspace: "${workspaceName}"
+profile: "${profileName}"
+cairn_schema: "cairn.workspace/v1"
+---
+
+# ${workspaceName} Workspace
+
+This is a Cairn workspace. Cairn manages projects through .cairn/sources.yaml
+and stores shared knowledge in knowledge/, decisions/, runbooks/, and services/.
+
+Load order:
+1. .cairn/workspace.yaml
+2. .cairn/profile/*.yaml
+3. .cairn/local.env
+4. AGENTS.md
+`;
+}
+
+function writeIfMissing(file, content, force) {
+  if (fileExists(file) && !force) {
+    fail(`refusing to overwrite existing file: ${file}`);
+  }
+  ensureDir(path.dirname(file));
+  fs.writeFileSync(file, content, 'utf8');
+}
+
+function emptyProfileFiles(profileName) {
+  return {
+    'org.yaml': `schema: "cairn.profile.org/v1"
+name: "${profileName}"
+display_name: "${profileName}"
+timezone: "${'${TIMEZONE}'}"
+language: "ko"
+`,
+    'atlassian.yaml': `schema: "cairn.profile.atlassian/v1"
+base_url: "${'${ATLASSIAN_BASE_URL}'}"
+credentials_file: "${'${JIRA_CREDENTIALS_FILE}'}"
+jira:
+  default_project: "${'${JIRA_PROJECT_KEY}'}"
+  projects: {}
+  fields: {}
+confluence:
+  default_space: "${'${CONFLUENCE_SPACE_KEY}'}"
+  spaces: {}
+`,
+    'git.yaml': `schema: "cairn.profile.git/v1"
+providers: {}
+`,
+    'infra.yaml': `schema: "cairn.profile.infra/v1"
+`,
+    'services.yaml': `schema: "cairn.services/v1"
+services: {}
+`,
+    'teams.yaml': `schema: "cairn.profile.teams/v1"
+teams: {}
+`,
+    'hooks.yaml': `schema: "cairn.profile.hooks/v1"
+hooks: {}
+`,
+  };
+}
+
+function currentSource(root) {
+  if (!isGitRepo(process.cwd())) {
+    return null;
+  }
+  const top = gitTopLevel(process.cwd());
+  const repo = gitRemote(top) || top;
+  const name = inferNameFromRepo(repo);
+  const branch = gitCurrentBranch(top) || 'main';
+  let rel = path.relative(root, top).replace(/\\/g, '/');
+  if (!rel || rel.startsWith('..') || path.isAbsolute(rel)) {
+    rel = `projects/${name}`;
+  }
+  return {
+    name,
+    role: 'service',
+    repo,
+    ref: { type: 'branch', name: branch },
+    path: rel,
+    pull: { policy: 'manual', rebase: false, prune: true },
+  };
+}
+
+function main() {
+  const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    usage();
+    return;
+  }
+  requireGit();
+
+  const target = path.resolve(String(args.path || process.cwd()));
+  const mode = String(args.mode || 'multi-project');
+  if (!['multi-project', 'solo', 'project-local'].includes(mode)) {
+    fail(`invalid mode: ${mode}`);
+  }
+  const workspaceName = String(args.name || path.basename(target) || 'cairn-workspace');
+  const profileArg = args.profile ? String(args.profile) : 'default';
+  const profileIsPath = profileArg.includes('/') || profileArg.includes('\\') || fileExists(path.resolve(profileArg));
+  const profileName = profileIsPath ? path.basename(path.resolve(profileArg)) : profileArg;
+  const dryRun = Boolean(args['dry-run']) || !args.yes;
+  const force = Boolean(args.force);
+
+  const existingWorkspace = findWorkspaceRoot(target);
+  const targetWorkspace = path.join(target, '.cairn', 'workspace.yaml');
+  if (existingWorkspace && fileExists(targetWorkspace)) {
+    fail(`workspace already exists: ${targetWorkspace}`);
+  }
+
+  if (args.from) {
+    const cloneUrl = String(args.from);
+    if (listDirSafe(target).length > 0 && !fileExists(path.join(target, '.git'))) {
+      fail(`--from target must be empty or a git checkout: ${target}`);
+    }
+    printPlan('[GATE-WORKSPACE] clone existing workspace preview', [
+      ['repo', cloneUrl],
+      ['target', target],
+      ['write', dryRun ? 'no (--yes required)' : 'yes'],
+    ]);
+    if (dryRun) {
+      return;
+    }
+    const clone = git(['clone', cloneUrl, target], { stdio: 'inherit' });
+    if (!clone.ok) {
+      fail(`git clone failed with status ${clone.status}`);
+    }
+    if (fileExists(path.join(target, '.cairn', 'workspace.yaml'))) {
+      console.log(`Workspace cloned: ${target}`);
+      return;
+    }
+  }
+
+  const dirs = [
+    '.cairn/profile',
+    '.cairn/state',
+    '.cairn/cache',
+    'projects',
+    'knowledge/lessons',
+    'decisions',
+    'runbooks',
+    'services',
+    'support-projects',
+    'templates',
+  ];
+  const files = [
+    '.cairn/workspace.yaml',
+    '.cairn/config.json',
+    '.cairn/sources.yaml',
+    'AGENTS.md',
+  ];
+  const collisions = files.filter((file) => fileExists(path.join(target, file)));
+  const gitRoot = isGitRepo(process.cwd()) ? gitTopLevel(process.cwd()) : '';
+  const insideSingleRepo = gitRoot && target.startsWith(gitRoot) && target !== gitRoot;
+
+  printPlan('[GATE-WORKSPACE] workspace scaffold preview', [
+    ['root', target],
+    ['mode', mode],
+    ['workspace', workspaceName],
+    ['profile', profileName],
+    ['profile source', profileIsPath ? path.resolve(profileArg) : 'empty scaffold'],
+    ['current git repo', gitRoot || '(none)'],
+    ['single repo warn', insideSingleRepo ? 'yes' : 'no'],
+    ['collisions', collisions.length ? collisions.join(', ') : '(none)'],
+    ['write', dryRun ? 'no (--yes required)' : 'yes'],
+  ]);
+
+  if (dryRun) {
+    console.log('\nNo files were written. Re-run with --yes to create the workspace.');
+    return;
+  }
+  if (collisions.length > 0 && !force) {
+    fail(`existing files would be overwritten: ${collisions.join(', ')}. Use --force to replace them.`);
+  }
+
+  ensureDir(target);
+  for (const dir of dirs) {
+    ensureDir(path.join(target, dir));
+  }
+
+  const sources = {
+    schema: 'cairn.sources/v1',
+    defaults: {
+      root: 'projects',
+      pull_policy: 'manual',
+      dirty_policy: 'skip',
+      clone_depth: 1,
+    },
+    sources: [],
+  };
+  if (args['register-current']) {
+    const source = currentSource(target);
+    if (source) {
+      assertSafeRelativePath(source.path, 'registered source path');
+      sources.sources.push(source);
+    }
+  }
+
+  writeIfMissing(path.join(target, '.cairn', 'workspace.yaml'), yamlWorkspace({ name: workspaceName, mode, profileName }), force);
+  writeIfMissing(path.join(target, '.cairn', 'config.json'), configJson(mode), force);
+  writeIfMissing(path.join(target, '.cairn', 'sources.yaml'), serializeSourcesYaml(sources), force);
+
+  if (profileIsPath) {
+    copyDir(path.resolve(profileArg), path.join(target, '.cairn', 'profile'));
+  } else {
+    for (const [file, content] of Object.entries(emptyProfileFiles(profileName))) {
+      writeIfMissing(path.join(target, '.cairn', 'profile', file), content, force);
+    }
+  }
+
+  if (!fileExists(path.join(target, 'AGENTS.md')) || force) {
+    writeIfMissing(path.join(target, 'AGENTS.md'), rootAgentsMd(workspaceName, profileName), force);
+  }
+
+  console.log(`Cairn workspace initialized: ${target}`);
+}
+
+main();
