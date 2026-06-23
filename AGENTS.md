@@ -43,20 +43,24 @@ Tune via `.cairn/config.json` (`mode`, `capture.frequency`). See `skills/cairn-c
 ## 3-Layer Architecture
 
 ```
-cairn      = generic engine plugin. zero org-specific values.
-             creates, validates, reads, and executes workspaces.
+cairn              = generic engine plugin. zero org-specific values.
+                     creates, validates, reads, and executes workspaces.
 
-cairn-pe   = Platform Engineering workspace/profile implementation.
-             holds org values, service catalog, team Jira/Confluence mapping,
-             internal SOPs, Luppiter/CMDB domain rules, runbooks.
-
-(your-org) = your org's internal workspace built on the cairn-pe pattern.
+cairn-<your-team>  = team/org workspace instance.
+                     holds org values, service catalog, team Jira/Confluence mapping,
+                     internal SOPs, domain rules, runbooks.
+                     Examples: cairn-pe (PE team reference implementation),
+                               cairn-sre, cairn-data, cairn-acme, ...
 ```
 
 | Layer | Role | Contains | Must NOT Contain |
 |-------|------|----------|-----------------|
 | `cairn` | Generic engine | Orchestrator, Phase Gates, Capture Loop, workspace contract, profile schema, clone/pull skills, generic hooks | Org names, Jira project keys, Confluence space IDs, service names, internal URLs |
-| `cairn-pe` | PE org workspace | `.cairn/profile/*`, service catalog, team Atlassian mapping, SOPs, Luppiter/CMDB domain rules, runbooks | Personal secrets/tokens, personal local paths, core engine code forks |
+| `cairn-<your-team>` | Team workspace instance | `.cairn/profile/*`, service catalog, team Atlassian mapping, SOPs, domain rules, runbooks | Personal secrets/tokens, personal local paths, core engine code forks |
+
+> **`cairn-pe` is the PE team's reference implementation** — a concrete example other teams can clone as a starting point.
+> Other teams create their own `cairn-<name>` workspace via `cairn init --profile <name>`.
+> Org-specific values live only in `cairn-<name>/.cairn/profile/`; the engine (`cairn`) stays at zero.
 
 ---
 
@@ -191,11 +195,13 @@ Creates or detects a workspace.
 
 ```bash
 /cairn:cairn-init [--path <dir>] [--profile <name|path>] [--mode solo|team] [--from <git-url>]
+# --profile <name> sets the workspace instance name: cairn-<name>
+# e.g., --profile pe → cairn-pe (PE team reference), --profile sre → cairn-sre
 ```
 
 Gates:
 - `[GATE-WORKSPACE]` — if current dir is a single project repo, user chooses: create new workspace / use existing / project-local limited mode
-- `[GATE-PROFILE]` — choose empty profile or scaffold (e.g., `cairn-pe`)
+- `[GATE-PROFILE]` — choose empty profile or scaffold from a reference implementation (e.g., `cairn-pe`)
 
 ### `cairn-project-add`
 
@@ -309,15 +315,17 @@ Configure via `${JIRA_CREDENTIALS_FILE}` (default: `~/.jira-credentials.json`):
 
 Or set org values in `.cairn/profile/atlassian.yaml` (no secrets in profile — use env refs).
 
-See `rules/jira-workflow.md` and `skills/jira-rest-ops/SKILL.md` for usage.
+See `rules-on-demand/jira-workflow.md` and `skills/jira-rest-ops/SKILL.md` for usage.
 
 ---
 
 ## Adapting for Your Team
 
 1. Install plugin: `/plugin install cairn@cairn-marketplace`
-2. Create workspace: `/cairn:cairn-init --mode team`
-3. Fill in `.cairn/profile/` with your org values (or use a cairn-pe scaffold)
+2. Create your team workspace: `/cairn:cairn-init --profile <your-team> --mode team`
+   - This creates a `cairn-<your-team>` workspace (e.g., `cairn-sre`, `cairn-data`, `cairn-acme`).
+   - Use `cairn-pe` as a reference implementation to copy profile structure from.
+3. Fill in `.cairn/profile/` with your org values
 4. Add project sources: `/cairn:cairn-project-add <repo> --name <name> --role service`
 5. Set env vars in `~/.zshrc` (see `config/ENV_STANDARD.md`)
 6. Register hooks in your tool settings (see Hook Registration above)
@@ -330,7 +338,7 @@ See `rules/jira-workflow.md` and `skills/jira-rest-ops/SKILL.md` for usage.
 |-----------|-------|
 | `rules/core.md` | Core principles, daily routine, no-assumption policy |
 | `rules/git-workflow.md` | Commit format, branch strategy, runtime/non-runtime split |
-| `rules/jira-workflow.md` | Jira issue lifecycle, A.C. format, 5-step completion |
+| `rules-on-demand/jira-workflow.md` | Jira issue lifecycle, A.C. format, 5-step completion |
 | `rules/agents.md` | Agent orchestration, Phase Gate routing, advisor pattern |
 | `rules/skill-governance.md` | Skill creation/duplication check, GATE requirements |
 | `rules/doc-organization.md` | Document storage rules, Confluence workflow |

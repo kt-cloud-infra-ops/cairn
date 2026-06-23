@@ -6,27 +6,31 @@
 
 ## 1. Profile이란
 
-Profile은 **조직값 보관소**다. Cairn core(엔진)는 schema와 key 이름만 정의하고 실제 값은 보관하지 않는다. Profile은 workspace의 `.cairn/profile/` 디렉터리에 YAML 파일로 저장된다.
+Profile은 **조직값 보관소**다. Cairn core(엔진)는 schema와 key 이름만 정의하고 실제 값은 보관하지 않는다. Profile은 각 팀의 workspace(`cairn-<your-team>`)의 `.cairn/profile/` 디렉터리에 YAML 파일로 저장된다.
+
+> **각 `cairn-<your-team>` workspace는 고유한 `.cairn/profile/`을 보유한다.**
+> `cairn-pe`는 PE팀의 profile을 담은 레퍼런스 구현 예시이며,
+> `cairn-sre`, `cairn-data` 등 다른 팀의 workspace는 각자의 profile을 독립적으로 관리한다.
 
 ### 핵심 원칙
 
-- **조직값 집중**: Jira project key, Confluence space, git 조직, 서비스 카탈로그, 팀 구성 등 조직별로 다른 모든 값은 profile에만 존재한다.
+- **조직값 집중**: Jira project key, Confluence space, git 조직, 서비스 카탈로그, 팀 구성 등 조직별로 다른 모든 값은 각 팀의 profile에만 존재한다.
 - **Secret 제외**: API token, 비밀번호, 개인 accountId는 profile YAML에 보관하지 않는다. `local.env` 또는 OS keychain/env var 사용.
 - **Git 공유 가능**: profile YAML 자체는 git에 커밋한다. secret이 없으므로 팀 전체가 공유 가능.
 - **Env var 참조**: `${VAR_NAME}` 형식으로 환경변수를 참조한다. 실제 값은 `local.env`(gitignore) 또는 시스템 env에 있다.
 
 ### 조직값 0 판정 규칙 (cairn core 기준)
 
-cairn core에 아래 값이 직접 있으면 위반이다:
+cairn core에 아래 값이 직접 있으면 위반이다. 조직값은 반드시 각 팀의 `cairn-<your-team>/.cairn/profile/`에만 존재해야 한다:
 
 | 유형 | 예 | 허용 위치 |
 |------|----|----------|
-| 조직/회사/팀명 | 특정 조직명, 부서명 | `profile/org.yaml` |
-| Jira/Confluence 식별자 | project key, space key, numeric pageId | `profile/atlassian.yaml` |
-| Git 조직/레포 prefix | git org명, 서비스 repo명 | `profile/git.yaml`, `.cairn/sources.yaml` |
-| 서비스 카탈로그 | 서비스명, 서비스별 TASKS | `profile/services.yaml` |
-| SOP/도메인룰 | 사내 워크플로우, 장애 프로세스 | `runbooks/`, `domains/` |
-| 인프라 값 | Vault path, ArgoCD app, Harbor host, DB host/port | `profile/infra.yaml` 또는 user local env |
+| 조직/회사/팀명 | 특정 조직명, 부서명 | `cairn-<name>/.cairn/profile/org.yaml` |
+| Jira/Confluence 식별자 | project key, space key, numeric pageId | `cairn-<name>/.cairn/profile/atlassian.yaml` |
+| Git 조직/레포 prefix | git org명, 서비스 repo명 | `cairn-<name>/.cairn/profile/git.yaml`, `.cairn/sources.yaml` |
+| 서비스 카탈로그 | 서비스명, 서비스별 TASKS | `cairn-<name>/.cairn/profile/services.yaml` |
+| SOP/도메인룰 | 사내 워크플로우, 장애 프로세스 | `cairn-<name>/runbooks/`, `cairn-<name>/domains/` |
+| 인프라 값 | Vault path, ArgoCD app, Harbor host, DB host/port | `cairn-<name>/.cairn/profile/infra.yaml` 또는 user local env |
 | 개인값/secret | 실명, 사번, accountId, API token | git 금지. `local.env`, OS keychain, env var |
 
 허용 예외 (cairn core docs): `<YOUR_ORG>`, `${JIRA_PROJECT_KEY}`, `yourcompany.atlassian.net`, `PROJ` 같은 placeholder만 허용.

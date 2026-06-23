@@ -9,17 +9,20 @@
 Cairn은 단일 프로젝트에 붙이는 도구가 아니라 **여러 프로젝트를 clone/pull로 관리하는 workspace-level harness**다. 사용자가 계속 들고 가는 결과물은 플러그인 설치 디렉터리가 아니라 **Cairn workspace**다.
 
 ```text
-cairn      = 범용 엔진 플러그인 (조직값 0)
-cairn-pe   = 조직 workspace/profile 구현체 (조직값 집중)
-ats        = ai-team-standards (마이그레이션 소스 → archive)
+cairn              = 범용 엔진 플러그인 (조직값 0)
+cairn-<your-team>  = 팀/조직 workspace 인스턴스 (조직값 집중)
+                     예: cairn-pe (PE팀 레퍼런스 구현), cairn-sre, cairn-data, cairn-acme 등
+ats                = ai-team-standards (마이그레이션 소스 → archive)
 ```
+
+> **`cairn-pe`는 PE팀의 레퍼런스 구현(reference implementation)**이다. 고정된 유일한 workspace 이름이 아니라, 다른 팀이 복제할 수 있는 템플릿 예시다. 각 팀은 `cairn init --profile <name>`으로 `cairn-<name>` workspace를 직접 생성한다.
 
 ### 계층별 경계 표
 
 | 계층 | 역할 | 들어가는 것 | 들어가면 안 되는 것 |
 |------|------|------------|-------------------|
 | `cairn` | 범용 엔진/플러그인 | orchestrator, phase gates, capture loop, workspace contract, profile schema, clone/pull skill, generic hooks, generic Atlassian client | 조직명, Jira project key, Confluence space/pageId, 서비스명, 개인명, 사번, 사내 URL, 서비스 SOP |
-| `cairn-pe` | PE 조직 workspace/profile | `.cairn/profile/*`, 서비스 카탈로그, 팀 Jira/Confluence 매핑, 사내 SOP, 도메인 룰, 운영 runbook, 조직 hooks 토글 | 개인 secret/token, 개인 로컬 경로, 범용 core 코드 fork |
+| `cairn-<your-team>` | 팀 workspace 인스턴스 | `.cairn/profile/*`, 서비스 카탈로그, 팀 Jira/Confluence 매핑, 사내 SOP, 도메인 룰, 운영 runbook, 조직 hooks 토글 | 개인 secret/token, 개인 로컬 경로, 범용 core 코드 fork |
 | `ats` | migration source | 현재 자산 원본. 이관 검증 전까지만 SoT | 신규 기능 장기 유지, 신규 조직 표준 축적 |
 
 ---
@@ -115,9 +118,10 @@ cairn-workspace/
 ### 해결 (3계층 + workspace 모델)
 
 ```text
-cairn     → 범용 엔진. 조직값 0. 어느 팀도 설치 가능.
-cairn-pe  → 조직 profile. 조직값 집중. 팀이 직접 관리.
-workspace → 팀이 들고 가는 결과물. Git으로 관리.
+cairn              → 범용 엔진. 조직값 0. 어느 팀도 설치 가능.
+cairn-<your-team>  → 팀 workspace 인스턴스. 조직값 집중. 팀이 직접 관리.
+                      cairn-pe = PE팀 레퍼런스 구현 (다른 팀이 복제할 템플릿 예시)
+workspace          → 팀이 들고 가는 결과물. Git으로 관리.
 ```
 
 - **엔진과 조직 지식 분리**: cairn은 schema/skill/hook만, 조직값은 profile
@@ -130,7 +134,7 @@ workspace → 팀이 들고 가는 결과물. Git으로 관리.
 | 관점 | 산출물 | 성공 기준 |
 |------|--------|---------|
 | Marketplace core | `cairn` | 조직값 0, workspace contract 제공, generic skills/hooks, profile schema |
-| ATS migration | `cairn-pe` | ATS shared 자산 손실 없이 이관, profile에 조직값 집중, projects clone/pull |
+| ATS migration | `cairn-pe` (PE팀 레퍼런스 구현) | ATS shared 자산 손실 없이 이관, profile에 조직값 집중, projects clone/pull. 일반 패턴: `cairn-<your-team>` |
 
 ---
 

@@ -27,18 +27,19 @@ Cairn은 단일 프로젝트에 붙이는 도구가 아니라 **여러 프로젝
 ## 3계층 구조
 
 ```
-cairn       = 범용 엔진 플러그인. 조직값 0.
-              workspace를 생성·검증·읽고 실행하는 core engine.
+cairn              = 범용 엔진 플러그인. 조직값 0.
+                     workspace를 생성·검증·읽고 실행하는 core engine.
 
-cairn-pe    = 조직 workspace/profile 구현체.
-              서비스 카탈로그, 팀 Jira/Confluence 매핑, 사내 SOP, 도메인 룰 보관.
+cairn-<your-team>  = 팀/조직 workspace 인스턴스.
+                     서비스 카탈로그, 팀 Jira/Confluence 매핑, 사내 SOP, 도메인 룰 보관.
+                     예: cairn-pe (PE팀 레퍼런스 구현), cairn-sre, cairn-data, cairn-acme 등.
 
-(your-org)  = 조직이 cairn-pe 패턴으로 만드는 내부 workspace.
 ```
 
 - `cairn` — 마켓플레이스에 배포되는 코어. 어떤 조직도 설치 가능.
-- `cairn-pe` — PE 팀 workspace의 레퍼런스 구현체. `cairn`이 읽는 profile을 제공.
-- 조직값(Jira 프로젝트 키, Confluence space, 서비스명 등)은 전부 `cairn-pe` profile 영역에만 있다.
+- `cairn-<your-team>` — 각 팀이 직접 소유하는 workspace 인스턴스. `cairn init --profile <name>`으로 생성.
+  - `cairn-pe` — PE팀 레퍼런스 구현. 다른 팀이 복제할 수 있는 템플릿 역할.
+- 조직값(Jira 프로젝트 키, Confluence space, 서비스명 등)은 전부 `cairn-<your-team>/.cairn/profile/`에만 있다.
 
 ---
 
@@ -81,10 +82,11 @@ cairn-pe    = 조직 workspace/profile 구현체.
 
 ```bash
 # 새 workspace 만들기 (빈 디렉터리에서)
-/cairn:cairn-init --path ~/my-cairn-workspace --mode team
+/cairn:cairn-init --path ~/my-cairn-workspace --profile <your-team> --mode team
+# 예: --profile pe (cairn-pe), --profile sre (cairn-sre), --profile data (cairn-data)
 
 # 또는 기존 workspace clone
-/cairn:cairn-init --from git@github.com:<YOUR_ORG>/cairn-pe.git
+/cairn:cairn-init --from git@github.com:<YOUR_ORG>/cairn-<your-team>.git
 ```
 
 `cairn-init`이 생성하는 것:

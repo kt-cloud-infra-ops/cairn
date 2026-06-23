@@ -4,7 +4,12 @@
   "title": "Cairn Workspace",
   "description": "Workspace contract read by the Cairn core engine. Values may identify a workspace, but organization-specific mappings live in the profile.",
   "type": "object",
-  "required": ["schema", "workspace", "profile", "storage"],
+  "required": [
+    "schema",
+    "workspace",
+    "profile",
+    "storage"
+  ],
   "additionalProperties": false,
   "properties": {
     "schema": {
@@ -12,7 +17,11 @@
     },
     "workspace": {
       "type": "object",
-      "required": ["name", "mode", "default_project_root"],
+      "required": [
+        "name",
+        "mode",
+        "default_project_root"
+      ],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -22,7 +31,11 @@
         },
         "mode": {
           "type": "string",
-          "enum": ["multi-project", "solo", "project-local"]
+          "enum": [
+            "multi-project",
+            "solo",
+            "project-local"
+          ]
         },
         "created_by": {
           "type": "string",
@@ -36,7 +49,11 @@
     },
     "profile": {
       "type": "object",
-      "required": ["name", "path", "schema"],
+      "required": [
+        "name",
+        "path",
+        "schema"
+      ],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -55,7 +72,13 @@
     },
     "storage": {
       "type": "object",
-      "required": ["knowledge", "decisions", "runbooks", "services", "support_projects"],
+      "required": [
+        "knowledge",
+        "decisions",
+        "runbooks",
+        "services",
+        "support_projects"
+      ],
       "additionalProperties": false,
       "properties": {
         "knowledge": {
@@ -85,6 +108,10 @@
         "projects": {
           "$ref": "#/$defs/relativePath",
           "default": "projects"
+        },
+        "operations": {
+          "$ref": "#/$defs/relativePath",
+          "default": "operations"
         }
       }
     }
@@ -95,9 +122,15 @@
       "minLength": 1,
       "not": {
         "anyOf": [
-          { "pattern": "^/" },
-          { "pattern": "(^|/)\\.\\.($|/)" },
-          { "pattern": "\\u0000" }
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "(^|/)\\.\\.($|/)"
+          },
+          {
+            "pattern": "\\u0000"
+          }
         ]
       }
     }

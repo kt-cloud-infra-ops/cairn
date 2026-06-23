@@ -9,6 +9,11 @@
 
 이 가이드는 `ai-team-standards`(ATS)의 공유 자산을 `cairn-pe` workspace로 이관하는 절차를 설명한다.
 
+> **이 가이드는 PE팀의 구체적인 케이스다.**
+> 일반 패턴은 `ats → cairn-<your-team>` 이다. PE팀은 `cairn-pe`를 workspace 이름으로 사용하지만,
+> 다른 팀은 `cairn-sre`, `cairn-data`, `cairn-acme` 등 자신의 팀 이름으로 workspace를 생성한다.
+> `cairn-pe`는 레퍼런스 구현(reference implementation)으로, 다른 팀이 복제할 수 있는 템플릿이다.
+
 이관의 목적:
 
 - 조직값(Jira key, 서비스명, SOP 등)을 `cairn` 엔진에서 분리
@@ -92,7 +97,7 @@
 
 **작업**:
 
-1. `cairn-pe` repo 생성 (private)
+1. `cairn-pe` repo 생성 (private) — 일반 패턴: `cairn-<your-team>` 이름으로 생성
 2. `.cairn/profile/*` 작성 (env var placeholder로)
 3. `services/`, `runbooks/`, `decisions/`, `support-projects/`, `domains/` 빈 구조 생성
 4. `workspace.json`과 현재 `workspace/` symlink를 `.cairn/sources.yaml`로 변환
@@ -159,13 +164,15 @@
 - [ ] 팀 설치/clone/pull/init 가이드 검증 완료
 - [ ] ATS README에 archive notice와 cairn-pe 이동 경로 명시
 
-**ATS README archive notice 예시**:
+**ATS README archive notice 예시** (PE팀 케이스):
 
 ```markdown
 > **[ARCHIVED]** 이 저장소는 read-only 상태입니다.
 > 신규 작업은 cairn-pe workspace를 사용하세요.
 > 이관 완료일: YYYY-MM-DD
 ```
+
+> 다른 팀은 `cairn-pe` 대신 자신의 `cairn-<your-team>` workspace를 사용한다.
 
 ---
 
