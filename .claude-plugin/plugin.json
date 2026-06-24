@@ -20,8 +20,6 @@
     "guardrails"
   ],
   "skills": "./skills/",
-  "agents": [
-    "./agents/"
-  ],
-  "hooks": "./hooks/hooks.json"
+  "hooks": "./hooks/hooks.json",
+  "agents": "./agents/"
 }
