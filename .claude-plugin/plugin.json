@@ -18,7 +18,5 @@
     "code-review",
     "atlassian",
     "guardrails"
-  ],
-  "skills": "./skills/",
-  "hooks": "./hooks/hooks.json"
+  ]
 }
