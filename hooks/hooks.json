@@ -3,11 +3,18 @@
     "UserPromptSubmit": [
       {
         "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/cairn-hook-router.sh\" UserPromptSubmit" },
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/keyword-detector.sh\"" }
         ]
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/cairn-hook-router.sh\" PreToolUse" }
+        ]
+      },
       {
         "matcher": "Edit|Write|MultiEdit|Bash",
         "hooks": [
@@ -43,6 +50,12 @@
     ],
     "PostToolUse": [
       {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/cairn-hook-router.sh\" PostToolUse" }
+        ]
+      },
+      {
         "matcher": "Edit|Write",
         "hooks": [
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/detect-harness-change.sh\"" },
@@ -59,6 +72,7 @@
     "Stop": [
       {
         "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/cairn-hook-router.sh\" Stop" },
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/cairn-capture-suggest.sh\"" }
         ]
       }
