@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cairn.skills/v1",
+  "title": "Cairn Workspace Skill Registry",
+  "description": "워크스페이스의 .cairn/skills.yaml — 조직/팀이 자유 생성하는 도메인·운영 스킬을 오케스트레이터가 디스패치할 수 있도록 등록하는 레지스트리. 코어(엔진) 스킬은 여기 등록하지 않는다(plugin이 제공). 워크스페이스 전용 조직 스킬만 등록.",
+  "type": "object",
+  "required": ["schema", "skills"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cairn.skills/v1"
+    },
+    "skills": {
+      "type": "array",
+      "description": "조직 스킬 엔트리. 비어 있어도 됨([]).",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "branch", "triggers"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "스킬 식별자 (kebab-case). 코어 스킬명과 충돌 금지."
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^(domains|operations|services)/[^.].*/SKILL\\.md$",
+            "description": "워크스페이스 상대 경로. domains/{svc}/skills/{name}/SKILL.md 또는 operations/skills/{name}/SKILL.md. '..' 금지."
+          },
+          "branch": {
+            "enum": ["dev", "service-ops", "service-bootstrap", "harnessing"],
+            "description": "이 스킬이 디스패치될 오케스트레이터 branch. 대부분 service-ops(운영 특화: CRM·데이터보정·인시던트 등)."
+          },
+          "triggers": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "오케스트레이터가 요청과 매칭할 키워드/패턴. 예: [통합요청, 데이터보정, CRM, 인벤토리 변경]"
+          },
+          "description": {
+            "type": "string",
+            "description": "한 줄 설명 (디스패치 후보 제시 시 사용)"
+          },
+          "owner": {
+            "type": "string",
+            "description": "(선택) 이 스킬을 관리하는 팀/개인 식별자"
+          }
+        }
+      }
+    }
+  }
+}

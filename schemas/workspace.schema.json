@@ -112,6 +112,10 @@
         "operations": {
           "$ref": "#/$defs/relativePath",
           "default": "operations"
+        },
+        "domains": {
+          "$ref": "#/$defs/relativePath",
+          "default": "domains"
         }
       }
     }

@@ -43,7 +43,7 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 - hook/trigger가 branch hint를 먼저 제시할 수 있다.
 - explicit skill invocation이 없는 환경에서는 이 문서를 라우팅 정책으로 사용하고, 에이전트가 owner skill을 바로 적용한다.
 - 즉, `harness-orchestrator`의 실질 동작은 `intent triage 결과를 owner skill 선택으로 연결하는 것`이다.
-- 별도의 상태 파일이나 상위 phase를 만들지 않는다.
+- 별도의 상위 phase는 만들지 않되, Gate 0 통과 마커로 `.harness/triage.json`을 기록한다.
 - 다만 서비스 bootstrap/ops 선행조건은 `temp/orchestrator/{service}/state.json` 로컬 상태 파일로 검증한다.
 
 ## branch map
@@ -55,11 +55,32 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 | `service-ops` | `harness-service-ops` | 서비스 운영 반영/활성화 + 운영 장애(`ops-incident` sub-owner) |
 | `harnessing` | `meta-harnessing` | rules/skills/hooks 구조 변경 |
 
+## 워크스페이스 스킬 디스패치 (조직 특화 스킬 — CRITICAL)
+
+코어 owner skill은 **기본틀**(dev/service-ops 등 범용 절차)이다. 각 조직·팀·개인이 자유 생성하는 **operation 스킬**(CRM 처리·데이터 보정·인벤토리 변경 등 서비스 특화)은 워크스페이스 레지스트리로 디스패치한다. 이건 hint가 아니라 **보장된 흐름**이다.
+
+### 디스패치 절차 (Gate 0 분류 직후, owner skill보다 우선 확인)
+
+1. 워크스페이스 `.cairn/skills.yaml`(레지스트리, `schemas/skills.schema.json` 준수) 존재 시 로드
+2. 정해진 **branch + 요청 트리거**가 매칭되는 조직 스킬을 검색
+3. **매칭 → 그 `path`의 SKILL.md를 Read하고 절차를 수행** (도구 중립 — claude의 `/cairn:`이든 codex의 직접 Read든 동일하게 동작)
+4. 매칭 없음 → 코어 owner skill(`harness-service-ops` 등) 적용
+
+### 원칙
+
+- 조직 스킬은 `domains/{svc}/skills/` 또는 `operations/skills/`에 두고 `.cairn/skills.yaml`에 **등록**한다.
+- **등록이 곧 디스패치 계약** — 미등록 스킬은 디스패치되지 않고 단순 참조 문서일 뿐이다.
+- 각 팀·개인은 SKILL.md 작성 + 레지스트리 엔트리 1줄 추가로 자유 확장한다. 코어(엔진)는 건드리지 않는다.
+- 예: "CRM 데이터 보정 요청" → Gate 0 → `service-ops` 분기 → `.cairn/skills.yaml`에서 `triggers:[CRM, 데이터보정]` 매칭 → `luppiter-datachange` SKILL.md 수행.
+
+> 코어/조직 경계: **엔진(plugin)이 제공하면 core, 워크스페이스 레지스트리에 등록되면 org**. core는 불변 기본틀, org는 자유 확장.
+
 ## 실행 절차
 
 1. `intent triage`
    - read-only vs write 판정
    - 대상이 코드/프로젝트/bootstrap/운영/하네스 중 무엇인지 판정 (예외·우회 없이 GATE 0 경유 후 트리거 매칭)
+   - Gate 0 분류 결과를 `.harness/triage.json`에 기록한다.
    - 장애 시그널 매칭 시 `service-ops`로 분기 (위 "운영 장애 식별" 표 참조)
    - 불명확하면 1회만 확인 질문
 2. branch owner 선택
