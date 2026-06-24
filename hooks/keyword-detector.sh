@@ -9,6 +9,16 @@ is_guarded_repo() {
   [ -d "$root/.harness" ] && return 0                                     # 하네스 활성 프로젝트
   return 1
 }
+# 라이트 모드 안내: plugin은 로드됐으나 워크스페이스(.cairn)/하네스 없음 → 코어 스킬만 동작 (세션 1회)
+if [ -n "$CLAUDE_PLUGIN_ROOT" ] && ! is_guarded_repo "$repo_root" && [ ! -d "${repo_root:-$PWD}/.cairn" ]; then
+  LIGHT_FLAG="/tmp/cairn-lightmode-$PPID"
+  if [ ! -f "$LIGHT_FLAG" ]; then
+    touch "$LIGHT_FLAG"
+    echo "ℹ️ Cairn 라이트 모드 — 워크스페이스(.cairn) 없이 코어 스킬(/cairn:*)만 사용 중입니다."
+    echo "   가드·조직 규칙·스킬 디스패치·enforce는 비활성입니다. 풀 기능: /cairn:cairn-init 으로 워크스페이스를 만드세요."
+  fi
+fi
+
 is_guarded_repo "$repo_root" || exit 0
 
 # Hook: 사용자 입력에서 키워드 감지 → branch/phase hint 유도
