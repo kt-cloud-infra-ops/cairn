@@ -107,10 +107,81 @@ import re
 import sys
 
 cmd = os.environ.get("COMMAND_TEXT", "")
+
+def has_file_output_redirection(value):
+    single_quote = chr(39)
+    double_quote = chr(34)
+    in_single = False
+    in_double = False
+    index = 0
+
+    while index < len(value):
+        char = value[index]
+
+        if in_single:
+            if char == single_quote:
+                in_single = False
+            index += 1
+            continue
+
+        if in_double:
+            if char == "\\":
+                index += 2
+                continue
+            if char == double_quote:
+                in_double = False
+            index += 1
+            continue
+
+        if char == single_quote:
+            in_single = True
+            index += 1
+            continue
+        if char == double_quote:
+            in_double = True
+            index += 1
+            continue
+        if char == "\\":
+            index += 2
+            continue
+
+        if char != ">":
+            index += 1
+            continue
+
+        op_end = index + (2 if index + 1 < len(value) and value[index + 1] == ">" else 1)
+
+        fd_start = index
+        while fd_start > 0 and value[fd_start - 1].isdigit():
+            fd_start -= 1
+        fd = value[fd_start:index] if fd_start < index else ""
+
+        target_start = op_end
+        while target_start < len(value) and value[target_start].isspace():
+            target_start += 1
+        target_end = target_start
+        while target_end < len(value) and not value[target_end].isspace() and value[target_end] not in ";&|":
+            target_end += 1
+        target = value[target_start:target_end]
+
+        if target.startswith("&"):
+            index = op_end
+            continue
+        if fd == "2":
+            index = op_end
+            continue
+        if target == "/dev/null":
+            index = op_end
+            continue
+
+        return True
+
+    return False
+
 patterns = [
     r"(^|[;&|]\s*)(touch|mkdir|rm|mv|cp|chmod|chown)\b",
-    r"(^|[;&|]\s*)(cat|printf|echo)\b[^;&|]*(>|>>)",
-    r"\btee\b",
+    r"(^|[;&|]\s*)tee\b(?:\s+-[A-Za-z]+)*\s+\S+",
+    r"(^|[;&|]\s*)sponge\b\s+\S+",
     r"\bsed\s+-i\b",
     r"\bperl\s+-pi\b",
     r"\bgit\s+(add|commit|push|tag|merge|rebase|reset|checkout\s+--|clean)\b",
@@ -122,7 +193,8 @@ patterns = [
     r"\b(psql|mysql)\b.*\b(INSERT|UPDATE|DELETE|ALTER|CREATE|DROP|TRUNCATE|GRANT|REVOKE)\b",
     r"\b(node|python3?|ruby)\b.*\b(writeFile|appendFile|fs\.write|File\.write)\b",
 ]
-sys.exit(0 if any(re.search(p, cmd, re.IGNORECASE) for p in patterns) else 1)
+is_write = has_file_output_redirection(cmd) or any(re.search(p, cmd, re.IGNORECASE) for p in patterns)
+sys.exit(0 if is_write else 1)
 '
 }
 
