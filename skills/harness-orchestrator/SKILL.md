@@ -73,6 +73,8 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 - 각 팀·개인은 SKILL.md 작성 + 레지스트리 엔트리 1줄 추가로 자유 확장한다. 코어(엔진)는 건드리지 않는다.
 - 예: "CRM 데이터 보정 요청" → Gate 0 → `service-ops` 분기 → `.cairn/skills.yaml`에서 `triggers:[CRM, 데이터보정]` 매칭 → `luppiter-datachange` SKILL.md 수행.
 
+`triggers`는 요청 키워드를 보고 조직 스킬을 제안·디스패치하는 **soft 계약**이고, `enforce`는 실제 Bash write 패턴을 보고 marker 없으면 차단하는 **hard 계약**이다. 위험 운영작업(DB DML, 대량 삭제, 운영 API write 등)은 `.cairn/skills.yaml`에 `enforce.write_patterns`와 `requires_gate`를 등록하고, 해당 스킬의 필수 GATE 통과 시 `.harness/skill-{name}.json` marker를 생성한다.
+
 > 코어/조직 경계: **엔진(plugin)이 제공하면 core, 워크스페이스 레지스트리에 등록되면 org**. core는 불변 기본틀, org는 자유 확장.
 
 ## 실행 절차

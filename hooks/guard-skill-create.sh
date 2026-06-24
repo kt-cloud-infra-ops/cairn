@@ -98,6 +98,26 @@ missing = [key for key in required if key not in fields]
 print(",".join(missing))
 ')
 
+HAS_ENFORCE_FRONTMATTER=$(printf '%s' "$CONTENT" | python3 -c '
+import re
+import sys
+
+text = sys.stdin.read()
+fields = set()
+
+if text.startswith("---"):
+    match = re.search(r"\n---\s*(\n|$)", text[3:])
+    if match:
+        end = 3 + match.start()
+        frontmatter = text[3:end]
+        for line in frontmatter.splitlines():
+            m = re.match(r"^\s*([A-Za-z0-9_-]+)\s*:", line)
+            if m:
+                fields.add(m.group(1))
+
+print("true" if "enforce" in fields else "false")
+')
+
 EXISTING_CORE=""
 if [ -d "$repo_root/agents/skills" ]; then
   EXISTING_CORE=$(find "$repo_root/agents/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print 2>/dev/null | sed -E 's|.*/agents/skills/([^/]+)/SKILL\.md$|\1|' | grep -v '^vendor$' | sort || true)
@@ -159,8 +179,17 @@ echo "  - [ ] 완료 조건"
 
 if [ "$REGISTRY_HINT" = "true" ]; then
   echo "  - [ ] .cairn/skills.yaml에 name/path/branch/triggers/description 등록"
+  echo "  - [ ] (선택) enforce 사용 시 .cairn/skills.yaml에 enforce.write_patterns/requires_gate 등록"
+  echo "        · write_patterns: DML 키워드 명시(UPDATE/DELETE/INSERT/TRUNCATE). 'psql.*' 류 과대 와일드카드 금지(read SELECT 오차단). bare 단어는 guard가 \\b 경계 자동 적용."
+  echo "  - [ ] (선택) enforce requires_gate marker를 SKILL.md GATE 통과 단계에 명시"
+  echo "        · marker JSON에 expires_at(ISO8601) TTL 권장 + 작업 완료 시 'rm -f' 정리(한번 통과=무제한 write 갭 차단)."
 fi
 echo ""
+
+if [ "$HAS_ENFORCE_FRONTMATTER" = "true" ]; then
+  echo "ℹ️  enforce frontmatter 감지: hard guard의 SoT는 .cairn/skills.yaml enforce 블록입니다."
+  echo ""
+fi
 
 if [ -n "$MISSING_FRONTMATTER" ]; then
   echo "🚫 차단: frontmatter 필수 항목 누락 ($MISSING_FRONTMATTER)"

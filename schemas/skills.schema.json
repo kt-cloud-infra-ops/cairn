@@ -45,6 +45,25 @@
           "owner": {
             "type": "string",
             "description": "(선택) 이 스킬을 관리하는 팀/개인 식별자"
+          },
+          "enforce": {
+            "type": "object",
+            "description": "(선택) trigger와 별개의 hard guard. 위험 write 작업이 이 패턴과 매칭되면 requires_gate marker가 있어야 실행된다. marker JSON에 expires_at(ISO8601)을 넣으면 guard가 TTL 만료를 검사하고 stale marker를 제거한다(없으면 무기한).",
+            "required": ["write_patterns", "requires_gate"],
+            "additionalProperties": false,
+            "properties": {
+              "write_patterns": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 },
+                "description": "Bash write 명령에 대해 검사할 정규식 목록. bare 단어(영숫자)는 guard가 \\b 경계를 자동 적용(`updated_at` 류 부분문자열 오탐 방지). `psql.*` 같은 과대 와일드카드는 read(SELECT)까지 오차단하므로 지양하고 DML 키워드를 명시한다. 예: [UPDATE, DELETE, INSERT, TRUNCATE]"
+              },
+              "requires_gate": {
+                "type": "string",
+                "pattern": "^\\.harness/skill-[a-z0-9][a-z0-9-]*\\.json$",
+                "description": "스킬 GATE 통과 marker. workspace 상대 경로만 허용. 스킬은 이 marker를 GATE 통과 직후 생성하고(권장: expires_at TTL 포함) 작업 완료 시 삭제한다."
+              }
+            }
           }
         }
       }
