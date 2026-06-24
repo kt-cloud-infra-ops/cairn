@@ -9,6 +9,7 @@
  *   .cairn/workspace.yaml      → workspace.schema.json
  *   .cairn/sources.yaml        → sources.schema.json   (+ cross-item uniqueness)
  *   .cairn/profile/*.yaml      → profile.schema.json   (oneOf variant dispatch)
+ *   .cairn/skills.yaml         → skills.schema.json    (optional registry)
  *   profile services document  → services.schema.json
  *
  * Default workspace-path: current working directory (searches up for .cairn/).
@@ -74,6 +75,12 @@ function loadSchema(filename) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
+function loadOptionalSchema(filename) {
+  const path = join(SCHEMA_DIR, filename);
+  if (!existsSync(path)) return null;
+  return JSON.parse(readFileSync(path, 'utf8'));
+}
+
 let schemas, validate;
 try {
   schemas = {
@@ -81,9 +88,10 @@ try {
     sources:   loadSchema('sources.schema.json'),
     profile:   loadSchema('profile.schema.json'),
     services:  loadSchema('services.schema.json'),
+    skills:    loadOptionalSchema('skills.schema.json'),
   };
   // Register all so profile.schema.json's "$ref": "./services.schema.json" resolves.
-  for (const s of Object.values(schemas)) {
+  for (const s of Object.values(schemas).filter(Boolean)) {
     try { ajv.addSchema(s); } catch { /* already registered */ }
   }
   validate = {
@@ -91,6 +99,7 @@ try {
     sources:   ajv.compile(schemas.sources),
     profile:   ajv.compile(schemas.profile),
     services:  ajv.compile(schemas.services),
+    skills:    schemas.skills ? ajv.compile(schemas.skills) : null,
   };
 } catch (e) {
   console.error(`\nERROR loading/compiling schemas: ${e.message}\n`);
@@ -238,6 +247,23 @@ function validateSources(cairnDir, base) {
   return fail('sources.yaml', r, lines);
 }
 
+function validateSkills(cairnDir, base) {
+  const fp = join(cairnDir, 'skills.yaml');
+  const r  = relTo(base, fp);
+  if (!existsSync(fp)) return skip('skills.yaml', r, 'not found');
+  if (!validate.skills) {
+    return fail('skills.yaml', r, [
+      `    ${C.red('• schemas/skills.schema.json not found; cannot validate existing registry')}`,
+    ]);
+  }
+
+  let data;
+  try { data = parseYaml(fp); } catch (e) { return fail('skills.yaml', r, [`    ${C.red('• ' + e.message)}`]); }
+  return validate.skills(data)
+    ? pass('skills.yaml', r)
+    : fail('skills.yaml', r, fmtAjvErrors(validate.skills.errors));
+}
+
 function validateProfileFile(fp, base) {
   const name = basename(fp);
   const r    = relTo(base, fp);
@@ -332,6 +358,9 @@ function main() {
 
   console.log('\n' + C.bold('Profile'));
   validateProfileDir(cairnDir, workspace);
+
+  console.log('\n' + C.bold('Skills'));
+  validateSkills(cairnDir, workspace);
 
   console.log('\n' + '─'.repeat(72));
   const { pass: p, fail: f, warn: w, skip: s } = tally;

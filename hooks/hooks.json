@@ -9,6 +9,12 @@
     ],
     "PreToolUse": [
       {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/guard-orchestrator-entry.sh\"" }
+        ]
+      },
+      {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/guard-charter.sh\"" }
