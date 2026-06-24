@@ -14,4 +14,4 @@ triggers:
 - CRITICAL/HIGH가 `0건`이면 `evidence.codeReview.status = "pass"`, `1건 이상`이면 `"fail"`로 기록한다.
 
 ## 소스 참조
-- `agents/subagents/code-reviewer.md`
+- `agents/code-reviewer.md` (엔진 plugin 레이어 에이전트)

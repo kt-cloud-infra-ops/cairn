@@ -100,7 +100,7 @@ PR 최상위 코멘트로 답하지 않음.
 |------|----|
 | 원본 | [obra/superpowers — receiving-code-review](https://github.com/obra/superpowers) |
 | vendor 사본 | [superpowers--receiving-code-review](../vendor/superpowers--receiving-code-review/SKILL.md) |
-| 흡수 결정 | [ADR-006](../../../base/guides/decisions/006-skill-unification.md) — PR #31 |
+| 흡수 결정 | [ADR-006](../../../decisions/006-skill-unification.md) — PR #31 |
 | 판정 | SUPPLEMENT (리뷰 피드백 수용 프로토콜) |
 
 ## 참조

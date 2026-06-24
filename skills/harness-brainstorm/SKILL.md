@@ -12,7 +12,7 @@ description: "아이디어를 설계로 전환 + 요구사항 명확화. 질문(
 - 승인 후 Step 9에서 `init-harness-run.sh` 실행으로 `.harness/state.json` + CPS 템플릿 자동 생성
 - 그 다음 `harness-plan` 호출 (PRD/Architecture/Task Packet)
 - 설계 문서 저장 위치 (택1):
-  - 프로젝트 레포 `{프로젝트}/docs/features/{TICKET}-{descriptive-name}.md` (Jira 티켓 있고 코드 변경 동반)
+  - `projects/{프로젝트}/docs/features/{TICKET}-{descriptive-name}.md` (Jira 티켓 있고 코드 변경 동반)
   - ai-team-standards `temp/brainstorm-{topic}.md` (티켓 없거나 검토만)
 
 ### NEVER
@@ -51,7 +51,7 @@ description: "아이디어를 설계로 전환 + 요구사항 명확화. 질문(
    - 추가: 접근안 비교(추천 포함) / 최종 설계 / 미확정 항목(TBD)
 6. **설계 문서 저장**
    - 위치 분기:
-     - **Jira 티켓 + 코드 변경 동반** → `{프로젝트 레포}/docs/features/{TICKET}-{descriptive-name}.md`
+     - **Jira 티켓 + 코드 변경 동반** → `projects/{프로젝트}/docs/features/{TICKET}-{descriptive-name}.md`
      - **티켓 없음 / 검토만** → `temp/brainstorm-{descriptive-name}.md` (커밋 X)
    - 코드 브랜치 동반 규칙: features/ 문서는 해당 코드 feature 브랜치에 동반 커밋 (참조: `agents/rules/git-workflow.md`)
    - 섹션 구성: Step 5 9항목 + 접근안 비교 + 최종 설계 + 미확정
@@ -71,7 +71,7 @@ description: "아이디어를 설계로 전환 + 요구사항 명확화. 질문(
 - [ ] [MANUAL] 접근안 2-3개 + 추천안 제시됨
 - [ ] [MANUAL] CPS Charter 9항목 모두 설계 문서에 포함
 - [ ] [MANUAL] 사용자 설계 승인 (명시적 "승인" 의사 표현)
-- [ ] [FILE] 설계 문서 저장됨 (`{프로젝트}/docs/features/` 또는 `temp/`)
+- [ ] [FILE] 설계 문서 저장됨 (`projects/{프로젝트}/docs/features/` 또는 `temp/`)
 - [ ] [MANUAL] placeholder 0건
 - [ ] [FILE] `.harness/state.json` 생성됨 (init-harness-run.sh 실행 결과)
 - [ ] [MANUAL] `harness-plan`으로 전환
@@ -101,7 +101,7 @@ dev-tdd / dev-subagent-driven (구현)
 | "전체 하네스 Phase Gate 돌리자" | `harness-dev-process` |
 | "구현 단계 진입" | `dev-tdd` |
 
-> **변경 이력 (2026-04-27)**: `harness-clarify` 폐기 → 본 스킬에 흡수. 요구사항 명확화도 본 스킬 Step 3~5에서 처리. 자세한 결정은 [ADR-006](../../../base/guides/decisions/006-skill-unification.md) 후속 결정 섹션.
+> **변경 이력 (2026-04-27)**: `harness-clarify` 폐기 → 본 스킬에 흡수. 요구사항 명확화도 본 스킬 Step 3~5에서 처리. 자세한 결정은 [ADR-006](../../../decisions/006-skill-unification.md) 후속 결정 섹션.
 
 ## Push back 기준 (설계 단계에서)
 
@@ -116,13 +116,13 @@ dev-tdd / dev-subagent-driven (구현)
 |------|----|
 | 원본 | [obra/superpowers — brainstorming](https://github.com/obra/superpowers) |
 | vendor 사본 | [superpowers--brainstorming](../vendor/superpowers--brainstorming/SKILL.md) |
-| 흡수 결정 | [ADR-006](../../../base/guides/decisions/006-skill-unification.md) — PR #31 |
+| 흡수 결정 | [ADR-006](../../../decisions/006-skill-unification.md) — PR #31 |
 | 판정 | SUPPLEMENT (HARD-GATE 설계 승인 프로토콜 + CPS Charter 9항목 + Phase 0 bootstrap) |
 | 후속 흡수 | `harness-clarify` 폐기 흡수 (2026-04-27, B안) — Charter 항목 + Phase 0 자동 생성 |
 
 ## 참조
 
-- 위치: `harness-orchestrator`의 `dev` branch owner 산하 설계 단계 — 변경성 요청이 dev branch로 분기된 뒤 설계 단계에서 호출된다. orchestrator 의무 통과: `base/guides/decisions/008-orchestrator-mandatory.md`
+- 위치: `harness-orchestrator`의 `dev` branch owner 산하 설계 단계 — 변경성 요청이 dev branch로 분기된 뒤 설계 단계에서 호출된다. orchestrator 의무 통과: `decisions/008-orchestrator-mandatory.md`
 - 연관: `harness-plan` (PRD), `harness-dev-process` (전체 Phase Gate)
 - 룰: `agents/rules/git-workflow.md` (features 브랜치 동반 규칙), `agents/rules-on-demand/project-docs.md` (features 네이밍)
-- ADR: [ADR-006](../../../base/guides/decisions/006-skill-unification.md)
+- ADR: [ADR-006](../../../decisions/006-skill-unification.md)

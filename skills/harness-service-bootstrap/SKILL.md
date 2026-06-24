@@ -33,7 +33,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - `agents/skills/workspace-create-service/SKILL.md`
 - `agents/skills/workspace-add-project/SKILL.md`
 - `agents/skills/workspace-setup/SKILL.md`
-- `base/guides/decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
+- `decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
 
 ## 실행 절차
 
@@ -64,7 +64,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
   - 자율 (예: 자율 repo 패턴) = repo 자체 룰 보존, 카탈로그 메타만 우리 관리
 - [ ] **service-mapping.md 등록**: `agents/rules/service-mapping.md` 매핑 행 추가
 - [ ] **frontmatter 표준 적용**: `vision_category` / `vision_layer` / `part` / `roadmap_stage` / `auth_method` / `deployment`
-- [ ] **도메인 에이전트 신설 여부**: `agents/subagents/{파트}/{서비스}.md` (자율 repo 필수, 표준 repo 선택)
+- [ ] **도메인 에이전트 신설 여부**: `workspace/<YOUR_SERVICE>/agents/{서비스}.md` — 프로젝트 레포 canonical (자율 repo 필수, 표준 repo 선택)
 
 상세 가이드: `references/bootstrap-charter.md`
 

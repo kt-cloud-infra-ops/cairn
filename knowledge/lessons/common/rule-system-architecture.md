@@ -140,7 +140,7 @@ Context-based automatic document placement:
 if (workingOnProject(<your_service>))
   → save to docs/projects/<your_service>/
 else if (workingOnSharedPolicy)
-  → save to base/guides/decisions/
+  → save to decisions/
 else if (workingOnLanguagePattern)
   → save to docs/guides/<language>/
 else if (workingOnAutomation)

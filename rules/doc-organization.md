@@ -23,7 +23,7 @@
 | `base/personal/` | **개인 문서** | 작업일지, 개인 메모 (본인 폴더만 수정) |
 | `temp/` | **임시 작업 문서** | 작업 중 문서, 위키/Confluence 업로드 전 |
 | `base/templates/` | **문서 템플릿** | 작업일지 등 반복 사용 양식 |
-| `agents/knowledge/lessons/` | **AI 에이전트 전용** | 학습 내용 (db/, java/, common/) |
+| `knowledge/lessons/` | **AI 에이전트 전용** | 학습 내용 (db/, java/, common/) |
 
 **프로젝트 상세 문서(스펙, 피처, 릴리즈)는 프로젝트 레포 `docs/`에 저장.** `base/services/`는 서비스 카탈로그(인덱스) 역할만 한다. (운영 SQL 적용 이력은 `{repo}.wiki.git` 발행 — ADR-012, `docs/operations/` 폐기)
 
@@ -43,7 +43,7 @@ workspace/{프로젝트}/docs/   # 프로젝트 SoT (코드 레포 안)
 
 base/services/{서비스}/      # 서비스 카탈로그: README, TASKS.md, sop/
 base/personal/<YOUR_EMPLOYEE_ID>/worklog # 개인 작업일지 (본인 폴더만)
-agents/knowledge/lessons/    # AI 학습 내용 (db/, java/, common/)
+knowledge/lessons/           # AI 학습 내용 (db/, java/, common/)
 temp/                        # 임시 작업 문서
 ```
 
@@ -94,7 +94,7 @@ Confluence를 사용하는 경우:
   - 재사용/공유 가치가 있는 파일: 적절한 정식 폴더로 이동
     - 프로젝트 문서: 해당 프로젝트 레포 `docs/`
     - 지원 프로젝트: `base/support-projects/{프로젝트}/`
-    - 학습: `agents/knowledge/lessons/`
+    - 학습: `knowledge/lessons/`
 
 ---
 
@@ -104,7 +104,7 @@ Confluence를 사용하는 경우:
 
 | 폴더/파일 | 용도 |
 |----------|------|
-| `agents/knowledge/lessons/` | 코딩 스타일, 디자인 패턴, SOP, 자동화 패턴 |
+| `knowledge/lessons/` | 코딩 스타일, 디자인 패턴, SOP, 자동화 패턴 |
 
 ---
 
@@ -126,14 +126,14 @@ Confluence를 사용하는 경우:
 | **운영 SQL (적용 이력)** | **`{repo}.wiki.git` operations/ 발행** (`docs/operations/` 로컬 보관 X — ADR-012) |
 | **운영 SOP/절차서 (workflow)** | `base/services/{서비스}/sop/` |
 | 외부 요청 프로젝트 | `base/support-projects/{프로젝트}/` (서비스 태그 필수) |
-| 학습 내용/SOP | `agents/knowledge/lessons/` (db/, java/, common/) |
-| 팀 의사결정 | `base/guides/decisions/` |
+| 학습 내용/SOP | `knowledge/lessons/` (db/, java/, common/) |
+| 팀 의사결정 | `decisions/` |
 | 개인 작업일지 | `base/personal/<YOUR_EMPLOYEE_ID>/worklog/YYYY/MM/MM-DD.md` |
 | 개인 면담/성과 문서 | `base/personal/<YOUR_EMPLOYEE_ID>/1on1/p-1on1-YYYY-Q{N}.md` |
 | 문서 템플릿 | `base/templates/` |
 | **최종 문서** | **Confluence/팀 위키 직접 업로드** |
 
-> **Jira 티켓 판별 우선 규칙 (CRITICAL)**: Jira 티켓 키가 붙은 산출물은 작업 초기·수요조사 단계라도 처음부터 프로젝트 레포 `docs/features/{TICKET}-{name}.md`에 저장한다. **작업 단계(확정 전/후)는 저장 위치 판단 기준이 아니다** — "초기 단계라 임시"라는 판단으로 `temp/`에 두지 않는다. `temp/`는 Jira 티켓이 없는 일회성 분석 또는 외부 업로드 전 초안에만 사용한다. (프로젝트 레포 docs 작업은 `main` 브랜치에서 — 배포 브랜치 stage/feature 오염 금지, `agents/rules/git-workflow.md` 참조)
+> **Jira 티켓 판별 우선 규칙 (CRITICAL)**: Jira 티켓 키가 붙은 산출물은 작업 초기·수요조사 단계라도 처음부터 `projects/{프로젝트}/docs/features/{TICKET}-{name}.md`에 저장한다. **작업 단계(확정 전/후)는 저장 위치 판단 기준이 아니다** — "초기 단계라 임시"라는 판단으로 `temp/`에 두지 않는다. `temp/`는 Jira 티켓이 없는 일회성 분석 또는 외부 업로드 전 초안에만 사용한다. (프로젝트 레포 docs 작업은 `main` 브랜치에서 — 배포 브랜치 stage/feature 오염 금지, `agents/rules/git-workflow.md` 참조)
 
 ---
 

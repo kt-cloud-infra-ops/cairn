@@ -5,8 +5,8 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
 
 ## 스킬 규칙
 ### ALWAYS
-- 도메인 에이전트 먼저 읽기: `agents/subagents/{서비스}/`
-- 피처 문서 검색: `docs/features/` — 이미 판정된 항목 재지적 금지
+- 도메인 에이전트 먼저 읽기: `workspace/<YOUR_SERVICE>/agents/` (도메인 에이전트 canonical 위치)
+- 피처 문서 검색: `projects/{프로젝트}/docs/features/` — 이미 판정된 항목 재지적 금지
 - 보안 체크리스트, Cross-cutting 8항목, Cross-layer 데이터 흐름 추적
 - <YOUR_ORG> 시큐어 코딩 가드레일 (`agents/rules-on-demand/security.md`)
 - 언어별 점검: `references/language-checklist.md`
@@ -33,8 +33,8 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
    - 파일/라인 변경량 + 영향 영역 식별
 
 2. **도메인/피처 사전 참조**
-   - 변경 파일 → 서비스 판별 → `agents/subagents/{서비스}/` 읽기
-   - `docs/features/{TICKET}-*.md` 검색 → 이미 판정된 항목 식별
+   - 변경 파일 → 서비스 판별 → `workspace/<YOUR_SERVICE>/agents/` 읽기 (도메인 에이전트)
+   - `projects/{프로젝트}/docs/features/{TICKET}-*.md` 검색 → 이미 판정된 항목 식별
    - **이미 판정된 항목 재지적 금지**
 
 3. **언어별 품질 점검** (`references/language-checklist.md` 참조)
@@ -128,4 +128,4 @@ push/PR
 | 흡수 가치 | 언어별 점검 매트릭스 / 6단 리포트 템플릿 / 커밋 단위 판정 / evidence 기반 강제 |
 | 우리 룰 보강 | Jira 티켓 필수 / <YOUR_ORG> 가드레일 / 도메인 에이전트 선행 / 영문 conventional / 자동 수정 옵트인 / Co-Authored-By |
 | 제외 | 한글 commit type / 자동 lint 적용 / 무조건 commit 호출 (ADR-008 우회 위험) |
-| ADR | [ADR-008](../../../base/guides/decisions/008-orchestrator-mandatory.md) — orchestrator 의무 통과 |
+| ADR | [ADR-008](../../../decisions/008-orchestrator-mandatory.md) — orchestrator 의무 통과 |

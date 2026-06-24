@@ -16,8 +16,8 @@ tags:
 Charter 작성 전에 반드시 아래 순서로 기존 자산을 확인한다.
 Jira Description만으로 CPS를 작성하면 정확도가 떨어진다.
 
-1. **피처 문서(설계) 검색**: 프로젝트 레포 `docs/features/` 에서 관련 문서 확인 — 피처 문서는 설계 산출물이며 CPS보다 먼저 존재할 수 있음
-2. **도메인 서브에이전트 필수 참조**: 해당 서비스의 도메인 에이전트(`agents/subagents/{서비스}/*.md`)를 **반드시** 호출하여 코드 레벨 영향도 확인 — 피처 문서 유무와 무관하게 항상 수행
+1. **피처 문서(설계) 검색**: `projects/{프로젝트}/docs/features/` 에서 관련 문서 확인 — 피처 문서는 설계 산출물이며 CPS보다 먼저 존재할 수 있음
+2. **도메인 에이전트 필수 참조**: 해당 서비스의 도메인 에이전트(`workspace/<YOUR_SERVICE>/agents/`)를 **반드시** 호출하여 코드 레벨 영향도 확인 — 피처 문서 유무와 무관하게 항상 수행
 3. **피처 문서 있으면** → 피처 문서를 CPS 입력으로 수용 (Jira Description보다 우선)
 4. **피처 문서 없으면** → 도메인 에이전트 검토 결과를 기반으로 CPS 작성
 
@@ -95,7 +95,7 @@ CPS와 피처 문서는 **동등 공존이 아니라 역할이 다르다**.
 | 산출물 | 역할 | 위치 | 수명 |
 |--------|------|------|------|
 | **CPS** | Bootstrap — 초기 범위 확인 + Charter 고정 | `.harness/feature-cps.md` 또는 작업 디렉토리 | 작업 중 임시 |
-| **피처 문서** | Canonical spec — 최종 설계 기준 | 프로젝트 레포 `docs/features/` | 영구 |
+| **피처 문서** | Canonical spec — 최종 설계 기준 | `projects/{프로젝트}/docs/features/` | 영구 |
 
 ### 흐름
 
@@ -125,5 +125,5 @@ CPS와 피처 문서는 **동등 공존이 아니라 역할이 다르다**.
 
 ## 참고
 
-- oh-my-agent: `.agents/subagents/*.md`의 Charter Preflight 패턴
+- oh-my-agent: `.agents/*.md`의 Charter Preflight 패턴
 - 우리 기존 규칙: `agents/rules/core.md` "추정 금지" 원칙의 기계적 구현

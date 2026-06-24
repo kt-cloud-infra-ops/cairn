@@ -37,13 +37,13 @@ tools: Read, Bash, Grep, Glob
 | `agents/rules/` | canonical 정책 위치 확인, 충돌/중복 제거 |
 | `agents/skills/` | 실행 절차와 규칙 참조 정합성 유지 |
 | `agents/skills/scripts/` | 고비용 수동 command의 반자동 helper 설계 (`weekly-report` 등) |
-| `agents/subagents/` | 레이어/도메인 에이전트 구조, 라우터/본체 경계 정리 |
+| `agents/` (레이어) + `workspace/<svc>/agents/` (도메인) | 레이어/도메인 에이전트 구조, 라우터/본체 경계 정리 |
 | `agents/rules-on-demand/` | 준수 규칙 파일 신설·triggers 설계·소스 정합성 검토 |
 | `agents/skills/harness-dev-process/` | Phase Gate, lazy-loading, validator contract 정합성 확인 |
 | `agents/skills/harness-orchestrator/` | 4-branch(dev / service-bootstrap / service-ops / harnessing) 라우팅 정합성, 이중 GATE 방지 |
 | `agents/skills/harness-service-bootstrap/` | 신규 서비스 bootstrap GATE 0/1, handoff evidence 일관성 |
 | `agents/skills/harness-service-ops/` | 운영 반영 GATE 0/1/2, bootstrap prerequisite 강제 |
-| `base/guides/decisions/008-orchestrator-mandatory.md` | 상위 `harness-orchestrator` 라우터 구축 결정. 모든 변경 수반 요청은 orchestrator 의무 통과 |
+| `decisions/008-orchestrator-mandatory.md` | 상위 `harness-orchestrator` 라우터 구축 결정. 모든 변경 수반 요청은 orchestrator 의무 통과 |
 | `base/` | 서비스 허브, support-projects, personal 문서 배치 원칙 검토 |
 | `workspace/*/docs` | 프로젝트 문서 SoT 경계와 인덱스 구조 검토 |
 | `.claude/` | hook, memory, settings의 프로젝트 규칙 충돌 여부 확인 |
@@ -74,9 +74,9 @@ tools: Read, Bash, Grep, Glob
 
 범위가 특정 서비스/프로젝트까지 내려가면 아래도 추가로 읽는다.
 
-- `base/services/{서비스}/README.md`
-- `workspace/{프로젝트}/docs/README.md`
-- `agents/subagents/{서비스}/README.md`
+- `services/{서비스}/README.md`
+- `projects/{프로젝트}/docs/README.md`
+- `domains/{서비스}/agents/README.md`
 
 ## 검토 체크리스트
 
@@ -89,7 +89,7 @@ tools: Read, Bash, Grep, Glob
 ### 2. 경계 확인
 
 - `base/`와 프로젝트 레포 `docs/` 역할이 섞이지 않았는가
-- `agents/subagents/`의 라우터와 본체 경계가 명확한가
+- 레이어 에이전트(`agents/`)와 도메인 에이전트(`workspace/<svc>/agents/`)의 본체 경계가 명확한가
 - 하네스 문서와 일반 규칙 문서가 역할 분리를 유지하는가
 - `features/` 파일이 `{TICKET}-{descriptive-name}.md` 형식을 따르는가
 - Jira 티켓 없는 분석/리뷰 문서가 `features/`에 혼재하지 않는가 (`reviews/`, `specs/` 분리 여부)

@@ -17,8 +17,8 @@
 | **공통** | 인증/형상/공용 도구 | 팀 내외 공용 컴포넌트 |
 
 위치 결정:
-- `base/services/{파트}/{서비스}/`
-- `agents/subagents/{파트}/{서비스}.md` (필요 시)
+- `services/{파트}/{서비스}/`
+- `workspace/<YOUR_SERVICE>/agents/{서비스}.md` (도메인 에이전트, 필요 시)
 
 ## 2. 카테고리 결정 (비전 OSS 분류)
 
@@ -79,7 +79,7 @@
 - Jira 티켓 키 필수 (`${JIRA_PROJECT_KEY}-NNN`)
 - `dev-code-review` evidence 생성 의무
 - Co-Authored-By 자동 추가
-- spec/plan 위치: `docs/features/{TICKET}-*.md`
+- spec/plan 위치: `projects/{프로젝트}/docs/features/{TICKET}-*.md`
 - AGENTS.md/CLAUDE.md는 ai-team-standards 참조
 
 ### 자율 repo (예외 — 사용자 명시 합의 필요)
@@ -90,8 +90,8 @@
 
 자율 시:
 - repo 자체 룰 보존 (한글 commit, 자체 spec 위치 등)
-- 우리 카탈로그 메타만 관리 (`base/services/{파트}/{서비스}/README.md` frontmatter)
-- 도메인 에이전트(`agents/subagents/{파트}/{서비스}.md`)에 자율성 메타 명시 필수
+- 우리 카탈로그 메타만 관리 (`services/{파트}/{서비스}/README.md` frontmatter)
+- 도메인 에이전트(`workspace/<YOUR_SERVICE>/agents/{서비스}.md`)에 자율성 메타 명시 필수
 
 판단 기준 예시:
 - ✅ `<SERVICE_A>` (자율): README 300줄+, docs/superpowers 충분, 자체 commit 규칙 정착
@@ -124,7 +124,7 @@ deployment: "{K8s|VM|HW|기타}"
 
 ## 10. 도메인 에이전트 메타정보 (자율 repo 필수)
 
-위치: `agents/subagents/{파트}/{서비스}.md`
+위치: `workspace/<YOUR_SERVICE>/agents/{서비스}.md`
 
 필수 섹션:
 - repo 정보 (경로/주력 작성자/활성 기간)
@@ -193,8 +193,8 @@ ai-team-standards는 demo-be의 표준을 **link 포인터로만** 참조. demo-
 
 ## 관련 문서
 
-- [ADR-008](../../../../base/guides/decisions/008-orchestrator-mandatory.md) — orchestrator 의무
-- [ADR-009](../../../../base/guides/decisions/009-vision-catalog-alignment.md) — 비전 정합성 + 자율 repo 존중
+- [ADR-008](../../../../decisions/008-orchestrator-mandatory.md) — orchestrator 의무
+- [ADR-009](../../../../decisions/009-vision-catalog-alignment.md) — 비전 정합성 + 자율 repo 존중
 - [base/services/README.md](../../../../base/services/README.md) — 카탈로그 인덱스
 - [agents/rules/service-mapping.md](../../../../agents/rules/service-mapping.md) — 매핑 룰
 - **demo-be 템플릿 표준** (source of truth):

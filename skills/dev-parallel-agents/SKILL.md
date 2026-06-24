@@ -75,5 +75,5 @@ description: "2개 이상의 독립 태스크를 동시 병렬 에이전트로 �
 |------|----|
 | 원본 | [obra/superpowers — dispatching-parallel-agents](https://github.com/obra/superpowers) |
 | vendor 사본 | [superpowers--dispatching-parallel-agents](../vendor/superpowers--dispatching-parallel-agents/SKILL.md) |
-| 흡수 결정 | [ADR-006](../../../base/guides/decisions/006-skill-unification.md) — PR #31 |
+| 흡수 결정 | [ADR-006](../../../decisions/006-skill-unification.md) — PR #31 |
 | 판정 | SUPPLEMENT (독립 태스크 병렬 실행) |

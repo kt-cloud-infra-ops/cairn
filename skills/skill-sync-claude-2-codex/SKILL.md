@@ -35,5 +35,5 @@ model: haiku
 ## 참고
 
 - 스크립트: `scripts/sync.sh`
-- Codex 공식 스킬 경로: `${CODEX_HOME:-~/.codex}/skills/` ([Codex 확인](../../../base/guides/decisions/harness-engineering/))
+- Codex 공식 스킬 경로: `${CODEX_HOME:-~/.codex}/skills/` ([Codex 확인](../../../decisions/harness-engineering/))
 - 향후 Claude ↔ Codex 양방향 동기화가 필요해지면 `sync-bidirectional` 옵션 추가 검토

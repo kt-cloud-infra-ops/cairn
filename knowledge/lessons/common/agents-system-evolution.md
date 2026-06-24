@@ -86,7 +86,7 @@ aliases: []
 - 중앙(`ai-team-standards`)에 두면 한곳에서 보기 쉬우나, 프로젝트별 격리 안 됨
 - 프로젝트 레포에 두면 자기완결이지만, 중앙 라우터에서 정방향 링크만 유지 필요
 
-**결정**: 본체는 프로젝트 레포, 중앙엔 라우터(`agents/subagents/{서비스}/README.md`)만. 단 <YOUR_SERVICE>는 **임시로 중앙에 보관** 중(이전 예정).
+**결정**: 본체는 프로젝트 레포(`workspace/<YOUR_SERVICE>/agents/`), 중앙엔 라우터(`domains/{서비스}/agents/README.md`)만. 단 <YOUR_SERVICE>는 **임시로 중앙에 보관** 중(이전 예정).
 
 **레슨런**:
 - "임시 위치"가 6개월 이상 살아남을 가능성 → 임시라고 적어두면 후임자가 신뢰함. **이전 기한(deadline) 명시**가 필요.
@@ -209,12 +209,12 @@ aliases: []
 
 ## 관련 문서
 
-- [ADR-006 — 스킬 통합](../../../../base/guides/decisions/006-skill-unification.md) — commands→skills 통합 결정
-- [ADR-005 — 프로젝트 문서 표준](../../../../base/guides/decisions/005-project-docs-standard.md) — 프로젝트 레포 docs/ 표준
-- [ADR-004 — 룰 통합](../../../../base/guides/decisions/004-rules-consolidation.md) — rules 통합
+- [ADR-006 — 스킬 통합](../../../../decisions/006-skill-unification.md) — commands→skills 통합 결정
+- [ADR-005 — 프로젝트 문서 표준](../../../../decisions/005-project-docs-standard.md) — 프로젝트 레포 docs/ 표준
+- [ADR-004 — 룰 통합](../../../../decisions/004-rules-consolidation.md) — rules 통합
 - [agents/rules/agents.md](../../../rules/agents.md) — 에이전트 오케스트레이션 룰
 - [agents/rules/skill-governance.md](../../../rules/skill-governance.md) — 스킬 거버넌스
-- [agents/subagents/harnessing.md](../../../subagents/harnessing.md) — 하네스 어드바이저
+- [agents/harnessing.md](../../../harnessing.md) — 하네스 어드바이저 (엔진 plugin 레이어 에이전트)
 - [documentation-architecture.md](documentation-architecture.md) — 문서 아키텍처
 - [rule-design-principles.md](rule-design-principles.md) — 룰 설계 원칙
 - [rule-system-architecture.md](rule-system-architecture.md) — 룰 시스템 구조

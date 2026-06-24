@@ -106,7 +106,7 @@ SQL(값 생성) → Mapper(전달) → Service(DTO 변환) → Controller(응답
 
 ## 산출물
 
-영향도 분석 결과는 **프로젝트 레포 `docs/features/` 내 설계 문서의 별도 섹션**(예: "기존 쿼리 영향도 분석")으로 포함한다. 임시 문서(temp/)가 아닌 프로젝트 레포 설계 문서에 포함하여 추적 가능하게 한다.
+영향도 분석 결과는 **`projects/{프로젝트}/docs/features/` 내 설계 문서의 별도 섹션**(예: "기존 쿼리 영향도 분석")으로 포함한다. 임시 문서(temp/)가 아닌 프로젝트 레포 설계 문서에 포함하여 추적 가능하게 한다.
 
 > **하네스 적용 시**: cross-cutting 8항목은 CPS(`## 영향도 분석`)에 1차 기록하고, 설계 상세는 PRD(`## 풀스택 레이어 설계`)/Architecture에 확장한다. → `agents/skills/harness-dev-process/`
 
@@ -122,5 +122,4 @@ SQL(값 생성) → Mapper(전달) → Service(DTO 변환) → Controller(응답
 - 메인 테이블(`<YOUR_TABLE>`) DB 직접 SQL 작업 시 연관 서브 테이블(`<YOUR_TABLE>_sub`) 처리를 누락해도 DB 오류 없이 통과 (제약 없음)
 - 판단 기준이 애플리케이션 코드에만 존재하여 비가시적 — DB만 보면 놓침
 - **DB 직접 작업 요청이 와도 반드시 도메인 서브에이전트와 사전 확인**
-- 팀별 도메인 규칙: `agents/knowledge/lessons/db/<YOUR_SERVICE>-<YOUR_TABLE>-rules.md`
-
+- 팀별 도메인 규칙: `knowledge/lessons/db/<YOUR_SERVICE>-<YOUR_TABLE>-rules.md`

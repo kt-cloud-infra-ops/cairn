@@ -59,7 +59,7 @@
 
 ### 도메인 정합성
 - [ ] 도메인 준수 규칙 사전 확인 (`agents/rules-on-demand/<your_service>/`; 도메인 에이전트 본체는 [미생성])
-- [ ] 피처 문서 사전 확인 (`docs/features/{TICKET}-*.md`)
+- [ ] 피처 문서 사전 확인 (`projects/{프로젝트}/docs/features/{TICKET}-*.md`)
 - [ ] **이미 판정된 항목 재지적 금지**
 
 ---

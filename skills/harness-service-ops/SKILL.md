@@ -32,7 +32,7 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 - `agents/skills/cicd-deploy/SKILL.md`
 - `agents/skills/jira-rest-ops/SKILL.md`
 - `agents/rules/skill-governance.md`
-- `base/guides/decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
+- `decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
 
 ## 실행 절차
 

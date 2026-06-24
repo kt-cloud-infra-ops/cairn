@@ -13,4 +13,4 @@ triggers:
 - 레퍼런스 화면 지정 요청이 있으면 같은 패턴으로 맞춘다.
 
 ## 소스 참조
-- `agents/subagents/frontend-dev.md`
+- `agents/frontend-dev.md` (엔진 plugin 레이어 에이전트)

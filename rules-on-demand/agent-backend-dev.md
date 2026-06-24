@@ -14,4 +14,4 @@ triggers:
 - 동일 목적의 시나리오를 Unit/Integration, API 테스트, E2E에 중복 작성하지 않는다.
 
 ## 소스 참조
-- `agents/subagents/backend-dev.md`
+- `agents/backend-dev.md` (엔진 plugin 레이어 에이전트)

@@ -13,4 +13,4 @@ triggers:
 - 검색 필터에서는 비활성/삭제 대상을 제외한다.
 
 ## 소스 참조
-- `agents/subagents/dba.md`
+- `agents/dba.md` (엔진 plugin 레이어 에이전트)

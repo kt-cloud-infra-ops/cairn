@@ -79,7 +79,7 @@ description: "구현 플랜을 병렬 subagent로 디스패치 실행. 각 태�
 |------|----|
 | 원본 | [obra/superpowers — subagent-driven-development](https://github.com/obra/superpowers) |
 | vendor 사본 | [superpowers--subagent-driven-development](../vendor/superpowers--subagent-driven-development/SKILL.md) |
-| 흡수 결정 | [ADR-006](../../../base/guides/decisions/006-skill-unification.md) — PR #31 |
+| 흡수 결정 | [ADR-006](../../../decisions/006-skill-unification.md) — PR #31 |
 | 판정 | SUPPLEMENT (병렬 subagent + 2단계 리뷰) |
 
 ## 참조

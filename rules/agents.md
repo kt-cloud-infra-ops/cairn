@@ -127,8 +127,8 @@ No user prompt needed:
 
 code-reviewer 호출 전 아래를 반드시 수행:
 
-1. 변경 파일의 서비스 판별 → `agents/subagents/{서비스}/` 도메인 에이전트 읽기
-2. 관련 피처 문서 검색 → 프로젝트 레포 `docs/features/`
+1. 변경 파일의 서비스 판별 → `workspace/<YOUR_SERVICE>/agents/` 도메인 에이전트 읽기
+2. 관련 피처 문서 검색 → `projects/{프로젝트}/docs/features/`
 3. 피처 문서에 영향도 분석/테스트 설계가 있으면 → **이미 판정된 항목 재지적 금지**
 4. `agents/rules-on-demand/security.md` 보안 체크리스트 적용
 
@@ -166,26 +166,27 @@ For complex problems, use split role sub-agents:
 - 서비스별 도메인 에이전트는 `workspace/<YOUR_SERVICE>/agents/`에 배치한다.
   도메인별 **코드 편집 준수 규칙**은 별도 자산으로 `agents/rules-on-demand/<YOUR_SERVICE>/`에 둘 수 있다.
 
-> 서비스별 라우터: `agents/subagents/{서비스}/README.md`
+> 서비스별 라우터: `domains/{서비스}/agents/README.md` (cairn-pe 배치) 또는 `services/{서비스}/README.md`
 
 ### 구조
-- **레이어 에이전트** (크로스 프로젝트): `frontend-dev`, `backend-dev`, `dba`, `code-reviewer`, `harnessing`
-- **도메인 에이전트** (서비스별, 사용자 팀 환경에 맞게 정의)
+- **레이어 에이전트** (크로스 프로젝트): `frontend-dev`, `backend-dev`, `dba`, `code-reviewer`, `harnessing` — 엔진 plugin `agents/` 폴더에 위치
+- **도메인 에이전트** (서비스별): `workspace/<YOUR_SERVICE>/agents/` — 프로젝트 레포 canonical
 
 ### 호출 원칙
-1. **도메인 코드 변경** → 해당 도메인 에이전트 참조 (담당 파일, 테이블, API 확인)
+1. **도메인 코드 변경** → 해당 도메인 에이전트 참조 (`workspace/<YOUR_SERVICE>/agents/`) — 담당 파일, 테이블, API 확인
 2. **레이어 전문성 필요** → 레이어 에이전트 컨설팅 (DB 쿼리 → dba, UI 패턴 → frontend-dev)
-3. **구조/SoT/하네스 변경** → `agents/subagents/harnessing.md` 우선 참조
+3. **구조/SoT/하네스 변경** → `agents/harnessing.md` 우선 참조 (엔진 plugin 레이어 에이전트)
 4. **요구사항 축적** → 도메인 에이전트의 `## 요구사항 이력` 섹션에 확인된 스펙 기록
 5. **교차참조 확인** → 각 에이전트 상단 교차참조 테이블로 연관 도메인 파악
-6. **새 프로젝트** → 프로젝트 저장소에 도메인 에이전트 생성, `agents/subagents/{서비스}/README.md` 라우터에 링크 추가
+6. **새 프로젝트** → 프로젝트 저장소 `workspace/<YOUR_SERVICE>/agents/`에 도메인 에이전트 생성, `domains/{서비스}/agents/README.md` 라우터에 링크 추가
 
 ### 사용 예시
 ```
 # <YOUR_SERVICE> 이벤트 화면 수정 시
-1. agents/rules-on-demand/<YOUR_SERVICE>/event.md 읽기 (담당 파일, 테이블, 준수 규칙 확인)
-2. 인시던트 생성 연관 시 → agents/rules-on-demand/<YOUR_SERVICE>/incident.md 교차 확인
-3. 필요시 agents/subagents/frontend-dev.md 참조 (UI 패턴)
-4. 필요시 agents/subagents/dba.md 참조 (쿼리 최적화)
+1. workspace/<YOUR_SERVICE>/agents/ 읽기 (도메인 에이전트 — 담당 파일, 테이블, 준수 규칙 확인)
+   또는 domains/<YOUR_SERVICE>/rules-on-demand/event.md (cairn-pe 배치 시)
+2. 인시던트 생성 연관 시 → 동일 경로에서 incident.md 교차 확인
+3. 필요시 agents/frontend-dev.md 참조 (UI 패턴)
+4. 필요시 agents/dba.md 참조 (쿼리 최적화)
 5. 도메인 에이전트 본체 생성 후에는 해당 에이전트의 요구사항 이력에 확인된 스펙 기록
 ```

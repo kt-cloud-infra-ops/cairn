@@ -73,8 +73,8 @@ Claude 메인 프로젝트의 계층적 문서 구조 설계 가이드입니다.
   - 프로젝트별 기술 문서
 - **명명 규칙**: `{번호}-{주제}.md` (예: `005-sre-coding-guide.md`)
 
-### base/guides/decisions/
-- **위치**: `/claude/base/guides/decisions/`
+### decisions/
+- **위치**: `/claude/decisions/`
 - **역할**: 아키텍처 의사결정 기록 (ADR)
 - **내용**:
   - 결정 배경 (컨텍스트)
@@ -137,4 +137,4 @@ Claude 메인 프로젝트의 계층적 문서 구조 설계 가이드입니다.
 
 ## 관련 ADR
 
-- `base/guides/decisions/002-claude-md-distributed-structure.md`
+- `decisions/002-claude-md-distributed-structure.md`

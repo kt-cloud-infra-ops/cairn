@@ -80,7 +80,7 @@ Create a skill file at `agents/skills/learned/[pattern-name].md`:
 - Keep skills focused - one pattern per skill
 
 ## 완료 조건 (DONE WHEN)
-- [ ] [FILE] agents/knowledge/lessons/ 하위에 새 패턴 문서 생성
+- [ ] [FILE] knowledge/lessons/ 하위에 새 패턴 문서 생성
 - [ ] [MANUAL] 기존 스킬과 중복 아님 확인
 
 ## 실행 절차

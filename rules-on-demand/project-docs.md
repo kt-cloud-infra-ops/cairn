@@ -110,7 +110,7 @@ base/services/{서비스}/
 - [ ] 프로젝트 레포에 `docs/` 표준 구조 생성
 - [ ] 프로젝트 레포에 `AGENTS.md` 생성
 - [ ] `base/services/{서비스}/README.md` 프로젝트 카탈로그 업데이트
-- [ ] `agents/subagents/{서비스}/README.md` 라우터에 포인터 추가
+- [ ] `domains/{서비스}/agents/README.md` 라우터에 포인터 추가
 
 ## 프로젝트명 규칙
 

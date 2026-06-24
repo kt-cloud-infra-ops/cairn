@@ -48,7 +48,7 @@
 
 ### 도메인 에이전트
 
-- `agents/subagents/{서비스}/{도메인}.md`
+- `workspace/<YOUR_SERVICE>/agents/{도메인}.md`
 - `현재 운영 기준 문서 포인터` 또는 `상세 문서 포인터`를 markdown link로 유지
 
 ### 프로젝트 문서
@@ -166,4 +166,4 @@
 - `agents/rules/agents.md`
 - `agents/rules/doc-organization.md`
 - `agents/rules-on-demand/impact-analysis.md`
-- `agents/subagents/harnessing.md`
+- `agents/harnessing.md` (엔진 plugin 레이어 에이전트)

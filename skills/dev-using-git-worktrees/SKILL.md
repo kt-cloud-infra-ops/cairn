@@ -53,6 +53,6 @@ bash scripts/wt-scan.sh [workspace-root] [days]  # 고아 점검 (읽기 전용,
 |------|----|
 | 원본 | [obra/superpowers — using-git-worktrees](https://github.com/obra/superpowers) |
 | vendor 사본 | [superpowers--using-git-worktrees](../vendor/superpowers--using-git-worktrees/SKILL.md) |
-| 흡수 결정 | [ADR-006](../../../base/guides/decisions/006-skill-unification.md) — PR #31 |
+| 흡수 결정 | [ADR-006](../../../decisions/006-skill-unification.md) — PR #31 |
 | 판정 | SUPPLEMENT (worktree 격리 작업 공간) |
 | 헬퍼 추가 | wt-new/wt-done/wt-scan 원자화 (rules/worktree-lifecycle) |

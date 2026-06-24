@@ -16,7 +16,7 @@ description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessi
 
 ## [GATE 0: ADR-INTENT] ADR 작성 전 사용자 의도 확인 (CRITICAL)
 
-`base/guides/decisions/` 하위에 신규 ADR 작성 / 기존 ADR 수정 / ADR 폐기 표기 시 본 GATE 통과 필수.
+`decisions/` 하위에 신규 ADR 작성 / 기존 ADR 수정 / ADR 폐기 표기 시 본 GATE 통과 필수.
 
 ### 통과 조건
 
@@ -26,7 +26,7 @@ description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessi
 
 ### 트리거
 
-- `base/guides/decisions/{N}-*.md` 신설
+- `decisions/{N}-*.md` 신설
 - 기존 ADR 상태를 "폐기 (Superseded)" 또는 "수정"으로 변경
 - ADR README 인덱스에 신규 행 추가
 
@@ -87,7 +87,7 @@ scope가 주어지면 관련 자산만 읽고, 전체 검토 절차를 그 범�
 | Skills | `agents/skills/*/SKILL.md` | 템플릿/validator 정합성 |
 | Orchestrators | `agents/skills/harness-*/SKILL.md` | 상위 라우터 ↔ 하위 owner 경계 |
 | Vendor | `agents/skills/vendor/manifest.json` | 최신 여부, self-contained |
-| 도메인 에이전트 | `agents/subagents/` | 서비스 커버리지 |
+| 도메인 에이전트 | `workspace/<svc>/agents/` · `domains/<svc>/agents/` | 서비스 커버리지 |
 
 ### 2단계: 맥락 판별 검증
 
@@ -205,7 +205,7 @@ echo "=== Rules ==="
 for rule in agents/rules/*.md; do
   name=$(basename "$rule" .md)
   commits=$(git log --oneline -30 --all --grep="$name" 2>/dev/null | wc -l | tr -d ' ')
-  refs=$(grep -rl "$name" agents/skills/ agents/subagents/ 2>/dev/null | wc -l | tr -d ' ')
+  refs=$(grep -rl "$name" agents/skills/ workspace/*/agents/ domains/*/agents/ 2>/dev/null | wc -l | tr -d ' ')
   printf "  %-25s commits:%-3s refs:%-3s\n" "$name" "$commits" "$refs"
 done
 
@@ -240,7 +240,7 @@ if [ -f /tmp/claude-hook-hits.log ]; then
 fi
 
 echo "=== Domain Agents ==="
-for agent in agents/subagents/*.md agents/subagents/*/*.md agents/subagents/*/*/*.md; do
+for agent in workspace/*/agents/*.md domains/*/agents/*.md; do
   name=$(basename "$agent" .md)
   refs=$(grep -rl "$name" agents/skills/ agents/rules/ 2>/dev/null | wc -l | tr -d ' ')
   printf "  %-25s refs:%-3s\n" "$name" "$refs"
@@ -280,8 +280,8 @@ done
 
 ## 참고 문서
 
-- `base/guides/decisions/harness-engineering/` — 의사결정 이력
-- `base/guides/decisions/harness-engineering/11-layered-harness-design.md` — 레이어 설계
+- `decisions/harness-engineering/` — 의사결정 이력
+- `decisions/harness-engineering/11-layered-harness-design.md` — 레이어 설계
 - `agents/skills/harness-dev-process/SKILL.md` — 오케스트레이터
 - `agents/rules-on-demand/` — 도메인·레이어별 준수 규칙 (workflow-guard.sh 소스)
 - `.claude/hooks/workflow-guard.sh` — 편집 파일 → 준수 규칙 자동 주입 훅

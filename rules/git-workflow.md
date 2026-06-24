@@ -38,7 +38,7 @@
 | **Non-runtime** (배포 영향 없음) | `docs/`, `agents/`, README/TASKS, 작업일지/분석 메모 | `docs/` `agents/` `chore/` `work/<YOUR_EMPLOYEE_ID>/YYYY-MM-DD` |
 
 판단 기준 보강:
-- `docs/features/{TICKET}-*` 설계 문서 = 그 티켓 **구현 코드와 1:1** → 코드와 **같은 브랜치 흐름**으로 함께 관리(설계만 main 직접하면 코드와 단절·추적 불가). 구현 계획이 없는 순수 분석 메모만 main 직접.
+- `projects/{프로젝트}/docs/features/{TICKET}-*` 설계 문서 = 그 티켓 **구현 코드와 1:1** → 코드와 **같은 브랜치 흐름**으로 함께 관리(설계만 main 직접하면 코드와 단절·추적 불가). 구현 계획이 없는 순수 분석 메모만 main 직접.
 - `docs/operations/` = **폐기**(ADR-012). 운영 SQL 적용이력은 `{repo}.wiki.git` 발행, 운영 SOP는 `base/services/{서비스}/sop/`.
 
 운영 원칙:
@@ -89,7 +89,7 @@ sql/**/*.sql, ddl/**/*.sql              # DDL/DML
 ### 프로젝트 레포 docs/ 동시 작업 규칙
 
 - **docs/ = non-runtime** → main 직접 커밋 (작업일지/README/순수 분석 메모).
-- **예외: `docs/features/{TICKET}-*` 설계서는 구현 코드와 같은 브랜치 흐름** (feature→develop→…→main).
+- **예외: `projects/{프로젝트}/docs/features/{TICKET}-*` 설계서는 구현 코드와 같은 브랜치 흐름** (feature→develop→…→main).
 - **CRITICAL: 코드 브랜치(feature/, develop, stg)에서 docs/ 커밋 금지** — add도 delete도 하지 않는다 (코드 브랜치가 docs/를 건드리면 main 머지 시 docs/ 삭제 사고). 단 `features/{TICKET}-*` 설계서는 예외 허용(코드 1:1), 이때 일관되게 코드 흐름으로 둔다(혼재가 머지 삭제 사고 원인).
 
 > docs/ 머지 충돌·복원 절차·.gitattributes → `agents/rules-on-demand/git-advanced.md`
