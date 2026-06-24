@@ -384,10 +384,17 @@ function serializeSourcesYaml(doc) {
     `  dirty_policy: ${quoteYaml(defaults.dirty_policy)}`,
     `  clone_depth: ${quoteYaml(defaults.clone_depth)}`,
     '',
-    'sources:',
   ];
 
-  for (const source of doc.sources || []) {
+  const sources = doc.sources || [];
+  if (sources.length === 0) {
+    lines.push('sources: []');
+    return `${lines.join('\n').trimEnd()}\n`;
+  }
+
+  lines.push('sources:');
+
+  for (const source of sources) {
     lines.push(`  - name: ${quoteYaml(source.name)}`);
     lines.push(`    role: ${quoteYaml(source.role)}`);
     if (source.strategy && source.strategy !== 'clone') {

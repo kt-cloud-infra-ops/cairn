@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 const {
   assertSafeRelativePath,
   copyDir,
@@ -23,13 +25,16 @@ const {
   serializeSourcesYaml,
 } = require('./lib/cairn-workspace-lib.cjs');
 
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+
 function usage() {
   console.log(`Usage:
   cairn-init [--path <dir>] [--mode multi-project|solo|project-local]
              [--profile <name|path>] [--from <git-url>] [--register-current]
-             [--dry-run] [--yes] [--force]
+             [--dry-run] [--yes] [--force] [--validate]
 
-Defaults to preview only. Add --yes to create files.`);
+Defaults to preview only. Add --yes to create files.
+Add --validate to run schema validation after creation.`);
 }
 
 function yamlWorkspace({ name, mode, profileName }) {
@@ -49,6 +54,7 @@ storage:
   knowledge: "knowledge"
   decisions: "decisions"
   runbooks: "runbooks"
+  operations: "operations"
   services: "services"
   support_projects: "support-projects"
   templates: "templates"
@@ -69,6 +75,7 @@ function configJson(mode) {
         decision: 'decisions',
         sop: 'runbooks',
         feature: 'projects/{project}/docs/features',
+        operations: 'operations',
       },
     },
     projects: {
@@ -110,13 +117,46 @@ function writeIfMissing(file, content, force) {
   fs.writeFileSync(file, content, 'utf8');
 }
 
+function localEnvExample() {
+  return `# .cairn/local.env.example
+# Copy this file to .cairn/local.env and fill local values.
+# .cairn/local.env is gitignored and must never be committed.
+
+# Atlassian
+ATLASSIAN_BASE_URL=https://yourcompany.atlassian.net
+JIRA_CREDENTIALS_FILE=~/.jira-credentials.json
+JIRA_PROJECT_KEY=PROJ
+CONFLUENCE_SPACE_KEY=SPACE
+
+# Optional Atlassian credential helpers
+ATLASSIAN_EMAIL=your-email@example.com
+ATLASSIAN_API_TOKEN=your-atlassian-api-token
+
+# Organization / team display
+ORG_DISPLAY_NAME=Your Organization
+TEAM_DISPLAY_NAME=Your Team
+TEAM_TIMEZONE=UTC
+TEAM_LANGUAGE=en
+
+# Personal Jira account IDs
+JIRA_REPORTER_ACCOUNT_ID=712020:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+JIRA_ASSIGNEE_ACCOUNT_ID=712020:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+`;
+}
+
 function emptyProfileFiles(profileName) {
+  const profileKey = profileName.replace(/[^A-Za-z0-9._-]/g, '-').replace(/^[^A-Za-z0-9]+/, '') || 'default';
   return {
     'org.yaml': `schema: "cairn.profile.org/v1"
-name: "${profileName}"
-display_name: "${profileName}"
-timezone: "${'${TIMEZONE}'}"
-language: "ko"
+org:
+  name: "${profileKey}"
+  display_name: "${'${ORG_DISPLAY_NAME}'}"
+  short_name: "${profileKey}"
+team:
+  display_name: "${'${TEAM_DISPLAY_NAME}'}"
+  short_name: "${profileKey}"
+  timezone: "${'${TEAM_TIMEZONE}'}"
+  language: "${'${TEAM_LANGUAGE}'}"
 `,
     'atlassian.yaml': `schema: "cairn.profile.atlassian/v1"
 base_url: "${'${ATLASSIAN_BASE_URL}'}"
@@ -138,12 +178,25 @@ providers: {}
 services: {}
 `,
     'teams.yaml': `schema: "cairn.profile.teams/v1"
-teams: {}
+roles: {}
+aliases: {}
+members: []
 `,
     'hooks.yaml': `schema: "cairn.profile.hooks/v1"
 hooks: {}
 `,
   };
+}
+
+function runValidation(target) {
+  const validateScript = path.join(SCRIPT_DIR, 'validate.mjs');
+  const result = spawnSync(process.execPath, [validateScript, target], { stdio: 'inherit' });
+  if (result.error) {
+    fail(`workspace validation failed: ${result.error.message}`);
+  }
+  if (result.status !== 0) {
+    fail(`workspace validation failed with status ${result.status}`, result.status || 1);
+  }
 }
 
 function currentSource(root) {
@@ -213,6 +266,9 @@ function main() {
     }
     if (fileExists(path.join(target, '.cairn', 'workspace.yaml'))) {
       console.log(`Workspace cloned: ${target}`);
+      if (args.validate) {
+        runValidation(target);
+      }
       return;
     }
   }
@@ -225,6 +281,7 @@ function main() {
     'knowledge/lessons',
     'decisions',
     'runbooks',
+    'operations',
     'services',
     'support-projects',
     'templates',
@@ -233,6 +290,7 @@ function main() {
     '.cairn/workspace.yaml',
     '.cairn/config.json',
     '.cairn/sources.yaml',
+    '.cairn/local.env.example',
     'AGENTS.md',
   ];
   const collisions = files.filter((file) => fileExists(path.join(target, file)));
@@ -285,6 +343,7 @@ function main() {
   writeIfMissing(path.join(target, '.cairn', 'workspace.yaml'), yamlWorkspace({ name: workspaceName, mode, profileName }), force);
   writeIfMissing(path.join(target, '.cairn', 'config.json'), configJson(mode), force);
   writeIfMissing(path.join(target, '.cairn', 'sources.yaml'), serializeSourcesYaml(sources), force);
+  writeIfMissing(path.join(target, '.cairn', 'local.env.example'), localEnvExample(), force);
 
   if (profileIsPath) {
     copyDir(path.resolve(profileArg), path.join(target, '.cairn', 'profile'));
@@ -299,6 +358,9 @@ function main() {
   }
 
   console.log(`Cairn workspace initialized: ${target}`);
+  if (args.validate) {
+    runValidation(target);
+  }
 }
 
 main();
