@@ -91,7 +91,7 @@ vendor가 hook, script, MCP middleware, subagent 정의에 의존하면 SKILL.md
 | `harness-` | 개발 프로세스/Phase Gate | harness-dev-process, harness-plan |
 | `dev-` | 개발 도구 (TDD, 리뷰, E2E) | dev-tdd, dev-code-review |
 | `cicd-` | CI/CD 배포 | cicd-deploy |
-| `workspace-` | 환경 설정 | workspace-init, workspace-setup |
+| `cairn-` | workspace/환경 설정 | cairn-init, cairn-project-add, cairn-project-pull |
 | `analytics-` | 분석/학습 | analytics-usage-report |
 | `meta-` | 하네스/규칙 관리 | meta-harnessing, meta-review-rules |
 | `{서비스}-` | 서비스 특화 (팀 환경에 맞게 추가) | `<YOUR_SERVICE>-datachange`, `<YOUR_SERVICE>-release` |

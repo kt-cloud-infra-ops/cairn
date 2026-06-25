@@ -1,6 +1,6 @@
 ---
 name: harnessing
-description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessing hooks, /harnessing rules, /harnessing skills, /harnessing vendor, /harnessing memory. 미지정 시 전체 검토."
+description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessing hooks, /harnessing rules, /harnessing skills, /harnessing memory. 미지정 시 전체 검토. (/harnessing vendor는 vendor 스킬 provisioning 시 활성 — 현재 엔진에 skills/vendor/ 미구현.)"
 ---
 
 ## 스킬 규칙
@@ -52,7 +52,7 @@ description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessi
 - Hook이 의도대로 동작하는지 확인하고 싶을 때
 - 규칙/커맨드/스킬 간 정합성을 검토하고 싶을 때
 - 새로운 규칙이나 Hook을 추가한 후 전체 영향 확인
-- 메모리, cmux, vendor, commands처럼 특정 축만 부분 검토하고 싶을 때
+- 메모리, cmux, commands처럼 특정 축만 부분 검토하고 싶을 때 (vendor 축은 `skills/vendor/` provisioning 후)
 - 하네싱 전담 에이전트와 대화하며 구조 개선안/마이그레이션 순서를 잡고 싶을 때
 - `weekly-report` 같은 고비용 수동 command를 auto-trigger 없이 반자동화하고 싶을 때
 
@@ -66,7 +66,7 @@ description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessi
 | `/harnessing hooks` | Hook/validator/설정만 검토 |
 | `/harnessing rules` | rules + rules-on-demand만 검토 |
 | `/harnessing commands` | commands만 검토 |
-| `/harnessing vendor` | vendor skill import만 검토 |
+| `/harnessing vendor` | vendor skill import만 검토 — **[미구현 — 향후]** 현재 엔진에 `skills/vendor/` 부재. vendor 채택 절차는 `rules/skill-governance.md`에 정의되어 있으나 provisioning 전까지 본 scope는 no-op |
 | `/harnessing memory` | 로컬 메모리/feedback 문서만 검토 (최근 변경 우선) |
 
 scope가 주어지면 관련 자산만 읽고, 전체 검토 절차를 그 범위 안에서 축소 적용한다.
@@ -86,7 +86,7 @@ scope가 주어지면 관련 자산만 읽고, 전체 검토 절차를 그 범�
 | **Hook 등록** | `.claude/settings.json` | Hook 파일이 settings.json에 등록되어 있는지 |
 | Skills | `skills/*/SKILL.md` | 템플릿/validator 정합성 |
 | Orchestrators | `skills/harness-*/SKILL.md` | 상위 라우터 ↔ 하위 owner 경계 |
-| Vendor | `skills/vendor/manifest.json` | 최신 여부, self-contained |
+| Vendor [미구현 — 향후] | `skills/vendor/manifest.json` (provisioning 시) | 최신 여부, self-contained — 현재 엔진에 `skills/vendor/` 부재, 절차는 `rules/skill-governance.md` "Vendor 스킬 채택 절차" 참조 |
 | 도메인 에이전트 | `domains/<svc>/agents/` (workspace) · 프로젝트 레포 canonical | 서비스 커버리지 |
 
 ### 2단계: 맥락 판별 검증

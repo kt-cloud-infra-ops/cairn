@@ -97,7 +97,7 @@ sql/**/*.sql, ddl/**/*.sql              # DDL/DML
 ### CRITICAL: 코드 레포에 `.claude/` 비커밋 (cross-repo 가드 user 레벨 발동 원칙 — `docs/HARNESS_DESIGN_RATIONALE.md`)
 
 - 코드 레포 **어느 브랜치에도 `.claude/settings.json`·hooks를 커밋하지 않는다** (모든 코드 브랜치에 `.claude`가 퍼지면 머지 사고 위험).
-- 하네스 가드는 **`${CLAUDE_HOME:-$HOME/.claude}/settings.json`(user 레벨)에서 standards hook을 절대경로로 직접 실행**하여 worktree까지 강제. 신규 환경은 `/workspace-setup`이 멱등 등록.
+- 하네스 가드는 **`${CLAUDE_HOME:-$HOME/.claude}/settings.json`(user 레벨)에서 standards hook을 절대경로로 직접 실행**하여 worktree까지 강제. 신규 환경은 user settings에 멱등 등록 (등록 자동화 `[TBD]`).
 - `.harness/`는 로컬 상태 디렉토리 — git 추적 대상 아님(gitignore 권장).
 
 ### CRITICAL: 공통룰 변경은 별도 브랜치

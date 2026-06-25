@@ -6,7 +6,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 ## 스킬 규칙
 ### ALWAYS
 - 서비스명, F/E repo명, B/E repo명, template source를 먼저 확정
-- `workspace-*` 스킬을 bootstrap/catalog 보조 스킬로 재사용
+- workspace 연결/프로젝트 등록은 엔진 `cairn-init`(workspace 감지/스캐폴드)·`cairn-project-add`(`sources.yaml` 등록+clone)·`cairn-project-pull`(clone/update)에 위임
 - `project-structure.md`, `project-docs.md` 기준으로 docs/AGENTS/service catalog를 보강
 - charts/values 변경 전 diff preview를 남김
 - 완료 시 `service-ops`로 넘길 bootstrap handoff evidence를 남김
@@ -30,9 +30,9 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - `rules-on-demand/project-docs.md` — docs/AGENTS 표준
 - `skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-bootstrap` branch owner
 - `skills/harness-orchestrator/scripts/service-orchestration.mjs` — `init`/`bootstrap-complete` CLI
-- `skills/workspace-create-service/SKILL.md`
-- `skills/workspace-add-project/SKILL.md`
-- `skills/workspace-setup/SKILL.md`
+- `skills/cairn-init/SKILL.md` — workspace 감지/`.cairn` 스캐폴드 (서비스 허브가 들어갈 workspace 준비)
+- `skills/cairn-project-add/SKILL.md` — `.cairn/sources.yaml`에 프로젝트 source 등록(+선택적 clone)
+- `skills/cairn-project-pull/SKILL.md` — `sources.yaml` 기준 프로젝트 clone/update
 - `docs/HARNESS_DESIGN_RATIONALE.md` — orchestrator 의무 원칙(모든 변경 수반 요청은 GATE 0 경유). 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조
 
 ## 실행 절차
@@ -50,7 +50,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - [ ] 서비스명과 repo naming rule 확정
 - [ ] F/E / B/E template source 확정
 - [ ] workspace 연결 방식(`symlink`/`direct`) 확정
-- [ ] 기존 서비스 허브 존재 여부 확인 (`없으면 workspace-create-service`)
+- [ ] 기존 서비스 허브 존재 여부 확인 (없으면 본 스킬 `REGISTER` 단계에서 `services/{파트}/{서비스}/README.md`·`TASKS.md` 신규 스캐폴드)
 
 ##### 비전 정합성 (비전 카탈로그 정합 + 자율 repo 존중 원칙 — 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조. 팀 비전 Confluence pageId ${CONFLUENCE_PAGE_ID})
 - [ ] **파트 분류**: `<YOUR_PART_A>` / `<YOUR_PART_B>` / `공통` — `services/{파트}/{서비스}/` 위치 결정
@@ -75,9 +75,10 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
    - rename 결과 검토 후 commit 준비
 
 3. `REGISTER`
-   - `workspace-setup`으로 workspace 연결
-   - `workspace-add-project`로 docs/AGENTS 생성 및 서비스 README 갱신
-   - 필요 시 `workspace-create-service` 선행
+   - workspace 미초기화 시 `cairn-init`으로 감지/`.cairn` 스캐폴드 선행
+   - `cairn-project-add`로 생성한 repo를 `.cairn/sources.yaml`에 source 등록(+clone), 이후 `cairn-project-pull`로 동기화
+   - 서비스 허브 스캐폴드: `services/{파트}/{서비스}/README.md`·`TASKS.md` 생성/갱신 (없으면 신규)
+   - 각 프로젝트 레포에 `docs/`·`AGENTS.md`를 `project-docs.md`·`templates/project-agents.md` 기준으로 생성
 
 #### [GATE 1] 초기 skeleton 검증
 이 GATE를 통과해야 charts/values 초기화와 후속 commit/push로 진행한다.
@@ -89,7 +90,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 
 4. `APPLY`
    - `service-charts` skeleton 생성
-     - 실행 주체: 수동 shell 작업 (`workspace-*` 스킬 아님), 작업 repo는 `workspace/<YOUR_CHARTS_REPO>/`
+     - 실행 주체: 수동 shell 작업 (스킬 위임 아님), 작업 repo는 `workspace/<YOUR_CHARTS_REPO>/`
      - 명령:
        ```bash
        cd workspace/<YOUR_CHARTS_REPO>

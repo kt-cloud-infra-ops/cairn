@@ -53,7 +53,7 @@
 - **state.json 없음 → BLOCK** (orchestrator/GATE 0 미진입). Lite여도 state.json은 요구 (산출물 면제 ≠ GATE 0 면제)
 - `${CLAUDE_HOME:-$HOME/.claude}/settings.json`(user 레벨)에서 절대경로로 발동하므로 **standards 저장소 밖 git worktree에서도 강제**된다 — 코드작업 위치 무관
 - 가드 대상: standards 저장소 / `.harness/` 보유 프로젝트 / origin이 `${GIT_ORG}`인 repo. 무관 repo는 통과
-- 신규 환경 onboarding 시 `/workspace-setup`이 user settings hook을 멱등 등록
+- 신규 환경 onboarding 시 user settings(`${CLAUDE_HOME:-$HOME/.claude}/settings.json`)에 standards hook을 절대경로로 멱등 등록 (등록 자동화 스킬 `[TBD]` — 현재 수동/onboarding 가이드)
 
 ### 위반 시 처리
 - 작업 진행 중 발견 시 즉시 중단 → harness-dev-process 명시 호출 → Phase 0 부터 정식 진입
