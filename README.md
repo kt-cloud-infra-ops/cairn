@@ -206,7 +206,7 @@ cairn-workspace/
 
 `harness-orchestrator`(GATE 0 intent triage)가 요청을 4개 branch로 분기하고, 각 owner 스킬이 Phase Gate로 실행한다.
 
-📊 **형상 도식 (SoT)** — [`docs/orchestrator-topology.html`](docs/orchestrator-topology.html): Phase별 **문서·훅·rules·스킬·에이전트** 매핑 + GATE 통과/차단(exit 2) 영향을 도식화. **구조 변경 시 이 도식을 함께 갱신한다.**
+📊 **형상 도식 (SoT)** — **[🔗 GitHub Pages로 보기](https://kt-cloud-infra-ops.github.io/cairn/orchestrator-topology.html)** · [소스](docs/orchestrator-topology.html): Phase별 **문서·훅·rules·스킬·에이전트** 매핑 + GATE 통과/차단(exit 2) 영향을 도식화. **구조 변경 시 이 도식을 함께 갱신한다.**
 
 | branch | owner skill | Phase / GATE |
 |--------|-------------|--------------|
