@@ -2,7 +2,7 @@
 
 `harness-service-bootstrap` GATE 0 통과를 위한 상세 결정 가이드.
 
-근거: ADR-008 (orchestrator 의무) + ADR-009 (비전 카탈로그 정합성 + 자율 repo 존중)
+근거: orchestrator 의무 원칙 + 비전 카탈로그 정합성·자율 repo 존중 원칙 (`docs/HARNESS_DESIGN_RATIONALE.md`. 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조)
 
 ---
 
@@ -72,7 +72,7 @@
 | `Red` | 종료 예정 |
 | `미정` | 일정 미확정 |
 
-## 7. 자율 repo 여부 결정 (ADR-009)
+## 7. 자율 repo 여부 결정 (자율 repo 존중 원칙)
 
 ### 우리 표준 적용 (Default)
 - 영문 conventional commit (`feat:/fix:/refactor:/docs:/test:/chore:/rules:`)
@@ -152,7 +152,7 @@ GATE 0 통과 시 본 모든 결정이 명시되어야 함:
 
 ## 11. demo-be 템플릿 표준 (외부 자율 repo, source of truth)
 
-신규 서비스 fork는 **demo-be 표준 문서를 source of truth로 따른다**. demo-be repo는 ADR-009 자율 repo 원칙 적용 — repo 자체가 표준의 단일 source, cairn는 진입 포인터만 관리.
+신규 서비스 fork는 **demo-be 표준 문서를 source of truth로 따른다**. demo-be repo는 자율 repo 존중 원칙 적용 — repo 자체가 표준의 단일 source, cairn는 진입 포인터만 관리.
 
 | 영역 | demo-be 표준 문서 | 핵심 |
 |------|----------------|------|
@@ -181,7 +181,7 @@ repo: `${GIT_ORG}/demo-backend-kt` (workspace symlink: `workspace/<YOUR_TEMPLATE
 | §9 frontmatter `auth_method` / `deployment` | `chart-standard.md` OTel + host-logs |
 | §9 frontmatter `vision_category` | `observability.md` Grafana 자동 연동 |
 
-### 외부 자율 repo 처리 (ADR-009)
+### 외부 자율 repo 처리 (자율 repo 존중 원칙)
 
 demo-be는 자체 룰 보존 영역 — 우리 표준 강제 X:
 - commit 메시지: **한글 conventional** (`기능:`/`문서:`/`버그수정:`)
@@ -193,8 +193,8 @@ cairn는 demo-be의 표준을 **link 포인터로만** 참조. demo-be 표준이
 
 ## 관련 문서
 
-- [ADR-008](../../../../decisions/008-orchestrator-mandatory.md) — orchestrator 의무
-- [ADR-009](../../../../decisions/009-vision-catalog-alignment.md) — 비전 정합성 + 자율 repo 존중
+- [`docs/HARNESS_DESIGN_RATIONALE.md`](../../../../docs/HARNESS_DESIGN_RATIONALE.md) — orchestrator 의무 + 레이어 분리 원칙 (조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조)
+- 비전 정합성 + 자율 repo 존중 — 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조
 - [services/README.md](../../../../services/README.md) — 카탈로그 인덱스
 - [rules/service-mapping.md](../../../../rules/service-mapping.md) — 매핑 룰
 - **demo-be 템플릿 표준** (source of truth):

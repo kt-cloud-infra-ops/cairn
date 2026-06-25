@@ -135,6 +135,6 @@ Claude 메인 프로젝트의 계층적 문서 구조 설계 가이드입니다.
 - `/claude/docs/learnings/{관련 문서}.md`
 ```
 
-## 관련 ADR
+## 관련 결정
 
-- `decisions/002-claude-md-distributed-structure.md`
+- CLAUDE.md 분산 구조 결정 — 조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조. 문서 배치 원리는 `docs/CORE_VS_ORG_BOUNDARY.md` / `rules/doc-organization.md`

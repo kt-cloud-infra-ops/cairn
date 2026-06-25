@@ -43,7 +43,7 @@ cairn 엔진(plugin) + cairn-<team> workspace 구조 전용 에이전트.
 | `skills/harness-orchestrator/` | 4-branch(dev / service-bootstrap / service-ops / harnessing) 라우팅 정합성, 이중 GATE 방지 |
 | `skills/harness-service-bootstrap/` | 신규 서비스 bootstrap GATE 0/1, handoff evidence 일관성 |
 | `skills/harness-service-ops/` | 운영 반영 GATE 0/1/2, bootstrap prerequisite 강제 |
-| `decisions/008-orchestrator-mandatory.md` | 상위 `harness-orchestrator` 라우터 구축 결정. 모든 변경 수반 요청은 orchestrator 의무 통과 |
+| `docs/HARNESS_DESIGN_RATIONALE.md` (+ 워크스페이스 `decisions/`(존재 시)) | orchestrator 의무 원칙. 상위 `harness-orchestrator` 라우터로 모든 변경 수반 요청이 GATE 0 경유 |
 | `services/`, `runbooks/`, `domains/` | 서비스 허브·운영 런북·도메인 자산 배치 원칙 검토 (workspace 카탈로그) |
 | `projects/*/docs` | 프로젝트 문서 SoT 경계와 인덱스 구조 검토 |
 | `hooks/`, `.cairn/` | hook, profile, settings의 프로젝트 규칙 충돌 여부 확인 |

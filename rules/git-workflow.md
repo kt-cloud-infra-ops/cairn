@@ -39,7 +39,7 @@
 
 판단 기준 보강:
 - `projects/{프로젝트}/docs/features/{TICKET}-*` 설계 문서 = 그 티켓 **구현 코드와 1:1** → 코드와 **같은 브랜치 흐름**으로 함께 관리(설계만 main 직접하면 코드와 단절·추적 불가). 구현 계획이 없는 순수 분석 메모만 main 직접.
-- `docs/operations/` = **폐기**(ADR-012). 운영 SQL 적용이력은 `{repo}.wiki.git` 발행, 운영 SOP는 `services/{서비스}/sop/`.
+- `docs/operations/` = **폐기**(원칙: 운영 SQL 적용이력은 `{repo}.wiki.git` 발행. 조직 도입 근거는 워크스페이스 `decisions/` 참조). 운영 SOP는 `services/{서비스}/sop/`.
 
 운영 원칙:
 1. runtime/non-runtime 동시 필요 → **브랜치부터 분리**
@@ -94,7 +94,7 @@ sql/**/*.sql, ddl/**/*.sql              # DDL/DML
 
 > docs/ 머지 충돌·복원 절차·.gitattributes → `rules-on-demand/git-advanced.md`
 
-### CRITICAL: 코드 레포에 `.claude/` 비커밋 (ADR-011)
+### CRITICAL: 코드 레포에 `.claude/` 비커밋 (cross-repo 가드 user 레벨 발동 원칙 — `docs/HARNESS_DESIGN_RATIONALE.md`)
 
 - 코드 레포 **어느 브랜치에도 `.claude/settings.json`·hooks를 커밋하지 않는다** (모든 코드 브랜치에 `.claude`가 퍼지면 머지 사고 위험).
 - 하네스 가드는 **`${CLAUDE_HOME:-$HOME/.claude}/settings.json`(user 레벨)에서 standards hook을 절대경로로 직접 실행**하여 worktree까지 강제. 신규 환경은 `/workspace-setup`이 멱등 등록.

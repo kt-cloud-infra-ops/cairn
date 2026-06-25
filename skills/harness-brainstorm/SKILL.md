@@ -101,7 +101,7 @@ dev-tdd / dev-subagent-driven (구현)
 | "전체 하네스 Phase Gate 돌리자" | `harness-dev-process` |
 | "구현 단계 진입" | `dev-tdd` |
 
-> **변경 이력 (2026-04-27)**: `harness-clarify` 폐기 → 본 스킬에 흡수. 요구사항 명확화도 본 스킬 Step 3~5에서 처리. 자세한 결정은 [ADR-006](../../../decisions/006-skill-unification.md) 후속 결정 섹션.
+> **변경 이력 (2026-04-27)**: `harness-clarify` 폐기 → 본 스킬에 흡수. 요구사항 명확화도 본 스킬 Step 3~5에서 처리. 흡수 원칙은 `rules/skill-governance.md`, 조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조.
 
 ## Push back 기준 (설계 단계에서)
 
@@ -116,13 +116,13 @@ dev-tdd / dev-subagent-driven (구현)
 |------|----|
 | 원본 | [obra/superpowers — brainstorming](https://github.com/obra/superpowers) |
 | vendor 사본 | [superpowers--brainstorming](../vendor/superpowers--brainstorming/SKILL.md) |
-| 흡수 결정 | [ADR-006](../../../decisions/006-skill-unification.md) — PR #31 |
+| 흡수 결정 | 스킬 통합(commands→skills) 원칙 — `rules/skill-governance.md`. 조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조 |
 | 판정 | SUPPLEMENT (HARD-GATE 설계 승인 프로토콜 + CPS Charter 9항목 + Phase 0 bootstrap) |
 | 후속 흡수 | `harness-clarify` 폐기 흡수 (2026-04-27, B안) — Charter 항목 + Phase 0 자동 생성 |
 
 ## 참조
 
-- 위치: `harness-orchestrator`의 `dev` branch owner 산하 설계 단계 — 변경성 요청이 dev branch로 분기된 뒤 설계 단계에서 호출된다. orchestrator 의무 통과: `decisions/008-orchestrator-mandatory.md`
+- 위치: `harness-orchestrator`의 `dev` branch owner 산하 설계 단계 — 변경성 요청이 dev branch로 분기된 뒤 설계 단계에서 호출된다. orchestrator 의무 원칙: `docs/HARNESS_DESIGN_RATIONALE.md` (조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조)
 - 연관: `harness-plan` (PRD), `harness-dev-process` (전체 Phase Gate)
 - 룰: `rules/git-workflow.md` (features 브랜치 동반 규칙), `rules-on-demand/project-docs.md` (features 네이밍)
-- ADR: [ADR-006](../../../decisions/006-skill-unification.md)
+- 근거: 스킬 통합 원칙 — `rules/skill-governance.md` (조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조)

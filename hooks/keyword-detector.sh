@@ -1,5 +1,5 @@
 #!/bin/bash
-# Cross-repo self-guard (ADR-011): 가드 대상 repo만, 무관 repo 즉시 통과
+# Cross-repo self-guard (가드 대상 판정 원칙 — docs/HARNESS_DESIGN_RATIONALE.md): 가드 대상 repo만, 무관 repo 즉시 통과
 # user 레벨(${CLAUDE_HOME:-$HOME/.claude}/settings.json) 절대경로 실행 → worktree 포함 모든 cwd 발동.
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 is_guarded_repo() {

@@ -33,7 +33,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - `skills/workspace-create-service/SKILL.md`
 - `skills/workspace-add-project/SKILL.md`
 - `skills/workspace-setup/SKILL.md`
-- `decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
+- `docs/HARNESS_DESIGN_RATIONALE.md` — orchestrator 의무 원칙(모든 변경 수반 요청은 GATE 0 경유). 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조
 
 ## 실행 절차
 
@@ -52,14 +52,14 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - [ ] workspace 연결 방식(`symlink`/`direct`) 확정
 - [ ] 기존 서비스 허브 존재 여부 확인 (`없으면 workspace-create-service`)
 
-##### 비전 정합성 (ADR-009, 팀 비전 Confluence pageId ${CONFLUENCE_PAGE_ID})
+##### 비전 정합성 (비전 카탈로그 정합 + 자율 repo 존중 원칙 — 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조. 팀 비전 Confluence pageId ${CONFLUENCE_PAGE_ID})
 - [ ] **파트 분류**: `<YOUR_PART_A>` / `<YOUR_PART_B>` / `공통` — `services/{파트}/{서비스}/` 위치 결정
 - [ ] **카테고리**: 팀 비전 기준 카테고리 선택
 - [ ] **계층**: 팀 비전 기준 계층 선택
 - [ ] **인증 방식**: `SSO` / `Token` / `Local` / `Certificate` / 기타
 - [ ] **배포 환경**: `K8s` / `VM` / `HW` / 기타
 - [ ] **Roadmap 단계**: `1차 YYYY.MM` + 상태(`Yellow/Green/Red`)
-- [ ] **자율 repo 여부 (ADR-009)**:
+- [ ] **자율 repo 여부 (자율 repo 존중 원칙)**:
   - 표준 적용 = 영문 commit + Jira 티켓 + review-evidence + Co-Authored-By 강제
   - 자율 (예: 자율 repo 패턴) = repo 자체 룰 보존, 카탈로그 메타만 우리 관리
 - [ ] **service-mapping.md 등록**: `rules/service-mapping.md` 매핑 행 추가

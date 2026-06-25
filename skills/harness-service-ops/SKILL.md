@@ -32,7 +32,7 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 - `skills/cicd-deploy/SKILL.md`
 - `skills/jira-rest-ops/SKILL.md`
 - `rules/skill-governance.md`
-- `decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
+- `docs/HARNESS_DESIGN_RATIONALE.md` — orchestrator 의무 원칙(모든 변경 수반 요청은 GATE 0 경유). 조직 도입 근거는 워크스페이스 `decisions/`(존재 시) 참조
 
 ## 실행 절차
 

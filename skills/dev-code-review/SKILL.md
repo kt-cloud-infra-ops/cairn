@@ -127,5 +127,5 @@ push/PR
 | 흡수 판정 | MERGE (skill-governance.md Step 2: 60~70% 중복 → 기존 스킬 확장) |
 | 흡수 가치 | 언어별 점검 매트릭스 / 6단 리포트 템플릿 / 커밋 단위 판정 / evidence 기반 강제 |
 | 우리 룰 보강 | Jira 티켓 필수 / <YOUR_ORG> 가드레일 / 도메인 에이전트 선행 / 영문 conventional / 자동 수정 옵트인 / Co-Authored-By |
-| 제외 | 한글 commit type / 자동 lint 적용 / 무조건 commit 호출 (ADR-008 우회 위험) |
-| ADR | [ADR-008](../../../decisions/008-orchestrator-mandatory.md) — orchestrator 의무 통과 |
+| 제외 | 한글 commit type / 자동 lint 적용 / 무조건 commit 호출 (orchestrator 의무 우회 위험) |
+| 근거 | orchestrator 의무 원칙 — `docs/HARNESS_DESIGN_RATIONALE.md` (조직 도입 근거는 워크스페이스 `decisions/` 참조) |

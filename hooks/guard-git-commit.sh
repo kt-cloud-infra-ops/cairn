@@ -68,7 +68,7 @@ if [ -z "$FILES" ]; then
   exit 0
 fi
 
-# === git commit 전 review-evidence 검증 (ADR-008 + dev-code-review) ===
+# === git commit 전 review-evidence 검증 (orchestrator 의무 원칙 + dev-code-review — docs/HARNESS_DESIGN_RATIONALE.md) ===
 # .harness/review-evidence.json 존재 + 5분 이내 + checks pass 검사
 # 적용 범위: runtime 코드(projects/**, hooks/**, skills/**/scripts/**)만
 # 면제: services/**, runbooks/**, knowledge/**, docs/**, *.md, SKILL.md, references/** 등 단순 문서
@@ -106,7 +106,7 @@ if [ "$ACTION" = "git commit" ]; then
     echo "$(date +%Y-%m-%dT%H:%M:%S) BLOCKED $ACTION (no review-evidence)" >> "$LOG"
     echo "⚠️ commit 전 코드 리뷰 evidence가 없습니다." >&2
     echo "" >&2
-    echo "ADR-008: 모든 변경 수반 요청은 orchestrator → owner skill → dev-code-review를 거친다." >&2
+    echo "orchestrator 의무 원칙: 모든 변경 수반 요청은 orchestrator → owner skill → dev-code-review를 거친다 (docs/HARNESS_DESIGN_RATIONALE.md)." >&2
     echo "git commit 전에 dev-code-review 스킬을 호출하여 .harness/review-evidence.json을 생성하세요." >&2
     echo "" >&2
     echo "절차:" >&2

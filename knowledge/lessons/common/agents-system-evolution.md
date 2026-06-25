@@ -12,6 +12,8 @@ aliases: []
 
 `cairn` 저장소에서 에이전트/스킬/룰 구조를 다도구(Claude Code, Codex 등) 공유 자산으로 정착시키기까지의 변경 흐름과 고민. 신규 합류자, 향후 구조 재논의 시 참고용.
 
+> **[이력/예시 문서]** 아래 본문의 `ADR-0NN` 표기는 본 엔진이 거쳐온 **개발 이력 사례**이며 메커니즘 규칙(canonical)이 아니다. 하네스 동작 원리는 `docs/HARNESS_DESIGN_RATIONALE.md`가 SoT이고, 번호가 매겨진 결정 본문은 워크스페이스 `decisions/`(존재 시)에 적립된다. 새 조직 설치 시 아래 번호는 해당 조직에 존재하지 않을 수 있다.
+
 ---
 
 ## 1. 출발점과 문제 인식
@@ -209,9 +211,9 @@ aliases: []
 
 ## 관련 문서
 
-- [ADR-006 — 스킬 통합](../../../../decisions/006-skill-unification.md) — commands→skills 통합 결정
-- [ADR-005 — 프로젝트 문서 표준](../../../../decisions/005-project-docs-standard.md) — 프로젝트 레포 docs/ 표준
-- [ADR-004 — 룰 통합](../../../../decisions/004-rules-consolidation.md) — rules 통합
+- 스킬 통합(commands→skills) — `rules/skill-governance.md` (조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조)
+- 프로젝트 문서 표준(프로젝트 레포 docs/) — `rules/doc-organization.md` (조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조)
+- 룰 통합 — `rules/core.md` (조직 도입 근거·번호는 워크스페이스 `decisions/`(존재 시) 참조)
 - [rules/agents.md](../../../rules/agents.md) — 에이전트 오케스트레이션 룰
 - [rules/skill-governance.md](../../../rules/skill-governance.md) — 스킬 거버넌스
 - [agents/harnessing.md](../../../harnessing.md) — 하네스 어드바이저 (엔진 plugin 레이어 에이전트)

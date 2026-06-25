@@ -115,7 +115,7 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 - `hooks/guard-git-commit.sh`가 commit 직전 자동 검증
 - evidence 없으면 commit 차단 (exit 2)
 
-근거: ADR-008 + `skills/dev-code-review/SKILL.md`
+근거: orchestrator 의무 원칙(`docs/HARNESS_DESIGN_RATIONALE.md`) + `skills/dev-code-review/SKILL.md`
 
 ## Capture Loop (cross-cutting, 모든 branch 공통)
 

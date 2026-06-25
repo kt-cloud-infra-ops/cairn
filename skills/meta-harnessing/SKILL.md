@@ -12,11 +12,11 @@ description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessi
 ### NEVER
 - 확인 없이 공통룰 직접 수정 금지
 - 임의로 폴더 구조 변경 금지
-- **사용자 의도 확인 없이 ADR 신설/수정/폐기 금지** — ADR-007 사고(당일 폐기, PR 4건 정정) 재발 방지
+- **사용자 의도 확인 없이 ADR 신설/수정/폐기 금지** — [예시] 추정 ADR이 당일 폐기되어 PR 4건을 정정 비용으로 소비한 워크스페이스 사례(조직별 번호는 해당 워크스페이스 `decisions/` 참조) 재발 방지
 
 ## [GATE 0: ADR-INTENT] ADR 작성 전 사용자 의도 확인 (CRITICAL)
 
-`decisions/` 하위에 신규 ADR 작성 / 기존 ADR 수정 / ADR 폐기 표기 시 본 GATE 통과 필수.
+워크스페이스 `decisions/`(존재 시) 하위에 신규 ADR 작성 / 기존 ADR 수정 / ADR 폐기 표기 시 본 GATE 통과 필수.
 
 ### 통과 조건
 
@@ -26,21 +26,21 @@ description: "하네스 검토 및 개선. 스코프 지정 가능 — /harnessi
 
 ### 트리거
 
-- `decisions/{N}-*.md` 신설
+- 워크스페이스 `decisions/{N}-*.md`(존재 시) 신설
 - 기존 ADR 상태를 "폐기 (Superseded)" 또는 "수정"으로 변경
 - ADR README 인덱스에 신규 행 추가
 
 ### 위반 시 처리
 
 - ADR 작성 중단 → 사용자 의도 확인 질문 발생
-- 발화 인용 없이 진행하면 폐기 비용 발생 (ADR-007 = PR 4건 소비 사례)
+- 발화 인용 없이 진행하면 폐기 비용 발생 ([예시] 추정 ADR = PR 4건 소비 워크스페이스 사례)
 
-### 사례
+### 사례 (패턴 예시 — 조직별 ADR 번호는 워크스페이스 `decisions/` 참조)
 
 | 패턴 | 통과 |
 |------|------|
-| 사용자 원문: "모든 요청은 오케스트레이터를 탄다" → ADR-008 (orchestrator 의무) | ✅ |
-| 사용자 발화 없이 "owner skill 직접 호출이 합리적"이라고 추정 → ADR-007 | ❌ (당일 폐기) |
+| 사용자 원문: "모든 요청은 오케스트레이터를 탄다" → orchestrator 의무 ADR 적립 | ✅ |
+| 사용자 발화 없이 "owner skill 직접 호출이 합리적"이라고 추정 → ADR 적립 | ❌ (당일 폐기) |
 
 # /harnessing — 하네스 깎기
 
@@ -280,8 +280,8 @@ done
 
 ## 참고 문서
 
-- `decisions/harness-engineering/` — 의사결정 이력
-- `decisions/harness-engineering/11-layered-harness-design.md` — 레이어 설계
+- `docs/HARNESS_DESIGN_RATIONALE.md` — 하네스 메커니즘 원리 (엔진 범용 SoT: GATE 0 의무·hook 물리 강제·레이어 분리·cross-repo 가드)
+- 워크스페이스 `decisions/`(존재 시) — 조직별 도입 근거·사례·레이어 설계 의사결정 이력
 - `skills/harness-dev-process/SKILL.md` — 오케스트레이터
 - `rules-on-demand/` — 도메인·레이어별 준수 규칙 (키워드 트리거 로드 소스)
 - `hooks/cairn-hook-router.sh` — UserPromptSubmit/PreToolUse/PostToolUse/Stop 중앙 라우터

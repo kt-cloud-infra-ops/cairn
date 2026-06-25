@@ -47,7 +47,7 @@
 
 ### 자동 강제 (worktree 포함)
 
-본 의무는 선언이 아니라 hook으로 물리 강제된다 (ADR-011):
+본 의무는 선언이 아니라 hook으로 물리 강제된다 (가드 hook 물리 강제 — `docs/HARNESS_DESIGN_RATIONALE.md`):
 
 - `guard-charter.sh`(PreToolUse Edit/Write/MultiEdit)가 코드 파일 편집 전 `.harness/state.json`을 검사
 - **state.json 없음 → BLOCK** (orchestrator/GATE 0 미진입). Lite여도 state.json은 요구 (산출물 면제 ≠ GATE 0 면제)

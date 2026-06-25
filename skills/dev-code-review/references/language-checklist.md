@@ -113,6 +113,6 @@
 ## 출처
 
 - 외부 제안: `review-and-commit` 스킬 (팀원 작성, 2026-05-19)
-- 흡수 결정: ADR-008 정합 + skill-governance.md Step 2 (60~70% 중복 → MERGE)
+- 흡수 결정: orchestrator 의무 원칙 정합(`docs/HARNESS_DESIGN_RATIONALE.md`) + skill-governance.md Step 2 (60~70% 중복 → MERGE)
 - 핵심 가치: 언어별 점검 매트릭스 (우리 기존 자산 부재)
 - 우리 룰 보강: Jira 티켓 필수 / <YOUR_ORG> 가드레일 / 도메인 에이전트 선행 참조 / 자동 수정 옵트인

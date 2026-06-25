@@ -19,7 +19,7 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 
 # ── 가드 대상 repo 판정 (무관 프로젝트는 즉시 통과) ──
 # user 레벨 발동이므로 self-guard 역할이 "cairn 엔진 한정"에서
-# "가드 대상 repo만 검사, 무관 repo는 빠른 통과"로 재정의됨 (ADR-011).
+# "가드 대상 repo만 검사, 무관 repo는 빠른 통과"로 재정의됨 (cross-repo 가드 전파 원칙 — docs/HARNESS_DESIGN_RATIONALE.md).
 is_guarded_repo() {
   local root="$1"
   [ -z "$root" ] && return 1
@@ -85,7 +85,7 @@ while [ -n "$DIR" ] && [ "$DIR" != "." ] && [ "$DIR" != "/" ]; do
       fi
     else
       # state.json 없음 → orchestrator 미진입(GATE 0 미통과) → BLOCK
-      # Lite여도 state.json은 요구 (ADR-011: Lite는 산출물 면제이지 GATE 0 면제 아님)
+      # Lite여도 state.json은 요구 (원칙: Lite는 산출물 면제이지 GATE 0 면제 아님 — docs/HARNESS_DESIGN_RATIONALE.md)
       echo "⚠️ $PROJECT 프로젝트에 .harness/state.json이 없습니다."
       echo "코드 변경 전 하네스 프로세스를 시작하세요 (GATE 0 intent triage):"
       echo "  → '피처 개발 시작' 또는 Jira 티켓번호 + 구현/개발/수정 키워드"

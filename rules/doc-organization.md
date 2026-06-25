@@ -17,7 +17,7 @@
 
 | 폴더 | 용도 | 대상 |
 |------|------|------|
-| `workspace/` | **코드 + 프로젝트 문서** | 코드, `docs/` (스펙, 피처, 릴리즈), `agents/` (도메인 에이전트) — 운영 SQL은 git wiki 발행(ADR-012), `docs/operations/` 폴더 두지 않음 |
+| `workspace/` | **코드 + 프로젝트 문서** | 코드, `docs/` (스펙, 피처, 릴리즈), `agents/` (도메인 에이전트) — 운영 SQL은 git wiki 발행(원칙: 운영 SQL 적용이력은 `{repo}.wiki.git`. 조직 도입 근거는 워크스페이스 `decisions/` 참조), `docs/operations/` 폴더 두지 않음 |
 | `services/` | **서비스 허브 + TASKS.md** | 서비스 카탈로그 (인덱스), Jira 태스크, SOP |
 | `support-projects/` | **외부 요청 프로젝트** | 외부 개발사 수행, 우리 팀 설계/리뷰 (서비스 태그 필수) |
 | `.cairn/personal/` | **개인 문서** | 작업일지, 개인 메모 (본인 폴더만 수정) |
@@ -25,7 +25,7 @@
 | `templates/` | **문서 템플릿** | 작업일지 등 반복 사용 양식 |
 | `knowledge/lessons/` | **AI 에이전트 전용** | 학습 내용 (db/, java/, common/) |
 
-**프로젝트 상세 문서(스펙, 피처, 릴리즈)는 프로젝트 레포 `docs/`에 저장.** `services/`는 서비스 카탈로그(인덱스) 역할만 한다. (운영 SQL 적용 이력은 `{repo}.wiki.git` 발행 — ADR-012, `docs/operations/` 폐기)
+**프로젝트 상세 문서(스펙, 피처, 릴리즈)는 프로젝트 레포 `docs/`에 저장.** `services/`는 서비스 카탈로그(인덱스) 역할만 한다. (운영 SQL 적용 이력은 `{repo}.wiki.git` 발행 — 원칙: git wiki 발행, `docs/operations/` 폐기. 조직 도입 근거는 워크스페이스 `decisions/` 참조)
 
 ---
 
@@ -39,7 +39,7 @@ workspace/{프로젝트}/docs/   # 프로젝트 SoT (코드 레포 안)
 ├── specs/                  # 기본설계, 요구사항
 ├── features/               # 기능 스펙 (Jira 기반, {TICKET}-*) — DB 개선 설계서도 여기
 └── releases/               # 릴리즈 노트
-# operations/ 폐기 (ADR-012) — 운영 SQL 적용이력은 git wiki 발행
+# operations/ 폐기 (원칙: 운영 SQL 적용이력은 git wiki 발행. 조직 도입 근거는 워크스페이스 decisions/ 참조)
 
 services/{서비스}/      # 서비스 카탈로그: README, TASKS.md, sop/
 .cairn/personal/<YOUR_EMPLOYEE_ID>/worklog # 개인 작업일지 (본인 폴더만)
@@ -54,13 +54,13 @@ temp/                        # 임시 작업 문서
 ### 핵심 원칙
 
 - **프로젝트 레포 `docs/` = 개발 중 Source of Truth** (스펙, 피처, 릴리즈)
-- **Confluence/Wiki = 공식 발행 채널** (팀/조직 공유용 최종 문서) — 단 **운영 SQL 적용 이력은 git wiki**(ADR-012)
+- **Confluence/Wiki = 공식 발행 채널** (팀/조직 공유용 최종 문서) — 단 **운영 SQL 적용 이력은 git wiki**(원칙. 조직 도입 근거는 워크스페이스 `decisions/` 참조)
 - **로컬 temp/ = 임시 작업 문서** (업로드 후 삭제)
 
-### 운영 SQL = git wiki 발행 (main 로컬 보관 X, ADR-012)
+### 운영 SQL = git wiki 발행 (main 로컬 보관 X — 원칙. 조직 도입 근거는 워크스페이스 decisions/ 참조)
 
 - 운영 SQL(적용 이력)은 `docs/operations/`에 쌓지 않고 **각 코드 레포의 git wiki(`{repo}.wiki.git`)에 발행**한다. `docs/operations/` 폴더 자체를 두지 않는다(제거).
-  - 위치: `{repo}.wiki.git/operations/{request|change}-{TICKET}-{name}.md` (ITIL 2카테고리: request=요청충족/보정, change=변경관리. ADR-012)
+  - 위치: `{repo}.wiki.git/operations/{request|change}-{TICKET}-{name}.md` (ITIL 2카테고리: request=요청충족/보정, change=변경관리)
   - AI 읽기: `git clone --depth 1 {repo}.wiki.git` → 로컬 grep (Confluence WebFetch 불필요)
 - **`{repo}.wiki.git`은 repo와 1:1 자동 분기** — Confluence처럼 folder 경로를 수동 확인/질문할 필요 없음 (서비스=레포 매핑이 곧 발행처).
 - 운영 SOP/절차서(workflow-*.md)는 `services/{서비스}/sop/`에 로컬 유지(AI 운영작업 시 Read).
@@ -123,7 +123,7 @@ Confluence를 사용하는 경우:
 |----------|----------|
 | 임시 작업/분석 | `temp/` |
 | 프로젝트 설계/스펙 | **프로젝트 레포 `docs/`** (`specs/`, `features/`, `releases/`) |
-| **운영 SQL (적용 이력)** | **`{repo}.wiki.git` operations/ 발행** (`docs/operations/` 로컬 보관 X — ADR-012) |
+| **운영 SQL (적용 이력)** | **`{repo}.wiki.git` operations/ 발행** (`docs/operations/` 로컬 보관 X — 원칙. 조직 도입 근거는 워크스페이스 `decisions/` 참조) |
 | **운영 SOP/절차서 (workflow)** | `services/{서비스}/sop/` |
 | 외부 요청 프로젝트 | `support-projects/{프로젝트}/` (서비스 태그 필수) |
 | 학습 내용/SOP | `knowledge/lessons/` (db/, java/, common/) |
