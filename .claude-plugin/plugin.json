@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "description": "Learn your work, share it with your team. An AI development harness with a branch-routing orchestrator, a knowledge Capture Loop (work → md → git), Phase Gates, and guardrail hooks. Atlassian evidence integration via env vars.",
   "author": {
-    "name": "<YOUR_ORG>"
+    "name": "KT Cloud InfraOps"
   },
-  "homepage": "<YOUR_GIT_URL>#readme",
-  "repository": "<YOUR_GIT_URL>",
+  "homepage": "https://github.com/kt-cloud-infra-ops/cairn#readme",
+  "repository": "https://github.com/kt-cloud-infra-ops/cairn",
   "license": "MIT",
   "keywords": [
     "harness",

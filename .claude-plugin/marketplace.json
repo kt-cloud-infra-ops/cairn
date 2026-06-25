@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "cairn-marketplace",
   "description": "Cairn — AI development harness for in-house systems. Learn your work, share it with your team.",
-  "owner": { "name": "<YOUR_ORG>" },
+  "owner": { "name": "KT Cloud InfraOps" },
   "plugins": [
     {
       "name": "cairn",
@@ -11,7 +11,7 @@
       "keywords": ["harness", "orchestrator", "knowledge-capture", "phase-gate", "tdd"],
       "source": {
         "source": "git-subdir",
-        "url": "<YOUR_GIT_URL>",
+        "url": "https://github.com/kt-cloud-infra-ops/cairn",
         "path": ".",
         "ref": "main"
       },
