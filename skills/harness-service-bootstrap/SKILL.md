@@ -26,13 +26,13 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 ## 참조
 
 - `references/bootstrap-sop.md` — Confluence `${CONFLUENCE_PAGE_ID}` 정규화 요약 + 실제 repo 명령
-- `agents/rules-on-demand/project-structure.md` — template 구조 및 naming
-- `agents/rules-on-demand/project-docs.md` — docs/AGENTS 표준
-- `agents/skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-bootstrap` branch owner
-- `agents/skills/harness-orchestrator/scripts/service-orchestration.mjs` — `init`/`bootstrap-complete` CLI
-- `agents/skills/workspace-create-service/SKILL.md`
-- `agents/skills/workspace-add-project/SKILL.md`
-- `agents/skills/workspace-setup/SKILL.md`
+- `rules-on-demand/project-structure.md` — template 구조 및 naming
+- `rules-on-demand/project-docs.md` — docs/AGENTS 표준
+- `skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-bootstrap` branch owner
+- `skills/harness-orchestrator/scripts/service-orchestration.mjs` — `init`/`bootstrap-complete` CLI
+- `skills/workspace-create-service/SKILL.md`
+- `skills/workspace-add-project/SKILL.md`
+- `skills/workspace-setup/SKILL.md`
 - `decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
 
 ## 실행 절차
@@ -41,7 +41,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
    - 서비스명 / repo명 / template repo / workspace 배치 방식 확인
    - 대상 범위: F/E, B/E, 필요 시 batch/charts/values repo
    - 기존 서비스 허브 존재 여부 확인
-   - `node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs init {service}` 로 로컬 상태 파일 생성
+   - `node skills/harness-orchestrator/scripts/service-orchestration.mjs init {service}` 로 로컬 상태 파일 생성
 
 #### [GATE 0] bootstrap scope 확정
 이 GATE를 통과해야 template repo 생성과 rename을 시작한다.
@@ -53,7 +53,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - [ ] 기존 서비스 허브 존재 여부 확인 (`없으면 workspace-create-service`)
 
 ##### 비전 정합성 (ADR-009, 팀 비전 Confluence pageId ${CONFLUENCE_PAGE_ID})
-- [ ] **파트 분류**: `<YOUR_PART_A>` / `<YOUR_PART_B>` / `공통` — `base/services/{파트}/{서비스}/` 위치 결정
+- [ ] **파트 분류**: `<YOUR_PART_A>` / `<YOUR_PART_B>` / `공통` — `services/{파트}/{서비스}/` 위치 결정
 - [ ] **카테고리**: 팀 비전 기준 카테고리 선택
 - [ ] **계층**: 팀 비전 기준 계층 선택
 - [ ] **인증 방식**: `SSO` / `Token` / `Local` / `Certificate` / 기타
@@ -62,9 +62,9 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - [ ] **자율 repo 여부 (ADR-009)**:
   - 표준 적용 = 영문 commit + Jira 티켓 + review-evidence + Co-Authored-By 강제
   - 자율 (예: 자율 repo 패턴) = repo 자체 룰 보존, 카탈로그 메타만 우리 관리
-- [ ] **service-mapping.md 등록**: `agents/rules/service-mapping.md` 매핑 행 추가
+- [ ] **service-mapping.md 등록**: `rules/service-mapping.md` 매핑 행 추가
 - [ ] **frontmatter 표준 적용**: `vision_category` / `vision_layer` / `part` / `roadmap_stage` / `auth_method` / `deployment`
-- [ ] **도메인 에이전트 신설 여부**: `workspace/<YOUR_SERVICE>/agents/{서비스}.md` — 프로젝트 레포 canonical (자율 repo 필수, 표준 repo 선택)
+- [ ] **도메인 에이전트 신설 여부**: `domains/<YOUR_SERVICE>/agents/{서비스}.md` — 프로젝트 레포 canonical (자율 repo 필수, 표준 repo 선택)
 
 상세 가이드: `references/bootstrap-charter.md`
 
@@ -83,8 +83,8 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 이 GATE를 통과해야 charts/values 초기화와 후속 commit/push로 진행한다.
 - [ ] rename 후 예상 경로/패키지/앱 이름 확인
 - [ ] 프로젝트 레포 `docs/`, `AGENTS.md` 생성 확인
-- [ ] `AGENTS.md` frontmatter 검증 — `service:` + `role:` 필수값 존재, `service:` 값이 `agents/rules/service-mapping.md`의 `서비스 폴더` 컬럼과 일치 (양식: `agents/templates/project-agents.md`)
-- [ ] 서비스 카탈로그(`base/services/{service}/README.md`) 반영 확인
+- [ ] `AGENTS.md` frontmatter 검증 — `service:` + `role:` 필수값 존재, `service:` 값이 `rules/service-mapping.md`의 `서비스 폴더` 컬럼과 일치 (양식: `templates/project-agents.md`)
+- [ ] 서비스 카탈로그(`services/{service}/README.md`) 반영 확인
 - [ ] charts/values 대상 repo와 스크립트 경로 확인
 
 4. `APPLY`
@@ -176,7 +176,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 
 `service-ops` 또는 `cicd-deploy`로 넘어가기 전에 아래 증적이 준비되어 있어야 한다.
 
-- 서비스 허브: `base/services/{service}/README.md`, `TASKS.md`
+- 서비스 허브: `services/{service}/README.md`, `TASKS.md`
 - 프로젝트 레포: `docs/`, `AGENTS.md`
 - workspace 연결 정보: `workspace.json` 또는 동등한 실제 경로 확인 결과
 - 배포 skeleton: `service-charts`, `service-values`, HTTPRoute skeleton
@@ -189,7 +189,7 @@ description: "새 서비스/프로젝트 bootstrap 오케스트레이터. templa
 - 완료 기록 예시:
 
 ```bash
-node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs bootstrap-complete {service} \
+node skills/harness-orchestrator/scripts/service-orchestration.mjs bootstrap-complete {service} \
   --project-root workspace/{frontend_repo} \
   --project-root workspace/{backend_repo} \
   --charts workspace/<YOUR_CHARTS_REPO>/<YOUR_ORG>-{service} \

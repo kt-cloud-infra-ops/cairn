@@ -8,20 +8,20 @@
 
 | 영역 | 위치 | Git 공유 | 변경 시 |
 |------|------|---------|---------|
-| 팀 규칙 | `agents/rules/` | O | `/review-rules` |
-| 커맨드 | `agents/skills/` | O | `/review-rules` |
+| 팀 규칙 | `rules/` | O | `/review-rules` |
+| 커맨드 | `skills/` | O | `/review-rules` |
 | 통합 지침 | `AGENTS.md` | O | `/review-rules` |
-| 서비스 문서 | `base/services/` | O | 자유 커밋 |
-| 개인 문서 | `base/personal/<YOUR_EMPLOYEE_ID>/` | O | 본인만 수정 |
+| 서비스 문서 | `services/` | O | 자유 커밋 |
+| 개인 문서 | `.cairn/personal/<YOUR_EMPLOYEE_ID>/` | O | 본인만 수정 |
 | 워크스페이스 | `workspace/` | X | 코드+프로젝트 문서 전용 |
 | 임시 파일 | `temp/` | X | 작업 후 삭제 |
 
 ## 금지 사항
 
 1. **인증정보 커밋 금지** — API 키, 비밀번호, 토큰
-2. **workspace에 비프로젝트 문서 저장 금지** — 작업일지/개인 메모는 `base/`에
+2. **workspace에 비프로젝트 문서 저장 금지** — 작업일지/개인 메모는 `.cairn/personal/`에
 3. **다른 팀원 개인 폴더 수정 금지**
-4. **규칙 무단 변경 금지** — `agents/rules/` 변경 시 `/review-rules` 필수
+4. **규칙 무단 변경 금지** — `rules/` 변경 시 `/review-rules` 필수
 
 ## CRITICAL: 개발 작업 시 하네스 선행 의무
 
@@ -65,7 +65,7 @@
 
 ## 공용룰 우선 원칙
 
-반복 가능성 높은 절차, 여러 에이전트가 따라야 하는 방식 → `agents/rules/`에 canonical 반영 우선.
+반복 가능성 높은 절차, 여러 에이전트가 따라야 하는 방식 → `rules/`에 canonical 반영 우선.
 
 ---
 

@@ -5,16 +5,16 @@ description: "공통룰 변경 리뷰 프로세스"
 
 ## 스킬 규칙
 ### ALWAYS
-- 변경 파일 식별: agents/rules/, agents/skills/, AGENTS.md
+- 변경 파일 식별: rules/, skills/, AGENTS.md
 - 심각도 판정: 경미/일반/중요/CRITICAL
 ### NEVER
 - 일상 브랜치에 공통룰 커밋 금지 (중요 이상)
 
 ## 실행 절차
 
-1. **변경 파일 식별**: `agents/rules/`, `agents/skills/`, `AGENTS.md` 중 수정된 파일 확인
+1. **변경 파일 식별**: `rules/`, `skills/`, `AGENTS.md` 중 수정된 파일 확인
    ```
-   git diff --name-only HEAD -- agents/rules/ agents/skills/ AGENTS.md
+   git diff --name-only HEAD -- rules/ skills/ AGENTS.md
    ```
 
 2. **변경 분류**: 각 변경을 아래 카테고리로 분류
@@ -54,7 +54,7 @@ description: "공통룰 변경 리뷰 프로세스"
 
 ## 참고
 
-- `agents/rules/` = **팀 표준** (Git 공유, 전원 영향)
+- `rules/` = **팀 표준** (Git 공유, 전원 영향)
 - `~/.claude/rules/` = **개인 설정** (로컬만, 공유 불필요)
 - 개인 설정을 팀 표준으로 승격할 때도 이 리뷰 프로세스 사용
 

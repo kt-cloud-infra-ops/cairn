@@ -30,7 +30,7 @@ Phase 4: SHIP     → 배포 준비
 |----------|------|-----------------|------|
 | Jira A.C. 개발 단계 | Jira Description 체크리스트 | Phase 0~4 전체 | **진행 상태 추적** (체크박스) |
 | 피처 문서 테스트 설계 | `features/*.md` 6.x절 | Phase 0 (CPS 테스트 전략) → Phase 1 (PRD 상세) | **테스트 설계 산출물** |
-| Jira 완료 처리 5단계 | `agents/rules/jira-workflow.md` | Phase 4: SHIP | **완료 증적 + 상태 전환** |
+| Jira 완료 처리 5단계 | `rules/jira-workflow.md` | Phase 4: SHIP | **완료 증적 + 상태 전환** |
 | 하네스 Phase Gate | 이 파일 | — | **워크플로우 정의 (Canonical)** |
 
 ### Jira A.C. 개발 단계 ↔ Phase 매핑
@@ -45,7 +45,7 @@ Phase 4: SHIP     → 배포 준비
 ```
 
 > **배포 검증 분리**: stg/운영 배포 검증은 A.C.가 아닌 Confluence 배포절차서에서 관리.
-> 상세: `agents/rules-on-demand/domain-jira-ship.md` "배포 검증 분리" 섹션.
+> 상세: `rules-on-demand/domain-jira-ship.md` "배포 검증 분리" 섹션.
 
 ### 피처 문서 테스트 설계 ↔ Phase 매핑
 
@@ -149,7 +149,7 @@ Gate 통과 증거를 `checks.*` boolean 대신 `evidence.*` pointer로 기록�
     "prd": "feature-prd.md",
     "architecture": "feature-architecture.md",
     "taskPacket": "task-packet.md",
-    "featureDoc": "base/services/.../features/xxx.md"
+    "featureDoc": "services/.../features/xxx.md"
   },
   "approvals": { "user": false },
   "evidence": {

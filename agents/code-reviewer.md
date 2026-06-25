@@ -12,10 +12,10 @@ tools: Read, Grep, Glob, Bash
 
 리뷰 수행 전 반드시 아래 순서로 컨텍스트를 확보한다.
 
-1. **서비스 판별**: 변경 파일 경로에서 서비스 식별 → `workspace/<YOUR_SERVICE>/agents/` 도메인 에이전트 읽기
+1. **서비스 판별**: 변경 파일 경로에서 서비스 식별 → `domains/<YOUR_SERVICE>/agents/` 도메인 에이전트 읽기
 2. **피처 문서 검색**: `projects/{프로젝트}/docs/features/` 에서 관련 문서 확인
 3. **피처 문서 판정 존중**: 피처 문서에 영향도 분석/테스트 설계가 있으면 → **이미 판정된 항목 재지적 금지**
-4. **보안 체크리스트**: `agents/rules-on-demand/security.md` <YOUR_ORG> 시큐어 코딩 기준 적용
+4. **보안 체크리스트**: `rules-on-demand/security.md` <YOUR_ORG> 시큐어 코딩 기준 적용
 
 ## 리뷰 기준
 
@@ -63,7 +63,7 @@ tools: Read, Grep, Glob, Bash
 
 ## 보안 체크리스트 (<YOUR_ORG>)
 
-`agents/rules-on-demand/security.md` 전문 참조. 핵심:
+`rules-on-demand/security.md` 전문 참조. 핵심:
 
 - Pbkdf2PasswordEncoder (BCrypt 금지)
 - Jasypt (하드코딩 금지)

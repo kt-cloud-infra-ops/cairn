@@ -29,7 +29,7 @@ model: haiku
 
 ### 1차: usage-log.jsonl (구조화된 데이터)
 ```
-base/personal/{사번}/usage-log.jsonl
+.cairn/personal/{사번}/usage-log.jsonl
 ```
 
 각 라인은 `/wrap` 실행 시 자동 생성된 세션 로그:
@@ -49,7 +49,7 @@ base/personal/{사번}/usage-log.jsonl
 
 ### 2차: 보조 데이터 (usage-log 없을 때 폴백)
 - `git log --author={이메일}` — 커밋 패턴
-- `base/personal/{사번}/worklog/` — 작업일지
+- `.cairn/personal/{사번}/worklog/` — 작업일지
 
 ## 분석 항목
 
@@ -57,9 +57,9 @@ base/personal/{사번}/usage-log.jsonl
 
 ```bash
 # usage-log.jsonl 읽기
-LOGFILE="base/personal/$(git config user.name | sed 's/.*//;')/usage-log.jsonl"
+LOGFILE=".cairn/personal/$(git config user.name | sed 's/.*//;')/usage-log.jsonl"
 # 폴백: 사번 직접 사용
-# LOGFILE="base/personal/<YOUR_USER_ID>/usage-log.jsonl"
+# LOGFILE=".cairn/personal/<YOUR_USER_ID>/usage-log.jsonl"
 ```
 
 #### A. 커맨드 사용 빈도
@@ -90,7 +90,7 @@ usage-log에서 `agents_used` 배열을 집계:
 
 ### team 모드
 
-팀원별 usage-log.jsonl을 집계 (base/personal/*/usage-log.jsonl):
+팀원별 usage-log.jsonl을 집계 (.cairn/personal/*/usage-log.jsonl):
 
 #### A. 팀 전체 커맨드 히트맵
 ```

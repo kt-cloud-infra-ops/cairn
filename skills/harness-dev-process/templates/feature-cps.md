@@ -74,7 +74,7 @@ Clarification Level: `LOW` / `MEDIUM` / `HIGH`
 
 ## 영향도 분석
 
-> agents/rules-on-demand/impact-analysis.md 체크리스트 수행 결과
+> rules-on-demand/impact-analysis.md 체크리스트 수행 결과
 
 | # | 항목 | 해당 | 조치 |
 |---|------|------|------|

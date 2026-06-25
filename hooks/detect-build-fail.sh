@@ -1,7 +1,7 @@
 #!/bin/bash
-# Project guard: only run in ai-team-standards repo
+# Project guard: only run in cairn engine repo
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/.claude/hooks" ]] && exit 0
+[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/hooks" ]] && exit 0
 
 # Hook: 빌드/테스트 실패 감지 → 에이전트에 수정 제안 주입
 # PostToolUse(Bash)

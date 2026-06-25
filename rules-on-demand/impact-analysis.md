@@ -108,7 +108,7 @@ SQL(값 생성) → Mapper(전달) → Service(DTO 변환) → Controller(응답
 
 영향도 분석 결과는 **`projects/{프로젝트}/docs/features/` 내 설계 문서의 별도 섹션**(예: "기존 쿼리 영향도 분석")으로 포함한다. 임시 문서(temp/)가 아닌 프로젝트 레포 설계 문서에 포함하여 추적 가능하게 한다.
 
-> **하네스 적용 시**: cross-cutting 8항목은 CPS(`## 영향도 분석`)에 1차 기록하고, 설계 상세는 PRD(`## 풀스택 레이어 설계`)/Architecture에 확장한다. → `agents/skills/harness-dev-process/`
+> **하네스 적용 시**: cross-cutting 8항목은 CPS(`## 영향도 분석`)에 1차 기록하고, 설계 상세는 PRD(`## 풀스택 레이어 설계`)/Architecture에 확장한다. → `skills/harness-dev-process/`
 
 ## 교훈 (테이블 추가 사례)
 

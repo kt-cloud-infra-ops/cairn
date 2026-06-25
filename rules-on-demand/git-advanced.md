@@ -8,7 +8,7 @@
 
 ## 커밋 메시지 상세 (caveman-commit 흡수)
 
-> Origin: `agents/skills/vendor/juliusbrussee--caveman/caveman-commit/SKILL.md` (MIT)
+> Origin: `skills/vendor/juliusbrussee--caveman/caveman-commit/SKILL.md` (MIT)
 
 핵심 길이/스타일 룰은 git-workflow.md `Commit Message Format` 참조. 아래는 예시와 근거.
 
@@ -96,14 +96,14 @@ docs/  merge=ours
 
 ## 공통룰 변경 분리 절차 (상세)
 
-`agents/rules/`, `agents/skills/`, `AGENTS.md`, `agents/templates/` 변경은 main 기반 `rules/{설명}` 브랜치로 분리한다(git-workflow.md). 일상 브랜치에서 감지 시:
+`rules/`, `skills/`, `AGENTS.md`, `templates/` 변경은 main 기반 `rules/{설명}` 브랜치로 분리한다(git-workflow.md). 일상 브랜치에서 감지 시:
 
 ```bash
 # 1. main 기반 브랜치 생성 (필요시 git stash)
 git stash
 git checkout -b rules/{설명} main
 # 2. 공통룰 파일만 커밋
-git add agents/rules/... agents/skills/... AGENTS.md
+git add rules/... skills/... AGENTS.md
 git commit -m "rules: {설명}"
 git push -u origin rules/{설명}
 # 3. PR 생성 후 원래 브랜치 복귀

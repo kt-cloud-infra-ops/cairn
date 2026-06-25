@@ -2,13 +2,13 @@
 
 ## 새 스킬 생성 전 필수 체크 (CRITICAL)
 
-`agents/skills/` 하위에 새 스킬 폴더를 생성하기 전에 아래 절차를 반드시 수행한다.
+`skills/` 하위에 새 스킬 폴더를 생성하기 전에 아래 절차를 반드시 수행한다.
 
 ### Step 1: 중복 확인
 
-1. 기존 스킬 목록 확인: `ls -d agents/skills/*/`
+1. 기존 스킬 목록 확인: `ls -d skills/*/`
 2. prefix 그룹 내 유사 기능 검색 (daily-*, jira-*, dev-*, harness-*, cicd-*, workspace-*, analytics-*, meta-*, service-ops-*, `{서비스}-*`)
-3. vendor/ 스킬에 동일 기능 있는지 확인: `ls agents/skills/vendor/`
+3. vendor/ 스킬에 동일 기능 있는지 확인: `ls skills/vendor/`
 4. 기존 스킬의 description과 새 스킬 목적 비교
 
 ### Step 2: 판단
@@ -22,7 +22,7 @@
 
 ### Step 3: 최소 요건 (새 스킬 생성 시)
 
-- [ ] `SKILL.md` 필수 (`agents/templates/skill-template.md` 양식)
+- [ ] `SKILL.md` 필수 (`templates/skill-template.md` 양식)
 - [ ] frontmatter: `name`, `description` 필수
 - [ ] `## 스킬 규칙` — ALWAYS 또는 NEVER 최소 1개
 - [ ] `## 실행 절차` — 최소 1단계
@@ -56,17 +56,17 @@
 
 vendor SKILL.md를 사용자가 **직접 호출**(예: `/caveman lite`)하려면 Claude Code의 SKILL 자동 인식이 1-depth만 지원하므로 1-depth로 노출한다.
 
-- vendor 원본: `agents/skills/vendor/{repo-id}/{skill-name}/` (3-depth, 미인식)
-- 노출 위치: `agents/skills/{skill-name}/` (1-depth, 인식)
+- vendor 원본: `skills/vendor/{repo-id}/{skill-name}/` (3-depth, 미인식)
+- 노출 위치: `skills/{skill-name}/` (1-depth, 인식)
 
 **symlink 금지** — git symlink는 Windows에서 plain text 파일로 체크아웃되어 SKILL 미인식. 대신 `sync-vendor.sh expose`로 **직접 복사**한다 (모든 OS 호환).
 
 ```bash
 # vendor → 1-depth 일괄 복사 (manifest의 exposedAs 기준)
-bash agents/skills/sync-vendor.sh expose
+bash skills/sync-vendor.sh expose
 
 # 노출 제거
-bash agents/skills/sync-vendor.sh unexpose
+bash skills/sync-vendor.sh unexpose
 ```
 
 manifest.json에 `exposedAs` 필드로 노출 경로를 명시한다. vendor 원본 갱신 시(`sync-vendor.sh sync`) 노출본도 다시 `expose`로 재동기화한다.
@@ -129,7 +129,7 @@ vendor가 hook, script, MCP middleware, subagent 정의에 의존하면 SKILL.md
 
 ### GATE 작성 규칙
 
-상세는 `agents/templates/skill-template.md` "(선택) GATE 패턴" 섹션 참조. 핵심:
+상세는 `templates/skill-template.md` "(선택) GATE 패턴" 섹션 참조. 핵심:
 
 1. **번호 부여**: GATE 0(데이터 수집) → GATE 1(분류·확인) → GATE 2(실행 전 검증) → DONE 직전 GATE(최종 승인)
 2. **체크박스 형식 필수**: `- [ ]`로 통과 조건 명시

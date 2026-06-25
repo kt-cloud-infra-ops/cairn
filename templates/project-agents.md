@@ -15,7 +15,7 @@ external: <YOUR_PATH>/bar
 ---
 ```
 
-- `service`: 필수. `agents/rules/service-mapping.md`의 `서비스 폴더` 컬럼 값 사용
+- `service`: 필수. `rules/service-mapping.md`의 `서비스 폴더` 컬럼 값 사용
 - `role`: 필수. `frontend|backend|scheduler|e2e|shared|batch`
 - `related`: 옵션. 같은 서비스 내 관련 프로젝트 목록
 - `repo`: 옵션. GitHub 저장소 slug

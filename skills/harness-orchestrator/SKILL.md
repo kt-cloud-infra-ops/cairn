@@ -112,10 +112,10 @@ description: "변경성 요청을 `dev / service-bootstrap / service-ops / harne
 
 검증:
 - `.harness/review-evidence.json` 생성 (5분 이내 + checks pass)
-- `.claude/hooks/guard-git-commit.sh`가 commit 직전 자동 검증
+- `hooks/guard-git-commit.sh`가 commit 직전 자동 검증
 - evidence 없으면 commit 차단 (exit 2)
 
-근거: ADR-008 + `agents/skills/dev-code-review/SKILL.md`
+근거: ADR-008 + `skills/dev-code-review/SKILL.md`
 
 ## Capture Loop (cross-cutting, 모든 branch 공통)
 
@@ -137,9 +137,9 @@ owner skill이 작업을 완료한 뒤, 의미 있는 변경/결정/절차가 �
 - 생성/검증:
 
 ```bash
-node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs init {service}
-node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require bootstrap
-node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require deploy-ready
+node skills/harness-orchestrator/scripts/service-orchestration.mjs init {service}
+node skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require bootstrap
+node skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require deploy-ready
 ```
 
 ## 분기 기준

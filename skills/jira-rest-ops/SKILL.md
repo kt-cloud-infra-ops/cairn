@@ -23,7 +23,7 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 ## 실행 도구
 
 - `scripts/jira_rest_api.py` — Python 헬퍼 (JiraRestAPI 클래스)
-- `agents/skills/scripts/weekly_report.py` — 주간보고 helper (추후 jira-weekly-report 스킬로 이관 예정)
+- `skills/scripts/weekly_report.py` — 주간보고 helper (추후 jira-weekly-report 스킬로 이관 예정)
 - curl 직접 호출도 가능 (헬퍼 없는 환경)
 
 ## 인증
@@ -38,7 +38,7 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 인증 방식: Basic Auth (`email:apiToken` base64)
 
 필수 preflight:
-- 이슈 조회/검색/수정 전 먼저 `python3 agents/skills/jira-rest-ops/scripts/jira_rest_api.py auth-check`
+- 이슈 조회/검색/수정 전 먼저 `python3 skills/jira-rest-ops/scripts/jira_rest_api.py auth-check`
 - 또는 `GET /rest/api/3/myself` 호출로 현재 토큰 유효성 확인
 - `401 AUTHENTICATED_FAILED`면 권한 문제가 아니라 토큰/인증정보 오류로 간주하고 즉시 중단
 
@@ -65,7 +65,7 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 - **신규 Task 생성 기본 경로**: `create-task` helper 또는 동등한 검증 로직 사용. ad-hoc `POST /issue` 금지
 - **Task 생성 minimum skeleton**: `Backlog`라도 `description + A.C. + reporter + assignee + start/due date`를 채운다
 - **생성 후 self-audit 필수**: `summary, description, customfield_14516, reporter, assignee, customfield_10015, duedate, customfield_10014`
-- 상태 변경 전 A.C. 5단계 필수 (agents/rules/jira-workflow.md 참조)
+- 상태 변경 전 A.C. 5단계 필수 (rules/jira-workflow.md 참조)
 - 인증 토큰을 stdout/로그에 노출하지 않는다
 - 캐시: `.claude/cache/jira/` (이슈 60분, 검색 30분)
 
@@ -146,7 +146,7 @@ read-only 조회(`auth-check`, `search`, `get issue`)는 제외하고, 아래 �
 ## 참조
 
 - `references/automation-pattern.md` — 상세 코드 예시 (jira-rest-ops references에서 관리)
-- `agents/rules/jira-workflow.md` — Jira 운영 규칙 원본
+- `rules/jira-workflow.md` — Jira 운영 규칙 원본
 - 주간보고 자동화 패턴 — 팀 knowledge base 참조
 
 ## 완료 조건 (DONE WHEN)

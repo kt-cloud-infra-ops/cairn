@@ -10,7 +10,7 @@ aliases: []
 
 # 에이전트 시스템 진화 — 변경 이력 · 고민 · 레슨런
 
-`ai-team-standards` 저장소에서 에이전트/스킬/룰 구조를 다도구(Claude Code, Codex 등) 공유 자산으로 정착시키기까지의 변경 흐름과 고민. 신규 합류자, 향후 구조 재논의 시 참고용.
+`cairn` 저장소에서 에이전트/스킬/룰 구조를 다도구(Claude Code, Codex 등) 공유 자산으로 정착시키기까지의 변경 흐름과 고민. 신규 합류자, 향후 구조 재논의 시 참고용.
 
 ---
 
@@ -50,10 +50,10 @@ aliases: []
 **고민**: `agents/` 단일 폴더에 (a) 도메인 라우터 (b) 레이어 전문가 (c) 도메인 본체 (d) 스킬 진입점이 섞여 있어 라우팅 비용이 큼.
 
 **결정**: 폴더를 역할별로 분리.
-- `agents/subagents/` — 라우터 + 레이어/도메인 에이전트
-- `agents/skills/` — 실행 단위
-- `agents/rules/` — 자동 로드 룰
-- `agents/knowledge/` — 학습 lessons
+- `agents/` (엔진 레이어 에이전트) + `domains/<svc>/agents/` (workspace 도메인) — 라우터 + 레이어/도메인 에이전트
+- `skills/` — 실행 단위
+- `rules/` — 자동 로드 룰
+- `knowledge/` — 학습 lessons
 
 **레슨런**: 이름 한 글자가 라우팅 명료성을 결정. `agents/agents/`처럼 같은 이름 중첩은 향후 절대 피한다.
 
@@ -83,10 +83,10 @@ aliases: []
 ### 3.3 도메인 에이전트 위치 — 프로젝트 레포 vs 중앙 (04-16, e4a8c2f)
 
 **고민**: <YOUR_SERVICE> 도메인 에이전트 8종(evt/icd/ctl/dash/stt/mng/zab/common)을 어디에 둘 것인가.
-- 중앙(`ai-team-standards`)에 두면 한곳에서 보기 쉬우나, 프로젝트별 격리 안 됨
+- 중앙(`cairn`)에 두면 한곳에서 보기 쉬우나, 프로젝트별 격리 안 됨
 - 프로젝트 레포에 두면 자기완결이지만, 중앙 라우터에서 정방향 링크만 유지 필요
 
-**결정**: 본체는 프로젝트 레포(`workspace/<YOUR_SERVICE>/agents/`), 중앙엔 라우터(`domains/{서비스}/agents/README.md`)만. 단 <YOUR_SERVICE>는 **임시로 중앙에 보관** 중(이전 예정).
+**결정**: 본체는 프로젝트 레포(`domains/<YOUR_SERVICE>/agents/`), 중앙엔 라우터(`domains/{서비스}/agents/README.md`)만. 단 <YOUR_SERVICE>는 **임시로 중앙에 보관** 중(이전 예정).
 
 **레슨런**:
 - "임시 위치"가 6개월 이상 살아남을 가능성 → 임시라고 적어두면 후임자가 신뢰함. **이전 기한(deadline) 명시**가 필요.
@@ -100,7 +100,7 @@ aliases: []
 - 그대로 복사 → upstream 표류, 원본 출처 사라짐
 - 무시 → 바퀴 재발명
 
-**결정**: `agents/skills/vendor/{repo}--{skill}/` 디렉토리 + `manifest.json`으로 활성화 여부/판정 관리. 우리 스킬에는 description에 `(origin: superpowers/xxx)` 명시.
+**결정**: `skills/vendor/{repo}--{skill}/` 디렉토리 + `manifest.json`으로 활성화 여부/판정 관리. 우리 스킬에는 description에 `(origin: superpowers/xxx)` 명시.
 
 **판정 4종**:
 | 판정 | 의미 |
@@ -120,7 +120,7 @@ aliases: []
 
 **고민 1 (양식)**: SKILL.md frontmatter, 규칙 섹션, 절차, 완료 조건이 스킬마다 달라 신규 합류 AI/사람이 매번 적응.
 
-**결정**: 27개 스킬에 동일 양식(`agents/templates/skill-template.md`) 일괄 적용. `## 스킬 규칙` ALWAYS/NEVER, `## 실행 절차`, `## 완료 조건 (DONE WHEN)` 필수. 가드 hook으로 신규 스킬 생성 차단.
+**결정**: 27개 스킬에 동일 양식(`templates/skill-template.md`) 일괄 적용. `## 스킬 규칙` ALWAYS/NEVER, `## 실행 절차`, `## 완료 조건 (DONE WHEN)` 필수. 가드 hook으로 신규 스킬 생성 차단.
 
 **고민 2 (결과 일치성)**: 동일 스킬을 Claude vs Codex가 실행할 때 결과가 다름.
 
@@ -144,8 +144,8 @@ aliases: []
 **고민**: 자동 로드되는 `rules/`가 너무 커지면 매 세션 컨텍스트 비용 증가. 그러나 자주 안 쓰는 룰도 가끔 필요.
 
 **결정**:
-- `agents/rules/` — 매 세션 자동 로드 (core, security, git-workflow, testing, doc-organization 등 13개)
-- `agents/rules-on-demand/` — 키워드 트리거 시 로드 (apidog, project-docs, performance, <your_service>/* 등)
+- `rules/` — 매 세션 자동 로드 (core, security, git-workflow, testing, doc-organization 등 13개)
+- `rules-on-demand/` — 키워드 트리거 시 로드 (apidog, project-docs, performance, <your_service>/* 등)
 
 **레슨런**:
 - 항상 필요한 룰과 가끔 필요한 룰의 분리는 **컨텍스트 토큰 사용량을 직접 줄이는 가장 효과적인 수단**.
@@ -172,9 +172,9 @@ aliases: []
 | 영역 | 원칙 |
 |------|------|
 | 진입점 | `AGENTS.md` (정본) ← `CLAUDE.md`/`CODEX.md` 포인터 |
-| 룰 | `agents/rules/` 자동 로드 + `agents/rules-on-demand/` 트리거 로드 |
-| 스킬 | `agents/skills/{prefix}-{name}/SKILL.md` 단일 양식 |
-| 외부 자산 | `agents/skills/vendor/` + manifest 판정 |
+| 룰 | `rules/` 자동 로드 + `rules-on-demand/` 트리거 로드 |
+| 스킬 | `skills/{prefix}-{name}/SKILL.md` 단일 양식 |
+| 외부 자산 | `skills/vendor/` + manifest 판정 |
 | 도메인 에이전트 | 프로젝트 레포 본체 + 중앙 라우터 정방향 링크 |
 | 변경 PR | 같은 주제 묶음, runtime/non-runtime 브랜치 분리 |
 | GATE | 외부 변경/공유 산출물 직전 사용자 명시 승인 |
@@ -212,8 +212,8 @@ aliases: []
 - [ADR-006 — 스킬 통합](../../../../decisions/006-skill-unification.md) — commands→skills 통합 결정
 - [ADR-005 — 프로젝트 문서 표준](../../../../decisions/005-project-docs-standard.md) — 프로젝트 레포 docs/ 표준
 - [ADR-004 — 룰 통합](../../../../decisions/004-rules-consolidation.md) — rules 통합
-- [agents/rules/agents.md](../../../rules/agents.md) — 에이전트 오케스트레이션 룰
-- [agents/rules/skill-governance.md](../../../rules/skill-governance.md) — 스킬 거버넌스
+- [rules/agents.md](../../../rules/agents.md) — 에이전트 오케스트레이션 룰
+- [rules/skill-governance.md](../../../rules/skill-governance.md) — 스킬 거버넌스
 - [agents/harnessing.md](../../../harnessing.md) — 하네스 어드바이저 (엔진 plugin 레이어 에이전트)
 - [documentation-architecture.md](documentation-architecture.md) — 문서 아키텍처
 - [rule-design-principles.md](rule-design-principles.md) — 룰 설계 원칙

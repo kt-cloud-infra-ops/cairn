@@ -27,15 +27,15 @@
 3. 근거 repo 또는 문서가 있으면 함께 남긴다.
    - project `docs/`
    - service hub
-   - `base/support-projects/<YOUR_PROJECT>/`
+   - `support-projects/<YOUR_PROJECT>/`
 
 ## read-only 점검 예시
 
 ```bash
 rg -n "prometheus|grafana|loki|otel|actuator|dashboard_url|alert" \
   workspace/<backend-repo> \
-  base/services/<service> \
-  base/support-projects/<YOUR_PROJECT>
+  services/<service> \
+  support-projects/<YOUR_PROJECT>
 ```
 
 실제 repo 경로가 없거나 서비스가 observability 연동 대상이 아니면 `N/A`로 판정하고 이유를 남긴다.

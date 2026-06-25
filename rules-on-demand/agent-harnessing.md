@@ -9,7 +9,7 @@ triggers:
 
 ## 준수 규칙
 - 같은 정책은 한 곳만 canonical로 두고 여러 파일에 복붙하지 않는다.
-- `services/`와 프로젝트 레포 `projects/{proj}/docs/`, `workspace/<YOUR_SERVICE>/agents/`(도메인)·`agents/`(레이어)와 하네스 문서의 경계를 섞지 않는다.
+- `services/`와 프로젝트 레포 `projects/{proj}/docs/`, `domains/<YOUR_SERVICE>/agents/`(도메인)·`agents/`(레이어)와 하네스 문서의 경계를 섞지 않는다.
 - 항상 읽어야 하는 정보와 필요할 때만 읽는 정보를 분리한다.
 - 도메인 에이전트의 `## 요구사항 이력`은 핵심 자산으로 취급한다.
 - 구조 변경은 `정책 중복 제거 → 카탈로그 정리 → 본문 슬림화` 순서로 진행한다.

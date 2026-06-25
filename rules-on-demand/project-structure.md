@@ -298,7 +298,7 @@ master push
 
 | 파일 | 용도 |
 |------|------|
-| `AGENTS.md` | AI 에이전트 가이드 (모듈 구조, 네이밍, DDL 참조). frontmatter 필수 — 양식: `agents/templates/project-agents.md` |
+| `AGENTS.md` | AI 에이전트 가이드 (모듈 구조, 네이밍, DDL 참조). frontmatter 필수 — 양식: `templates/project-agents.md` |
 | `Dockerfile` | 멀티스테이지 빌드 (백엔드) |
 | `.github/workflows/` | CI/CD 파이프라인 |
 | `doc/ddl/*.sql` | DB 스키마 DDL (백엔드) |

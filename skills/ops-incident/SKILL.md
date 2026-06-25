@@ -18,7 +18,7 @@ description: "운영 장애 인지 → 임시 회피 → 원인 분석 → 보�
 - GATE 2 통과 전 인시던트 관리 시스템/Confluence 보고서 생성 금지
 - Phase 4 hotfix 구현을 본 스킬 내에서 직접 수행 금지 (dev branch 위임 필수)
 - 등급/영향범위/시각 추정 기재 금지 — 사용자 확인 또는 `[미확인]` 마킹
-- 운영개선 태스크의 Jira 프로젝트를 추정으로 결정 금지 — `agents/rules/service-mapping.md` 참조 후 결정
+- 운영개선 태스크의 Jira 프로젝트를 추정으로 결정 금지 — `rules/service-mapping.md` 참조 후 결정
 
 ## 실행 절차
 
@@ -81,7 +81,7 @@ description: "운영 장애 인지 → 임시 회피 → 원인 분석 → 보�
 
 | 서비스 분류 | Jira 프로젝트 | 비고 |
 |-----------|-------------|------|
-| 인프라 서비스 (환경에 맞는 서비스 목록으로 설정) | **`${JIRA_PROJECT_KEY}`** | 접두사 파싱 — `agents/rules/service-mapping.md` |
+| 인프라 서비스 (환경에 맞는 서비스 목록으로 설정) | **`${JIRA_PROJECT_KEY}`** | 접두사 파싱 — `rules/service-mapping.md` |
 | DevOps 서비스 (예: batch, api — 환경에 맞게 설정) | **별도 devops 프로젝트** | 정확한 키는 사용자 확인 필요 — 미확정 시 사용자 질문 |
 
 태스크 내용:
@@ -125,10 +125,10 @@ description: "운영 장애 인지 → 임시 회피 → 원인 분석 → 보�
 - `references/cinm-template.md` — 인시던트 관리 시스템 8섹션 ADF 표준 양식
 - `references/incident-response-process.md` — 사내 장애 대응 프로세스
 - `references/incident-report-sample-cases.md` — 장애보고서 작성 예시 (템플릿)
-- `agents/rules/service-mapping.md` — 서비스 ↔ Jira 프로젝트 매핑
-- `agents/skills/jira-rest-ops/` — Jira REST API 헬퍼 (인시던트 description append, 태스크 생성)
-- `agents/skills/harness-dev-process/` — Phase 4 hotfix 구현 위임 대상
-- `agents/skills/harness-orchestrator/` — 본 스킬을 `incident` branch owner로 라우팅
+- `rules/service-mapping.md` — 서비스 ↔ Jira 프로젝트 매핑
+- `skills/jira-rest-ops/` — Jira REST API 헬퍼 (인시던트 description append, 태스크 생성)
+- `skills/harness-dev-process/` — Phase 4 hotfix 구현 위임 대상
+- `skills/harness-orchestrator/` — 본 스킬을 `incident` branch owner로 라우팅
 
 ## 본 스킬 출현 배경 (재발 방지 메커니즘)
 

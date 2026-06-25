@@ -4,12 +4,12 @@
 
 | 위치 | 역할 | 내용 |
 |------|------|------|
-| `agents/rules/` (프로젝트) | **팀 표준** (Git 공유) | 코딩, 테스트, 보안, 워크플로우 등 |
+| `rules/` (프로젝트) | **팀 표준** (Git 공유) | 코딩, 테스트, 보안, 워크플로우 등 |
 | `${CLAUDE_HOME:-$HOME/.claude}/rules/` (개인) | **개인 환경 설정만** | 개인 IDE/설정 의존 파일 |
 | `AGENTS.md` | **통합 지침 canonical** | 프로젝트 구조, 팀 규칙, 워크플로우 진입점 |
-| `CLAUDE.md`, `CODEX.md` | **도구별 포인터** | `AGENTS.md`와 `agents/rules/`로 연결 |
+| `CLAUDE.md`, `CODEX.md` | **도구별 포인터** | `AGENTS.md`와 `rules/`로 연결 |
 
-**규칙 변경 시**: `agents/rules/` 수정 → Git commit으로 팀 공유
+**규칙 변경 시**: `rules/` 수정 → Git commit으로 팀 공유
 
 ---
 
@@ -18,14 +18,14 @@
 | 폴더 | 용도 | 대상 |
 |------|------|------|
 | `workspace/` | **코드 + 프로젝트 문서** | 코드, `docs/` (스펙, 피처, 릴리즈), `agents/` (도메인 에이전트) — 운영 SQL은 git wiki 발행(ADR-012), `docs/operations/` 폴더 두지 않음 |
-| `base/services/` | **서비스 허브 + TASKS.md** | 서비스 카탈로그 (인덱스), Jira 태스크, SOP |
-| `base/support-projects/` | **외부 요청 프로젝트** | 외부 개발사 수행, 우리 팀 설계/리뷰 (서비스 태그 필수) |
-| `base/personal/` | **개인 문서** | 작업일지, 개인 메모 (본인 폴더만 수정) |
+| `services/` | **서비스 허브 + TASKS.md** | 서비스 카탈로그 (인덱스), Jira 태스크, SOP |
+| `support-projects/` | **외부 요청 프로젝트** | 외부 개발사 수행, 우리 팀 설계/리뷰 (서비스 태그 필수) |
+| `.cairn/personal/` | **개인 문서** | 작업일지, 개인 메모 (본인 폴더만 수정) |
 | `temp/` | **임시 작업 문서** | 작업 중 문서, 위키/Confluence 업로드 전 |
-| `base/templates/` | **문서 템플릿** | 작업일지 등 반복 사용 양식 |
+| `templates/` | **문서 템플릿** | 작업일지 등 반복 사용 양식 |
 | `knowledge/lessons/` | **AI 에이전트 전용** | 학습 내용 (db/, java/, common/) |
 
-**프로젝트 상세 문서(스펙, 피처, 릴리즈)는 프로젝트 레포 `docs/`에 저장.** `base/services/`는 서비스 카탈로그(인덱스) 역할만 한다. (운영 SQL 적용 이력은 `{repo}.wiki.git` 발행 — ADR-012, `docs/operations/` 폐기)
+**프로젝트 상세 문서(스펙, 피처, 릴리즈)는 프로젝트 레포 `docs/`에 저장.** `services/`는 서비스 카탈로그(인덱스) 역할만 한다. (운영 SQL 적용 이력은 `{repo}.wiki.git` 발행 — ADR-012, `docs/operations/` 폐기)
 
 ---
 
@@ -41,8 +41,8 @@ workspace/{프로젝트}/docs/   # 프로젝트 SoT (코드 레포 안)
 └── releases/               # 릴리즈 노트
 # operations/ 폐기 (ADR-012) — 운영 SQL 적용이력은 git wiki 발행
 
-base/services/{서비스}/      # 서비스 카탈로그: README, TASKS.md, sop/
-base/personal/<YOUR_EMPLOYEE_ID>/worklog # 개인 작업일지 (본인 폴더만)
+services/{서비스}/      # 서비스 카탈로그: README, TASKS.md, sop/
+.cairn/personal/<YOUR_EMPLOYEE_ID>/worklog # 개인 작업일지 (본인 폴더만)
 knowledge/lessons/           # AI 학습 내용 (db/, java/, common/)
 temp/                        # 임시 작업 문서
 ```
@@ -63,7 +63,7 @@ temp/                        # 임시 작업 문서
   - 위치: `{repo}.wiki.git/operations/{request|change}-{TICKET}-{name}.md` (ITIL 2카테고리: request=요청충족/보정, change=변경관리. ADR-012)
   - AI 읽기: `git clone --depth 1 {repo}.wiki.git` → 로컬 grep (Confluence WebFetch 불필요)
 - **`{repo}.wiki.git`은 repo와 1:1 자동 분기** — Confluence처럼 folder 경로를 수동 확인/질문할 필요 없음 (서비스=레포 매핑이 곧 발행처).
-- 운영 SOP/절차서(workflow-*.md)는 `base/services/{서비스}/sop/`에 로컬 유지(AI 운영작업 시 Read).
+- 운영 SOP/절차서(workflow-*.md)는 `services/{서비스}/sop/`에 로컬 유지(AI 운영작업 시 Read).
 
 ### 단순 wiki 업데이트 = 최저가 모델 (haiku)
 
@@ -93,7 +93,7 @@ Confluence를 사용하는 경우:
   - 임시 목적이 끝난 파일: 삭제
   - 재사용/공유 가치가 있는 파일: 적절한 정식 폴더로 이동
     - 프로젝트 문서: 해당 프로젝트 레포 `docs/`
-    - 지원 프로젝트: `base/support-projects/{프로젝트}/`
+    - 지원 프로젝트: `support-projects/{프로젝트}/`
     - 학습: `knowledge/lessons/`
 
 ---
@@ -110,7 +110,7 @@ Confluence를 사용하는 경우:
 
 ## TASKS.md 관리
 
-서비스별 `base/services/{서비스}/TASKS.md`:
+서비스별 `services/{서비스}/TASKS.md`:
 - Jira 이슈와 연동
 - `/work-tasks` 커맨드로 조회
 - 로컬에서만 관리 (외부 발행 제외)
@@ -124,16 +124,16 @@ Confluence를 사용하는 경우:
 | 임시 작업/분석 | `temp/` |
 | 프로젝트 설계/스펙 | **프로젝트 레포 `docs/`** (`specs/`, `features/`, `releases/`) |
 | **운영 SQL (적용 이력)** | **`{repo}.wiki.git` operations/ 발행** (`docs/operations/` 로컬 보관 X — ADR-012) |
-| **운영 SOP/절차서 (workflow)** | `base/services/{서비스}/sop/` |
-| 외부 요청 프로젝트 | `base/support-projects/{프로젝트}/` (서비스 태그 필수) |
+| **운영 SOP/절차서 (workflow)** | `services/{서비스}/sop/` |
+| 외부 요청 프로젝트 | `support-projects/{프로젝트}/` (서비스 태그 필수) |
 | 학습 내용/SOP | `knowledge/lessons/` (db/, java/, common/) |
 | 팀 의사결정 | `decisions/` |
-| 개인 작업일지 | `base/personal/<YOUR_EMPLOYEE_ID>/worklog/YYYY/MM/MM-DD.md` |
-| 개인 면담/성과 문서 | `base/personal/<YOUR_EMPLOYEE_ID>/1on1/p-1on1-YYYY-Q{N}.md` |
-| 문서 템플릿 | `base/templates/` |
+| 개인 작업일지 | `.cairn/personal/<YOUR_EMPLOYEE_ID>/worklog/YYYY/MM/MM-DD.md` |
+| 개인 면담/성과 문서 | `.cairn/personal/<YOUR_EMPLOYEE_ID>/1on1/p-1on1-YYYY-Q{N}.md` |
+| 문서 템플릿 | `templates/` |
 | **최종 문서** | **Confluence/팀 위키 직접 업로드** |
 
-> **Jira 티켓 판별 우선 규칙 (CRITICAL)**: Jira 티켓 키가 붙은 산출물은 작업 초기·수요조사 단계라도 처음부터 `projects/{프로젝트}/docs/features/{TICKET}-{name}.md`에 저장한다. **작업 단계(확정 전/후)는 저장 위치 판단 기준이 아니다** — "초기 단계라 임시"라는 판단으로 `temp/`에 두지 않는다. `temp/`는 Jira 티켓이 없는 일회성 분석 또는 외부 업로드 전 초안에만 사용한다. (프로젝트 레포 docs 작업은 `main` 브랜치에서 — 배포 브랜치 stage/feature 오염 금지, `agents/rules/git-workflow.md` 참조)
+> **Jira 티켓 판별 우선 규칙 (CRITICAL)**: Jira 티켓 키가 붙은 산출물은 작업 초기·수요조사 단계라도 처음부터 `projects/{프로젝트}/docs/features/{TICKET}-{name}.md`에 저장한다. **작업 단계(확정 전/후)는 저장 위치 판단 기준이 아니다** — "초기 단계라 임시"라는 판단으로 `temp/`에 두지 않는다. `temp/`는 Jira 티켓이 없는 일회성 분석 또는 외부 업로드 전 초안에만 사용한다. (프로젝트 레포 docs 작업은 `main` 브랜치에서 — 배포 브랜치 stage/feature 오염 금지, `rules/git-workflow.md` 참조)
 
 ---
 
@@ -142,13 +142,13 @@ Confluence를 사용하는 경우:
 - kebab-case: `design-patterns.md`
 - 설명적 이름 사용
 - **features/ 파일**: `{TICKET}-{descriptive-name}.md` 형식 필수 (예: `PROJ-347-event-copy-identifier.md`)
-  - 상세: `agents/rules-on-demand/project-docs.md` → "features/ 파일 네이밍 규칙" 섹션
+  - 상세: `rules-on-demand/project-docs.md` → "features/ 파일 네이밍 규칙" 섹션
 
 ---
 
 ## Obsidian 태그 (YAML Frontmatter)
 
-상세: `agents/rules-on-demand/obsidian-tags.md` 참조 (팀 환경에 따라 선택 적용).
+상세: `rules-on-demand/obsidian-tags.md` 참조 (팀 환경에 따라 선택 적용).
 
 ---
 

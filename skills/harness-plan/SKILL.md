@@ -62,13 +62,13 @@ Use `/plan` when:
    - 무엇을 바꾸는지, 왜 바꾸는지, Done When이 무엇인지 짧고 명확하게 다시 적는다.
    - 영향도 분석 8항목과 주요 리스크를 같이 정리한다.
 3. **PRD 작성**
-   - `agents/skills/harness-dev-process/templates/feature-prd.md`를 기준으로 범위, 사용자/운영 관점 요구사항, 비기능 요구사항을 정리한다.
+   - `skills/harness-dev-process/templates/feature-prd.md`를 기준으로 범위, 사용자/운영 관점 요구사항, 비기능 요구사항을 정리한다.
    - 풀스택 8레이어는 해당 없음도 포함해 명시적으로 판정한다.
 4. **Architecture 작성**
-   - `agents/skills/harness-dev-process/templates/feature-architecture.md`를 기준으로 구조, 데이터 흐름, 연동, 롤백/배포 고려사항을 정리한다.
+   - `skills/harness-dev-process/templates/feature-architecture.md`를 기준으로 구조, 데이터 흐름, 연동, 롤백/배포 고려사항을 정리한다.
    - 구현 owner가 바로 착수할 수 있도록 수정 대상 레이어와 책임 경계를 명확히 남긴다.
 5. **Task Packet handoff outline 준비**
-   - `agents/skills/harness-dev-process/templates/task-packet.md`를 기준으로 다음 단계에서 어떻게 나눌지 분해 기준을 제시한다.
+   - `skills/harness-dev-process/templates/task-packet.md`를 기준으로 다음 단계에서 어떻게 나눌지 분해 기준을 제시한다.
    - 실제 구현 실행과 세부 packet 운용은 `harness-dev-process`의 Phase 2 IMPL이 소유한다.
 6. **확인 대기**
    - PRD + Architecture + handoff outline + 리스크를 사용자에게 제시한다.
@@ -110,10 +110,10 @@ Agent (planner):
 
 ## References
 
-- Owner flow: `agents/skills/harness-dev-process/SKILL.md`
-- PRD template: `agents/skills/harness-dev-process/templates/feature-prd.md`
-- Architecture template: `agents/skills/harness-dev-process/templates/feature-architecture.md`
-- Task Packet template: `agents/skills/harness-dev-process/templates/task-packet.md`
+- Owner flow: `skills/harness-dev-process/SKILL.md`
+- PRD template: `skills/harness-dev-process/templates/feature-prd.md`
+- Architecture template: `skills/harness-dev-process/templates/feature-architecture.md`
+- Task Packet template: `skills/harness-dev-process/templates/task-packet.md`
 
 ## Advisor Pattern 적용
 
@@ -130,7 +130,7 @@ Agent (planner):
 
 아래 조건 중 하나라도 해당하면 복잡도 HIGH로 분류 → Advisor 호출:
 
-- 팀 전체 영향 변경 포함 (`agents/rules/`, `AGENTS.md`, `agents/skills/` 수정 포함 시)
+- 팀 전체 영향 변경 포함 (`rules/`, `AGENTS.md`, `skills/` 수정 포함 시)
 - 복수 아키텍처 옵션이 존재하고 팀 컨텍스트 기반 선택이 필요한 경우
 - 5개 이상 레이어/서비스에 걸치는 Cross-cutting 변경
 

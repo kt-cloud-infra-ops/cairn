@@ -79,15 +79,15 @@ scope가 주어지면 관련 자산만 읽고, 전체 검토 절차를 그 범�
 
 | 자산 | 위치 | 확인 항목 |
 |------|------|----------|
-| Rules | `agents/rules/*.md` | 총 개수, 최근 변경, 충돌 |
-| Rules on-demand | `agents/rules-on-demand/*.md` | 트리거 키워드 동작 여부 |
-| Commands | `agents/skills/*.md` | 총 개수, 규칙 참조 여부 |
-| Hooks | `.claude/hooks/*.sh` | 맥락 판별 정상, 로그 확인 |
+| Rules | `rules/*.md` | 총 개수, 최근 변경, 충돌 |
+| Rules on-demand | `rules-on-demand/*.md` | 트리거 키워드 동작 여부 |
+| Commands | `skills/*.md` | 총 개수, 규칙 참조 여부 |
+| Hooks | `hooks/*.sh` | 맥락 판별 정상, 로그 확인 |
 | **Hook 등록** | `.claude/settings.json` | Hook 파일이 settings.json에 등록되어 있는지 |
-| Skills | `agents/skills/*/SKILL.md` | 템플릿/validator 정합성 |
-| Orchestrators | `agents/skills/harness-*/SKILL.md` | 상위 라우터 ↔ 하위 owner 경계 |
-| Vendor | `agents/skills/vendor/manifest.json` | 최신 여부, self-contained |
-| 도메인 에이전트 | `workspace/<svc>/agents/` · `domains/<svc>/agents/` | 서비스 커버리지 |
+| Skills | `skills/*/SKILL.md` | 템플릿/validator 정합성 |
+| Orchestrators | `skills/harness-*/SKILL.md` | 상위 라우터 ↔ 하위 owner 경계 |
+| Vendor | `skills/vendor/manifest.json` | 최신 여부, self-contained |
+| 도메인 에이전트 | `domains/<svc>/agents/` (workspace) · 프로젝트 레포 canonical | 서비스 커버리지 |
 
 ### 2단계: 맥락 판별 검증
 
@@ -95,10 +95,10 @@ scope가 주어지면 관련 자산만 읽고, 전체 검토 절차를 그 범�
 
 | 시나리오 | 기대 동작 |
 |---------|----------|
-| 개발 코드 커밋 (workspace/) | 차단 (사용자 요청 시만) |
+| 개발 코드 커밋 (projects/) | 차단 (사용자 요청 시만) |
 | 개발 코드 push | 차단 (upstream diff 기준) |
 | 개발 코드 PR create | 차단 (origin/main diff 기준) |
-| 문서/작업일지 커밋 (base/) | 허용 |
+| 문서/작업일지 커밋 (knowledge/·runbooks/·docs/) | 허용 |
 | 설정 파일 커밋 (.claude/) | 허용 |
 | 하네스 INIT 상태에서 코드 수정 (Edit/Write) | 차단 |
 | 하네스 INIT 상태에서 Bash로 코드 수정 | 현재 미차단 (알려진 제한) |
@@ -125,14 +125,14 @@ scope가 주어지면 관련 자산만 읽고, 전체 검토 절차를 그 범�
 1. **변경 파일 감지** (혼합 방식):
 ```bash
 # git tracked 자산 (rules, commands, hooks, AGENTS.md)
-git diff --name-only HEAD~5 -- agents/ .claude/ AGENTS.md
+git diff --name-only HEAD~5 -- rules/ rules-on-demand/ skills/ hooks/ agents/ templates/ .claude/ AGENTS.md
 
 # git untracked 자산 (메모리 — gitignore)
-MEMDIR="$HOME/.claude/projects/-Users-$(whoami)-Documents-ai-team-standards/memory"
+MEMDIR="$HOME/.claude/projects/-Users-$(whoami)-Documents-cairn/memory"
 find "$MEMDIR" -name "*.md" -mtime -1 -exec ls -lt {} +
 
 # 아직 커밋 안 된 변경
-git diff --name-only -- agents/ .claude/
+git diff --name-only -- rules/ rules-on-demand/ skills/ hooks/ agents/ templates/ .claude/
 ```
 
 2. **변경된 파일 읽고 검토**:
@@ -143,7 +143,7 @@ git diff --name-only -- agents/ .claude/
 
 3. **정합성 확인**:
    - 메모리에 적힌 파일 경로가 실제 존재하는지
-   - 메모리의 규칙이 agents/rules/와 충돌하지 않는지
+   - 메모리의 규칙이 rules/와 충돌하지 않는지
    - 오래된 메모리(30일+)가 아직 유효한지
 
 4. **검토 결과 기록**:
@@ -169,7 +169,7 @@ git diff --name-only -- agents/ .claude/
 | 메시지 전송 | **반드시** `cmux send -- "..."` + `cmux send-key ... enter` 분리 실행 (`\n` 방식 금지) |
 | key 전송 대상 | `send-key`는 `pane`가 아니라 `surface` 대상 |
 | 에러 처리 | `Surface is not a terminal`이면 terminal surface를 다시 찾도록 문서화 |
-| 기준 문서 정합성 | 로컬 메모리(`${CLAUDE_HOME:-~/.claude}/projects/.../memory/*.md`)와 `agents/skills/session-monitor.md`가 충돌하지 않는지 확인 |
+| 기준 문서 정합성 | 로컬 메모리(`${CLAUDE_HOME:-~/.claude}/projects/.../memory/*.md`)와 `skills/session-monitor.md`가 충돌하지 않는지 확인 |
 
 ### 4단계: 개선 제안
 
@@ -194,7 +194,7 @@ git diff --name-only -- agents/ .claude/
 ## Handoff
 ```
 
-표준 템플릿: `agents/templates/harnessing-review.md`
+표준 템플릿: `templates/harnessing-review.md`
 
 ### 5단계: 사용량 스냅샷
 
@@ -202,22 +202,22 @@ git diff --name-only -- agents/ .claude/
 
 ```bash
 echo "=== Rules ==="
-for rule in agents/rules/*.md; do
+for rule in rules/*.md; do
   name=$(basename "$rule" .md)
   commits=$(git log --oneline -30 --all --grep="$name" 2>/dev/null | wc -l | tr -d ' ')
-  refs=$(grep -rl "$name" agents/skills/ workspace/*/agents/ domains/*/agents/ 2>/dev/null | wc -l | tr -d ' ')
+  refs=$(grep -rl "$name" skills/ domains/*/agents/ 2>/dev/null | wc -l | tr -d ' ')
   printf "  %-25s commits:%-3s refs:%-3s\n" "$name" "$commits" "$refs"
 done
 
 echo "=== Commands ==="
-for cmd in agents/skills/*.md; do
+for cmd in skills/*.md; do
   name=$(basename "$cmd" .md)
   commits=$(git log --oneline -30 --all --grep="$name" 2>/dev/null | wc -l | tr -d ' ')
   printf "  %-25s commits:%-3s\n" "$name" "$commits"
 done
 
 echo "=== Memory ==="
-MEMDIR="$HOME/.claude/projects/-Users-$(whoami)-Documents-ai-team-standards/memory"
+MEMDIR="$HOME/.claude/projects/-Users-$(whoami)-Documents-cairn/memory"
 if stat --version >/dev/null 2>&1; then
   # GNU/Linux
   find "$MEMDIR" -name "*.md" ! -name "MEMORY.md" -exec stat -c "%Y %n" {} \; | sort -rn | while read ts f; do
@@ -240,9 +240,9 @@ if [ -f /tmp/claude-hook-hits.log ]; then
 fi
 
 echo "=== Domain Agents ==="
-for agent in workspace/*/agents/*.md domains/*/agents/*.md; do
+for agent in domains/*/agents/*.md; do
   name=$(basename "$agent" .md)
-  refs=$(grep -rl "$name" agents/skills/ agents/rules/ 2>/dev/null | wc -l | tr -d ' ')
+  refs=$(grep -rl "$name" skills/ rules/ 2>/dev/null | wc -l | tr -d ' ')
   printf "  %-25s refs:%-3s\n" "$name" "$refs"
 done
 ```
@@ -282,11 +282,11 @@ done
 
 - `decisions/harness-engineering/` — 의사결정 이력
 - `decisions/harness-engineering/11-layered-harness-design.md` — 레이어 설계
-- `agents/skills/harness-dev-process/SKILL.md` — 오케스트레이터
-- `agents/rules-on-demand/` — 도메인·레이어별 준수 규칙 (workflow-guard.sh 소스)
-- `.claude/hooks/workflow-guard.sh` — 편집 파일 → 준수 규칙 자동 주입 훅
-- `.claude/hooks/keyword-detector.sh` — 키워드 → Phase 유도 + GATE 1→2 blocking
-- `.claude/hooks/triggers.json` — keyword→command 매핑
+- `skills/harness-dev-process/SKILL.md` — 오케스트레이터
+- `rules-on-demand/` — 도메인·레이어별 준수 규칙 (키워드 트리거 로드 소스)
+- `hooks/cairn-hook-router.sh` — UserPromptSubmit/PreToolUse/PostToolUse/Stop 중앙 라우터
+- `hooks/keyword-detector.sh` — 키워드 → Phase 유도 + GATE 1→2 blocking
+- `hooks/triggers.json` — keyword→command 매핑
 
 ## 완료 조건 (DONE WHEN)
 - [ ] [MANUAL] 검토 대상 전체 스캔 완료

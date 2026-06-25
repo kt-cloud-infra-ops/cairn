@@ -1,6 +1,6 @@
 #!/bin/bash
 # Guard: Skill 생성 시 중복 확인 + 필수 메타데이터 가이드
-# Trigger: Write on agents/skills/*/SKILL.md, domains/*/skills/*/SKILL.md,
+# Trigger: Write on skills/*/SKILL.md, domains/*/skills/*/SKILL.md,
 #          operations/skills/*/SKILL.md
 
 set -euo pipefail
@@ -52,7 +52,7 @@ if [[ "$FILE_PATH" == "$repo_root/"* ]]; then
 fi
 
 case "$REL_PATH" in
-  agents/skills/*/SKILL.md)
+  skills/*/SKILL.md)
     SKILL_SCOPE="core"
     REGISTRY_HINT=false
     ;;
@@ -118,14 +118,9 @@ if text.startswith("---"):
 print("true" if "enforce" in fields else "false")
 ')
 
-EXISTING_CORE=""
-if [ -d "$repo_root/agents/skills" ]; then
-  EXISTING_CORE=$(find "$repo_root/agents/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print 2>/dev/null | sed -E 's|.*/agents/skills/([^/]+)/SKILL\.md$|\1|' | grep -v '^vendor$' | sort || true)
-fi
-
 EXISTING_ENGINE=""
 if [ -d "$repo_root/skills" ]; then
-  EXISTING_ENGINE=$(find "$repo_root/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print 2>/dev/null | sed -E 's|.*/skills/([^/]+)/SKILL\.md$|\1|' | sort || true)
+  EXISTING_ENGINE=$(find "$repo_root/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print 2>/dev/null | sed -E 's|.*/skills/([^/]+)/SKILL\.md$|\1|' | grep -v '^vendor$' | sort || true)
 fi
 
 EXISTING_WORKSPACE=""
@@ -138,7 +133,7 @@ if [ -d "$repo_root/domains" ] || [ -d "$repo_root/operations/skills" ]; then
   )
 fi
 
-SIMILAR=$(printf '%s\n%s\n' "$EXISTING_CORE" "$EXISTING_ENGINE" | grep "^${PREFIX}-" 2>/dev/null || true)
+SIMILAR=$(printf '%s\n' "$EXISTING_ENGINE" | grep "^${PREFIX}-" 2>/dev/null || true)
 
 echo "⚠️ 새 스킬 생성 감지: $SKILL_NAME ($SKILL_SCOPE)"
 echo ""
@@ -150,12 +145,6 @@ if [ -n "$SIMILAR" ]; then
   echo "$SIMILAR" | sed 's/^/  - /'
   echo ""
   echo "→ 기존 스킬 수정으로 해결 가능한지 먼저 확인하세요."
-  echo ""
-fi
-
-if [ -n "$EXISTING_CORE" ]; then
-  echo "📦 agents/skills:"
-  echo "$EXISTING_CORE" | sed 's/^/  - /'
   echo ""
 fi
 

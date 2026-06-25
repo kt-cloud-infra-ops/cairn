@@ -13,7 +13,7 @@ description: "아이디어를 설계로 전환 + 요구사항 명확화. 질문(
 - 그 다음 `harness-plan` 호출 (PRD/Architecture/Task Packet)
 - 설계 문서 저장 위치 (택1):
   - `projects/{프로젝트}/docs/features/{TICKET}-{descriptive-name}.md` (Jira 티켓 있고 코드 변경 동반)
-  - ai-team-standards `temp/brainstorm-{topic}.md` (티켓 없거나 검토만)
+  - cairn `temp/brainstorm-{topic}.md` (티켓 없거나 검토만)
 
 ### NEVER
 - 설계 승인 없이 `dev-tdd`/`harness-plan`/구현 스킬 호출 금지
@@ -53,7 +53,7 @@ description: "아이디어를 설계로 전환 + 요구사항 명확화. 질문(
    - 위치 분기:
      - **Jira 티켓 + 코드 변경 동반** → `projects/{프로젝트}/docs/features/{TICKET}-{descriptive-name}.md`
      - **티켓 없음 / 검토만** → `temp/brainstorm-{descriptive-name}.md` (커밋 X)
-   - 코드 브랜치 동반 규칙: features/ 문서는 해당 코드 feature 브랜치에 동반 커밋 (참조: `agents/rules/git-workflow.md`)
+   - 코드 브랜치 동반 규칙: features/ 문서는 해당 코드 feature 브랜치에 동반 커밋 (참조: `rules/git-workflow.md`)
    - 섹션 구성: Step 5 9항목 + 접근안 비교 + 최종 설계 + 미확정
 7. **스펙 셀프 리뷰**
    - placeholder(`[TBD]`, `...`) · 모순 · 모호성 · 스코프 과다 체크 → 인라인 수정
@@ -63,7 +63,7 @@ description: "아이디어를 설계로 전환 + 요구사항 명확화. 질문(
    - 명시적 승인 의사 받을 때까지 다음 단계 진행 금지
 9. **Transition (Phase 0 bootstrap → Phase 1)**
    - 9-1. 사용자 명시적 승인 확인
-   - 9-2. `bash agents/skills/harness-dev-process/scripts/init-harness-run.sh {ticket-or-topic}` 실행 → `.harness/state.json` (phase=INIT) + CPS 템플릿 생성
+   - 9-2. `bash skills/harness-dev-process/scripts/init-harness-run.sh {ticket-or-topic}` 실행 → `.harness/state.json` (phase=INIT) + CPS 템플릿 생성
    - 9-3. CPS Charter 4요소(Goal/Context/Constraints/Done When)는 Step 5 결과를 그대로 입력
    - 9-4. `harness-plan` 호출 (Phase 1 PLAN — PRD/Architecture/Task Packet)
 
@@ -124,5 +124,5 @@ dev-tdd / dev-subagent-driven (구현)
 
 - 위치: `harness-orchestrator`의 `dev` branch owner 산하 설계 단계 — 변경성 요청이 dev branch로 분기된 뒤 설계 단계에서 호출된다. orchestrator 의무 통과: `decisions/008-orchestrator-mandatory.md`
 - 연관: `harness-plan` (PRD), `harness-dev-process` (전체 Phase Gate)
-- 룰: `agents/rules/git-workflow.md` (features 브랜치 동반 규칙), `agents/rules-on-demand/project-docs.md` (features 네이밍)
+- 룰: `rules/git-workflow.md` (features 브랜치 동반 규칙), `rules-on-demand/project-docs.md` (features 네이밍)
 - ADR: [ADR-006](../../../decisions/006-skill-unification.md)

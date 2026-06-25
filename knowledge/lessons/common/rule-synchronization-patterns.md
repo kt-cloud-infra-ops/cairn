@@ -31,7 +31,7 @@ vim ~/.claude/rules/security.md
 # Update content, ensure clarity
 
 # 2. Check which projects override this rule
-grep -r "security" agents/rules/ 2>/dev/null
+grep -r "security" rules/ 2>/dev/null
 
 # 3. For each project that has local version:
 #    - Review if override is still needed
@@ -48,7 +48,7 @@ Changes:
 
 Affects:
 - ~/.claude/rules/security.md (global)
-- agents/rules/security.md (project override - merged)
+- rules/security.md (project override - merged)
 - CLAUDE.md (updated reference section)"
 ```
 
@@ -65,7 +65,7 @@ Use when you need project-specific behavior without affecting global rules.
 ~/.claude/rules/performance.md
   └─ Global: "Aim for <5s response time"
 
-agents/rules/performance.md
+rules/performance.md
   └─ Project: "MUST be <2s for event processing"
 
 CLAUDE.md
@@ -137,7 +137,7 @@ Use when making changes that affect multiple rule files.
 ```markdown
 □ Identify all affected rule files
   - Home: ~/.claude/rules/
-  - Project: agents/rules/
+  - Project: rules/
   - References: CLAUDE.md
 
 □ Map dependencies
@@ -164,12 +164,12 @@ Use when making changes that affect multiple rule files.
 vim ~/.claude/rules/primary-rule.md
 
 # 2. Update all references
-grep -r "primary-rule" agents/rules CLAUDE.md
+grep -r "primary-rule" rules CLAUDE.md
 
 # 3. Update cross-reference links in each file
 vim ~/.claude/rules/rule-a.md  # Update "Related Rules"
 vim ~/.claude/rules/rule-b.md  # Update "Related Rules"
-vim agents/rules/rule-a.md    # Update "Related Rules"
+vim rules/rule-a.md    # Update "Related Rules"
 
 # 4. Test links work (if possible)
 # 5. Commit all at once
@@ -180,7 +180,7 @@ Files changed:
   - ~/.claude/rules/primary-rule.md (core change)
   - ~/.claude/rules/rule-a.md (updated reference)
   - ~/.claude/rules/rule-b.md (updated reference)
-  - agents/rules/rule-a.md (project override)
+  - rules/rule-a.md (project override)
   - CLAUDE.md (context section)
 
 What changed:
@@ -208,7 +208,7 @@ Is the conflict:
 2. Permanent (project specific)?
    → Create project-specific override
    → Document why in CLAUDE.md
-   → Add to project agents/rules/
+   → Add to project rules/
 
 3. Systemic (reveals bad rule)?
    → Global rule needs updating
@@ -302,7 +302,7 @@ This rule changes frequently and must be manually synced.
 
 ### Sync Checklist
 - [ ] Updated ~/.claude/rules/rule-name.md?
-- [ ] Updated agents/rules/rule-name.md (if override)?
+- [ ] Updated rules/rule-name.md (if override)?
 - [ ] Updated CLAUDE.md references?
 - [ ] Updated cross-reference links?
 - [ ] Tested all markdown links?
@@ -319,7 +319,7 @@ This rule changes frequently and must be manually synced.
 # Sync checker (pseudocode)
 function checkRuleSyncStatus() {
   globalMD5 = md5(~/.claude/rules/rule.md)
-  projectMD5 = md5(./agents/rules/rule.md)
+  projectMD5 = md5(./rules/rule.md)
 
   if (globalMD5 != projectMD5)
     warn("Rule out of sync")

@@ -17,7 +17,7 @@ Charter 작성 전에 반드시 아래 순서로 기존 자산을 확인한다.
 Jira Description만으로 CPS를 작성하면 정확도가 떨어진다.
 
 1. **피처 문서(설계) 검색**: `projects/{프로젝트}/docs/features/` 에서 관련 문서 확인 — 피처 문서는 설계 산출물이며 CPS보다 먼저 존재할 수 있음
-2. **도메인 에이전트 필수 참조**: 해당 서비스의 도메인 에이전트(`workspace/<YOUR_SERVICE>/agents/`)를 **반드시** 호출하여 코드 레벨 영향도 확인 — 피처 문서 유무와 무관하게 항상 수행
+2. **도메인 에이전트 필수 참조**: 해당 서비스의 도메인 에이전트(`domains/<YOUR_SERVICE>/agents/`)를 **반드시** 호출하여 코드 레벨 영향도 확인 — 피처 문서 유무와 무관하게 항상 수행
 3. **피처 문서 있으면** → 피처 문서를 CPS 입력으로 수용 (Jira Description보다 우선)
 4. **피처 문서 없으면** → 도메인 에이전트 검토 결과를 기반으로 CPS 작성
 
@@ -68,7 +68,7 @@ CHARTER_CHECK:
   Constraints:
     - 기존 데이터 마이그레이션 포함 (NULL 허용 + 기본값)
     - 기존 쿼리 JOIN 패턴 변경 금지 (추가만 허용)
-    - agents/rules-on-demand/impact-analysis.md 8레이어 체크 필수
+    - rules-on-demand/impact-analysis.md 8레이어 체크 필수
   Done When:
     - ALTER TABLE DDL 작성 완료
     - 영향받는 매퍼 쿼리 30개 zone 조건 추가 완료
@@ -126,4 +126,4 @@ CPS와 피처 문서는 **동등 공존이 아니라 역할이 다르다**.
 ## 참고
 
 - oh-my-agent: `.agents/*.md`의 Charter Preflight 패턴
-- 우리 기존 규칙: `agents/rules/core.md` "추정 금지" 원칙의 기계적 구현
+- 우리 기존 규칙: `rules/core.md` "추정 금지" 원칙의 기계적 구현

@@ -83,8 +83,8 @@ Claude 메인 프로젝트의 계층적 문서 구조 설계 가이드입니다.
   - 예상 결과
 - **명명 규칙**: `{번호}-{주제}.md`
 
-### agents/knowledge/lessons/common/
-- **위치**: `/claude/agents/knowledge/lessons/common/`
+### knowledge/lessons/common/
+- **위치**: `/claude/knowledge/lessons/common/`
 - **역할**: 자동화 패턴 기록
 - **내용**:
   - 반복 작업 패턴

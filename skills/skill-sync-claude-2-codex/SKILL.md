@@ -9,7 +9,7 @@ model: haiku
 
 ## 스킬 규칙
 ### ALWAYS
-- Claude Code 스킬이 canonical (agents/skills/ 원본)
+- Claude Code 스킬이 canonical (skills/ 원본)
 - Codex는 심볼릭 링크로만 동기화 (원본 수정 시 자동 반영)
 - 새 스킬 추가/이름 변경/삭제 후 재실행
 ### NEVER
@@ -21,14 +21,14 @@ model: haiku
 
 1. 스크립트 실행:
    ```bash
-   bash agents/skills/skill-sync-claude-2-codex/scripts/sync.sh
+   bash skills/skill-sync-claude-2-codex/scripts/sync.sh
    ```
-2. `agents/skills/` 아래 `SKILL.md`를 가진 모든 스킬(vendor/self 제외)이 `${CODEX_HOME:-~/.codex}/skills/{name}` 심볼릭 링크로 생성됨
+2. `skills/` 아래 `SKILL.md`를 가진 모든 스킬(vendor/self 제외)이 `${CODEX_HOME:-~/.codex}/skills/{name}` 심볼릭 링크로 생성됨
 3. Codex 세션 재시작 → 슬래시 커맨드로 사용 가능
 4. Claude에서 스킬 추가/수정 시 — Claude는 즉시 반영, Codex는 폴더 추가/삭제 시 재실행 필요
 
 ## 완료 조건 (DONE WHEN)
-- [ ] [FILE] `${CODEX_HOME:-~/.codex}/skills/` 아래 심볼릭 링크가 `agents/skills/`의 전체 스킬 수(vendor/self 제외)와 일치
+- [ ] [FILE] `${CODEX_HOME:-~/.codex}/skills/` 아래 심볼릭 링크가 `skills/`의 전체 스킬 수(vendor/self 제외)와 일치
 - [ ] [CONTENT] `${CODEX_HOME:-~/.codex}/skills/.system/` 폴더는 건드려지지 않음
 - [ ] [MANUAL] Codex 세션 재시작 후 스킬이 슬래시 커맨드로 검색됨
 

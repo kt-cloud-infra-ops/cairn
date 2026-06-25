@@ -22,13 +22,13 @@ Confluence, 사내 운영 SOP, 실제 cluster/Vault/Grafana 접근 경로는 이
 | 순위 | 소스 | 용도 |
 |------|------|------|
 | PRIMARY | `harness-service-ops` PRECHECK 결과, `temp/orchestrator/{service}/state.json`, project `docs/`, charts/values repo | env/namespace/path 확정, preview 근거 |
-| SECONDARY | `agents/skills/harness-service-ops/references/ops-sop.md`, service hub, 사내 SOP/Confluence | 운영 절차 보강 |
+| SECONDARY | `skills/harness-service-ops/references/ops-sop.md`, service hub, 사내 SOP/Confluence | 운영 절차 보강 |
 | FORBIDDEN | 추정한 secret key, 미확인 hostname, 임의 cluster 경로 | 사용 금지 |
 
 ## 참조
 
-- `agents/skills/harness-service-ops/SKILL.md`
-- `agents/skills/harness-service-ops/references/ops-sop.md`
+- `skills/harness-service-ops/SKILL.md`
+- `skills/harness-service-ops/references/ops-sop.md`
 - `references/vault-secret-runbook.md`
 - `references/observability-runbook.md`
 - `references/httproute-runbook.md`

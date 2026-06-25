@@ -26,12 +26,12 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 ## 참조
 
 - `references/ops-sop.md` — Confluence `${CONFLUENCE_SPACE_KEY} / ${CONFLUENCE_PAGE_ID}` 운영 반영 요약
-- `agents/skills/service-ops-config/SKILL.md`
-- `agents/skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-ops` branch owner
-- `agents/skills/harness-orchestrator/scripts/service-orchestration.mjs` — `validate`/`ops-precheck` CLI
-- `agents/skills/cicd-deploy/SKILL.md`
-- `agents/skills/jira-rest-ops/SKILL.md`
-- `agents/rules/skill-governance.md`
+- `skills/service-ops-config/SKILL.md`
+- `skills/harness-orchestrator/SKILL.md` — 상위 라우터, 본 스킬은 `service-ops` branch owner
+- `skills/harness-orchestrator/scripts/service-orchestration.mjs` — `validate`/`ops-precheck` CLI
+- `skills/cicd-deploy/SKILL.md`
+- `skills/jira-rest-ops/SKILL.md`
+- `rules/skill-governance.md`
 - `decisions/008-orchestrator-mandatory.md` — 모든 변경 수반 요청은 orchestrator 의무 통과
 
 ## 실행 절차
@@ -47,7 +47,7 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 
 #### [GATE 0] 운영 write 사전 조건 확인
 이 GATE를 통과해야 운영 반영 write로 진행한다. (단 **incident sub-path는 면제** — `ops-incident` GATE 1 승인으로 장애 임시 회피 write 진행)
-- [ ] bootstrap evidence 확인 (`base/services/{service}/README.md`, 프로젝트 `docs/`/`AGENTS.md`, charts/values skeleton)
+- [ ] bootstrap evidence 확인 (`services/{service}/README.md`, 프로젝트 `docs/`/`AGENTS.md`, charts/values skeleton)
 - [ ] target env / namespace / deployment / DB 확정
 - [ ] chart/value repo 및 권한 확인
 - [ ] Vault / cluster / DB 접근 경로 확인
@@ -114,8 +114,8 @@ read-only 점검은 가볍게 처리하고, write path만 명시적 GATE를 적�
 로컬 validator 예시:
 
 ```bash
-node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require bootstrap
-node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs ops-precheck {service} \
+node skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require bootstrap
+node skills/harness-orchestrator/scripts/service-orchestration.mjs ops-precheck {service} \
   --env dev \
   --namespace {namespace} \
   --deployment {deployment}

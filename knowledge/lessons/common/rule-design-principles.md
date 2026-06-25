@@ -33,7 +33,7 @@ Effective rule systems for distributed teams require deliberate design choices t
             ↓ can override
 ┌─────────────────────────────────────────┐
 │ Authority Level: MEDIUM                 │
-│ Layer: Project (./agents/rules/)       │
+│ Layer: Project (./rules/)       │
 │ Scope: Single project only              │
 │ Change: Project lead approval           │
 │ Examples: Performance targets, patterns │

@@ -1,7 +1,7 @@
 #!/bin/bash
-# Project guard: only run in ai-team-standards repo
+# Project guard: only run in cairn engine repo
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/.claude/hooks" ]] && exit 0
+[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/hooks" ]] && exit 0
 
 # Hook: 릴리즈 액션 맥락 판별 + 차단
 # PreToolUse(Bash)
@@ -70,8 +70,8 @@ fi
 
 # === git commit 전 review-evidence 검증 (ADR-008 + dev-code-review) ===
 # .harness/review-evidence.json 존재 + 5분 이내 + checks pass 검사
-# 적용 범위: runtime 코드(workspace/**, .claude/hooks/**, agents/skills/**/scripts/**)만
-# 면제: base/**, docs/**, *.md, SKILL.md, references/** 등 단순 문서
+# 적용 범위: runtime 코드(projects/**, hooks/**, skills/**/scripts/**)만
+# 면제: services/**, runbooks/**, knowledge/**, docs/**, *.md, SKILL.md, references/** 등 단순 문서
 # 없거나 stale 시 commit 차단
 if [ "$ACTION" = "git commit" ]; then
   # staged 파일이 runtime 코드를 포함하는지 검사
@@ -87,8 +87,8 @@ if [ "$ACTION" = "git commit" ]; then
       *.sql|\
       pom.xml|build.gradle|build.gradle.kts|\
       Dockerfile|docker-compose.yml|\
-      .claude/hooks/*.sh|.claude/settings.json|\
-      agents/skills/*/scripts/*)
+      hooks/*.sh|.claude/settings.json|\
+      skills/*/scripts/*)
         REQUIRES_EVIDENCE=true
         RUNTIME_FILES="$RUNTIME_FILES  - $file"$'\n'
         ;;
@@ -176,7 +176,7 @@ if [ "$HAS_CODE" = true ]; then
 fi
 
 # === 공통룰 변경의 브랜치 분리 검사 (경고만) ===
-# agents/rules/git-workflow.md: 공통룰 변경은 rules/* 브랜치로 분리해야 함
+# rules/git-workflow.md: 공통룰 변경은 rules/* 브랜치로 분리해야 함
 # 현재 브랜치가 rules/*가 아닌데 공통룰 파일이 포함되면 경고
 
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
@@ -185,9 +185,9 @@ if [[ ! "$CURRENT_BRANCH" =~ ^rules/ ]]; then
   COMMON_RULE_FILES=""
   while IFS= read -r file; do
     case "$file" in
-      agents/rules/*|agents/skills/*|agents/templates/*|\
-      .claude/hooks/*|.claude/settings.json|.claude/agents|\
-      AGENTS.md|agents/rules-on-demand/*)
+      rules/*|skills/*|templates/*|\
+      hooks/*|.claude/settings.json|.claude/agents|\
+      AGENTS.md|rules-on-demand/*)
         HAS_COMMON_RULE=true
         COMMON_RULE_FILES="$COMMON_RULE_FILES  - $file"$'\n'
         ;;
@@ -200,7 +200,7 @@ if [[ ! "$CURRENT_BRANCH" =~ ^rules/ ]]; then
     echo ""
     echo "감지된 공통룰 파일:"
     echo "$COMMON_RULE_FILES"
-    echo "권장: 공통룰 변경은 rules/{설명} 브랜치로 분리 (agents/rules/git-workflow.md)"
+    echo "권장: 공통룰 변경은 rules/{설명} 브랜치로 분리 (rules/git-workflow.md)"
     echo "  git stash push -- <공통룰 파일들>"
     echo "  git checkout -b rules/{설명} main"
     echo "  git stash pop && git commit"

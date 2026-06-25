@@ -18,7 +18,7 @@
 
 위치 결정:
 - `services/{파트}/{서비스}/`
-- `workspace/<YOUR_SERVICE>/agents/{서비스}.md` (도메인 에이전트, 필요 시)
+- `domains/<YOUR_SERVICE>/agents/{서비스}.md` (도메인 에이전트, 필요 시)
 
 ## 2. 카테고리 결정 (비전 OSS 분류)
 
@@ -80,7 +80,7 @@
 - `dev-code-review` evidence 생성 의무
 - Co-Authored-By 자동 추가
 - spec/plan 위치: `projects/{프로젝트}/docs/features/{TICKET}-*.md`
-- AGENTS.md/CLAUDE.md는 ai-team-standards 참조
+- AGENTS.md/CLAUDE.md는 cairn 참조
 
 ### 자율 repo (예외 — 사용자 명시 합의 필요)
 조건:
@@ -91,7 +91,7 @@
 자율 시:
 - repo 자체 룰 보존 (한글 commit, 자체 spec 위치 등)
 - 우리 카탈로그 메타만 관리 (`services/{파트}/{서비스}/README.md` frontmatter)
-- 도메인 에이전트(`workspace/<YOUR_SERVICE>/agents/{서비스}.md`)에 자율성 메타 명시 필수
+- 도메인 에이전트(`domains/<YOUR_SERVICE>/agents/{서비스}.md`)에 자율성 메타 명시 필수
 
 판단 기준 예시:
 - ✅ `<SERVICE_A>` (자율): README 300줄+, docs/superpowers 충분, 자체 commit 규칙 정착
@@ -99,7 +99,7 @@
 
 ## 8. service-mapping.md 등록
 
-신설 서비스마다 `agents/rules/service-mapping.md` 행 추가:
+신설 서비스마다 `rules/service-mapping.md` 행 추가:
 
 ```markdown
 | `{서비스명}`, `{한글별명}` | {파트}/{서비스} | {비고} |
@@ -124,7 +124,7 @@ deployment: "{K8s|VM|HW|기타}"
 
 ## 10. 도메인 에이전트 메타정보 (자율 repo 필수)
 
-위치: `workspace/<YOUR_SERVICE>/agents/{서비스}.md`
+위치: `domains/<YOUR_SERVICE>/agents/{서비스}.md`
 
 필수 섹션:
 - repo 정보 (경로/주력 작성자/활성 기간)
@@ -152,7 +152,7 @@ GATE 0 통과 시 본 모든 결정이 명시되어야 함:
 
 ## 11. demo-be 템플릿 표준 (외부 자율 repo, source of truth)
 
-신규 서비스 fork는 **demo-be 표준 문서를 source of truth로 따른다**. demo-be repo는 ADR-009 자율 repo 원칙 적용 — repo 자체가 표준의 단일 source, ai-team-standards는 진입 포인터만 관리.
+신규 서비스 fork는 **demo-be 표준 문서를 source of truth로 따른다**. demo-be repo는 ADR-009 자율 repo 원칙 적용 — repo 자체가 표준의 단일 source, cairn는 진입 포인터만 관리.
 
 | 영역 | demo-be 표준 문서 | 핵심 |
 |------|----------------|------|
@@ -169,7 +169,7 @@ repo: `${GIT_ORG}/demo-backend-kt` (workspace symlink: `workspace/<YOUR_TEMPLATE
 2. **demo-be `doc/md/chart-standard.md`** — chart 생성 시 (Helm)
 3. **demo-be `doc/md/lint-standard.md`** — build.gradle.kts/`.editorconfig`/`config/detekt/detekt.yml` 설정 시
 4. **demo-be `doc/md/observability.md`** — Spring Boot dependency + application.yaml + logback 설정 시
-5. **본 charter (`bootstrap-charter.md`)** — ai-team-standards 카탈로그 메타 결정 시 (파트/카테고리/계층/인증/배포/Roadmap/frontmatter)
+5. **본 charter (`bootstrap-charter.md`)** — cairn 카탈로그 메타 결정 시 (파트/카테고리/계층/인증/배포/Roadmap/frontmatter)
 
 ### demo-be 표준 + 본 charter 정합
 
@@ -189,14 +189,14 @@ demo-be는 자체 룰 보존 영역 — 우리 표준 강제 X:
 - README 단일 source (AGENTS/CLAUDE/GEMINI는 README 위임)
 - spec/plan 위치: repo 내부 (docs/superpowers 등)
 
-ai-team-standards는 demo-be의 표준을 **link 포인터로만** 참조. demo-be 표준이 변경되면 본 charter도 후속 갱신.
+cairn는 demo-be의 표준을 **link 포인터로만** 참조. demo-be 표준이 변경되면 본 charter도 후속 갱신.
 
 ## 관련 문서
 
 - [ADR-008](../../../../decisions/008-orchestrator-mandatory.md) — orchestrator 의무
 - [ADR-009](../../../../decisions/009-vision-catalog-alignment.md) — 비전 정합성 + 자율 repo 존중
-- [base/services/README.md](../../../../base/services/README.md) — 카탈로그 인덱스
-- [agents/rules/service-mapping.md](../../../../agents/rules/service-mapping.md) — 매핑 룰
+- [services/README.md](../../../../services/README.md) — 카탈로그 인덱스
+- [rules/service-mapping.md](../../../../rules/service-mapping.md) — 매핑 룰
 - **demo-be 템플릿 표준** (source of truth):
   - `workspace/<YOUR_TEMPLATE_REPO>/doc/md/chart-standard.md`
   - `workspace/<YOUR_TEMPLATE_REPO>/doc/md/lint-standard.md`

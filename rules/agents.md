@@ -3,7 +3,7 @@
 ## Core Principle
 
 - Team-standard execution must be reproducible from this repository alone.
-- Required sources: `AGENTS.md`, `agents/rules/`, `agents/skills/`.
+- Required sources: `AGENTS.md`, `rules/`, `skills/`.
 - Tool-specific home paths (`${CLAUDE_HOME:-$HOME/.claude}/...`, `${CODEX_HOME:-$HOME/.codex}/...`) are optional accelerators only.
 
 ## Intent Triage
@@ -49,10 +49,10 @@
 | e2e-runner | E2E testing | Critical user flows | sonnet |
 | refactor-cleaner | Dead code cleanup | Code maintenance | sonnet |
 | doc-updater | Documentation | Updating docs | haiku |
-| harnessing-advisor | Harness/rules/base structure, `agents/rules-on-demand/` 준수 규칙 신설·수정, `[폐기됨]`·`keyword-detector.sh` 트리거 설계·검토 | Structure refactoring, SoT alignment, context reduction, workflow rule design | sonnet |
+| harnessing-advisor | Harness/rules/base structure, `rules-on-demand/` 준수 규칙 신설·수정, `[폐기됨]`·`keyword-detector.sh` 트리거 설계·검토 | Structure refactoring, SoT alignment, context reduction, workflow rule design | sonnet |
 
 If a tool supports sub-agents, map these role names to the tool's equivalent feature.
-If not, execute the same workflow directly using `agents/skills/` and `agents/rules/`.
+If not, execute the same workflow directly using `skills/` and `rules/`.
 
 ## Advisor Pattern (선택적 에스컬레이션)
 
@@ -67,11 +67,11 @@ If not, execute the same workflow directly using `agents/skills/` and `agents/ru
 | 상황 | 에스컬레이션 조건 |
 |------|----------------|
 | code-review | CRITICAL 보안 이슈 발견, **팀 전체 규칙에 영향이 있을 때**만 에스컬레이션 |
-| plan | 복잡도 HIGH — 팀 전체 영향 변경 포함 시 (`agents/rules/`, `AGENTS.md` 수정 포함 등) |
+| plan | 복잡도 HIGH — 팀 전체 영향 변경 포함 시 (`rules/`, `AGENTS.md` 수정 포함 등) |
 | security-review | 취약점이 맞는지 확신할 수 없을 때 |
-| harnessing | `AGENTS.md`, `agents/rules/`, `agents/skills/`, `.claude/hooks/`, `agents/rules-on-demand/` 간 구조 충돌이 보일 때 |
-| harnessing | `base/` ↔ 프로젝트 레포 `docs/` 간 SoT 변경 또는 문서 경계 재정의가 필요할 때 |
-| harnessing | `workflow-guard`, `keyword-detector`, hook 범위, trigger 매핑처럼 자동 트리거/가드 설계를 바꿀 때 |
+| harnessing | `AGENTS.md`, `rules/`, `skills/`, `hooks/`, `rules-on-demand/` 간 구조 충돌이 보일 때 |
+| harnessing | workspace 카탈로그(`services/`/`runbooks/`/`domains/`) ↔ 프로젝트 레포 `docs/` 간 SoT 변경 또는 문서 경계 재정의가 필요할 때 |
+| harnessing | `keyword-detector`, `guard-*` hook 범위, trigger 매핑처럼 자동 트리거/가드 설계를 바꿀 때 |
 | harnessing | 구조 변경안을 적용하기 전 최종 검토가 필요할 때 |
 
 ### Advisor max_uses 기본값
@@ -113,7 +113,7 @@ No user prompt needed:
 3. Bug fix or new feature - Use **tdd-guide** agent
 4. Architectural decision - Use **architect** agent
 5. Rules/commands/base structure changes - Use **harnessing-advisor** agent
-6. `agents/rules-on-demand/` 준수 규칙 신설·수정, `[폐기됨]`·`keyword-detector.sh` 트리거 설계 - Use **harnessing-advisor** agent
+6. `rules-on-demand/` 준수 규칙 신설·수정, `[폐기됨]`·`keyword-detector.sh` 트리거 설계 - Use **harnessing-advisor** agent
 
 ### Orchestrator Ownership
 
@@ -127,10 +127,10 @@ No user prompt needed:
 
 code-reviewer 호출 전 아래를 반드시 수행:
 
-1. 변경 파일의 서비스 판별 → `workspace/<YOUR_SERVICE>/agents/` 도메인 에이전트 읽기
+1. 변경 파일의 서비스 판별 → `domains/<YOUR_SERVICE>/agents/` 도메인 에이전트 읽기
 2. 관련 피처 문서 검색 → `projects/{프로젝트}/docs/features/`
 3. 피처 문서에 영향도 분석/테스트 설계가 있으면 → **이미 판정된 항목 재지적 금지**
-4. `agents/rules-on-demand/security.md` 보안 체크리스트 적용
+4. `rules-on-demand/security.md` 보안 체크리스트 적용
 
 ## Parallel Task Execution
 
@@ -163,27 +163,27 @@ For complex problems, use split role sub-agents:
 - **도메인 에이전트 본체** → 프로젝트 저장소 (canonical, self-contained)
 - **standards 저장소** → 공통 자산(rules/commands/레이어 에이전트) + 서비스별 라우터(README.md)
 - **링크 방향** → 프로젝트 → 중앙 (forward link), 역방향 금지
-- 서비스별 도메인 에이전트는 `workspace/<YOUR_SERVICE>/agents/`에 배치한다.
-  도메인별 **코드 편집 준수 규칙**은 별도 자산으로 `agents/rules-on-demand/<YOUR_SERVICE>/`에 둘 수 있다.
+- 서비스별 도메인 에이전트는 `domains/<YOUR_SERVICE>/agents/`에 배치한다.
+  도메인별 **코드 편집 준수 규칙**은 별도 자산으로 `rules-on-demand/<YOUR_SERVICE>/`에 둘 수 있다.
 
 > 서비스별 라우터: `domains/{서비스}/agents/README.md` (cairn-pe 배치) 또는 `services/{서비스}/README.md`
 
 ### 구조
 - **레이어 에이전트** (크로스 프로젝트): `frontend-dev`, `backend-dev`, `dba`, `code-reviewer`, `harnessing` — 엔진 plugin `agents/` 폴더에 위치
-- **도메인 에이전트** (서비스별): `workspace/<YOUR_SERVICE>/agents/` — 프로젝트 레포 canonical
+- **도메인 에이전트** (서비스별): `domains/<YOUR_SERVICE>/agents/` — 프로젝트 레포 canonical
 
 ### 호출 원칙
-1. **도메인 코드 변경** → 해당 도메인 에이전트 참조 (`workspace/<YOUR_SERVICE>/agents/`) — 담당 파일, 테이블, API 확인
+1. **도메인 코드 변경** → 해당 도메인 에이전트 참조 (`domains/<YOUR_SERVICE>/agents/`) — 담당 파일, 테이블, API 확인
 2. **레이어 전문성 필요** → 레이어 에이전트 컨설팅 (DB 쿼리 → dba, UI 패턴 → frontend-dev)
 3. **구조/SoT/하네스 변경** → `agents/harnessing.md` 우선 참조 (엔진 plugin 레이어 에이전트)
 4. **요구사항 축적** → 도메인 에이전트의 `## 요구사항 이력` 섹션에 확인된 스펙 기록
 5. **교차참조 확인** → 각 에이전트 상단 교차참조 테이블로 연관 도메인 파악
-6. **새 프로젝트** → 프로젝트 저장소 `workspace/<YOUR_SERVICE>/agents/`에 도메인 에이전트 생성, `domains/{서비스}/agents/README.md` 라우터에 링크 추가
+6. **새 프로젝트** → 프로젝트 저장소 `domains/<YOUR_SERVICE>/agents/`에 도메인 에이전트 생성, `domains/{서비스}/agents/README.md` 라우터에 링크 추가
 
 ### 사용 예시
 ```
 # <YOUR_SERVICE> 이벤트 화면 수정 시
-1. workspace/<YOUR_SERVICE>/agents/ 읽기 (도메인 에이전트 — 담당 파일, 테이블, 준수 규칙 확인)
+1. domains/<YOUR_SERVICE>/agents/ 읽기 (도메인 에이전트 — 담당 파일, 테이블, 준수 규칙 확인)
    또는 domains/<YOUR_SERVICE>/rules-on-demand/event.md (cairn-pe 배치 시)
 2. 인시던트 생성 연관 시 → 동일 경로에서 incident.md 교차 확인
 3. 필요시 agents/frontend-dev.md 참조 (UI 패턴)

@@ -17,7 +17,7 @@ description: 결정층 문서(도메인 에이전트·ADR) 건강 스캔. 전 �
 
 1. 스캔 실행:
    ```bash
-   python3 agents/skills/analytics-maintainability/scripts/scan.py [workspace-root] [stale-days]
+   python3 skills/analytics-maintainability/scripts/scan.py [workspace-root] [stale-days]
    ```
 2. 리포트 해석:
    - `STALE(Nd)` — last_verified 90일 초과 → 코드와 재대조 필요
@@ -33,7 +33,7 @@ description: 결정층 문서(도메인 에이전트·ADR) 건강 스캔. 전 �
 | 충실도 | 결정 이력·판단 시나리오 실내용 유무 | 평소 작업 부산물로 적립 |
 | 커버리지 | 모듈 대비 도메인 에이전트 존재 | 누락 모듈에 그릇 생성 |
 
-> 기준 정의: `base/templates/service-knowledge-scaffold/maintainability.md`
+> 기준 정의: `templates/base-templates/service-knowledge-scaffold/maintainability.md`
 
 ## 적용 주기
 
@@ -47,5 +47,5 @@ description: 결정층 문서(도메인 에이전트·ADR) 건강 스캔. 전 �
 
 ## 관련 문서
 
-- [service-knowledge-scaffold](../../../base/templates/service-knowledge-scaffold/README.md) — 결정층 표준 그릇
-- [maintainability.md](../../../base/templates/service-knowledge-scaffold/maintainability.md) — 측정 기준 정의
+- [service-knowledge-scaffold](../../../templates/base-templates/service-knowledge-scaffold/README.md) — 결정층 표준 그릇
+- [maintainability.md](../../../templates/base-templates/service-knowledge-scaffold/maintainability.md) — 측정 기준 정의

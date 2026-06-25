@@ -37,14 +37,14 @@ tools: Read, Edit, Write, Bash, Grep, Glob
 ### 영향도 분석
 - 새 테이블 추가 시 기존 JOIN 패턴 영향 검토
 - ALTER TABLE 시 기존 쿼리 호환성
-- `agents/rules-on-demand/impact-analysis.md` 체크리스트 적용
+- `rules-on-demand/impact-analysis.md` 체크리스트 적용
 
 ### UNION ALL 데이터 흐름 검증 (CRITICAL)
 - UNION ALL에서 `''` 또는 `NULL AS 컬럼명` 패딩 발견 시 → 소비측(Mapper→Service→UI)까지 추적
 - SQL 레이어: `nvl()`, `COALESCE()`가 빈 문자열(`''`)도 처리하는지 확인
 - App 레이어 전달: Mapper resultMap에서 `''`가 Java `""`로 전달되는지, null로 변환되는지 확인
 - 상수 컬럼 값이 최종 API 응답/UI에 노출되는지 확인
-- `agents/rules-on-demand/impact-analysis.md` "Cross-layer 데이터 흐름 추적" 섹션 참조
+- `rules-on-demand/impact-analysis.md` "Cross-layer 데이터 흐름 추적" 섹션 참조
 
 ### CRITICAL: 텍스트 컬럼 일괄 변경 시 영향도 체인
 

@@ -2,7 +2,7 @@
 
 `dev-code-review` 스킬의 보조 참조. staged 변경 파일의 확장자/경로로 해당 언어 섹션을 로드.
 
-> Origin: 팀원 제안 `review-and-commit` 스킬에서 흡수 (MERGE — `agents/rules/skill-governance.md` Step 2). 우리 룰 정합성을 위해 <YOUR_ORG> 가드레일 / Jira 티켓 / Runtime 분리 + 영문 conventional commit으로 재작성.
+> Origin: 팀원 제안 `review-and-commit` 스킬에서 흡수 (MERGE — `rules/skill-governance.md` Step 2). 우리 룰 정합성을 위해 <YOUR_ORG> 가드레일 / Jira 티켓 / Runtime 분리 + 영문 conventional commit으로 재작성.
 
 ## 공통 (모든 언어)
 
@@ -23,7 +23,7 @@
 - [ ] 컴파일 경고 0건
 
 ### 코드 품질
-- [ ] 함수 50줄 이내 (`agents/rules-on-demand/coding-style.md`)
+- [ ] 함수 50줄 이내 (`rules-on-demand/coding-style.md`)
 - [ ] 파일 200~400줄 권장, 800줄 MAX
 - [ ] 불변성 — 새 객체 생성, mutation 금지 (CRITICAL)
 - [ ] null 안전성 — `Optional` 또는 `@Nullable` 명시
@@ -32,7 +32,7 @@
 - [ ] JPA 지연 로딩 영향 — N+1 query 위험 검토
 - [ ] 컬렉션 처리 — `Stream` 남용 vs for 가독성 trade-off
 
-### 보안 (<YOUR_ORG> 가드레일 — `agents/rules-on-demand/security.md`)
+### 보안 (<YOUR_ORG> 가드레일 — `rules-on-demand/security.md`)
 - [ ] 패스워드 암호화 = `Pbkdf2PasswordEncoder` (BCrypt 금지)
 - [ ] 시크릿 = Jasypt + 환경변수 (하드코딩 금지)
 - [ ] 에러 응답 = `@ControllerAdvice` + RFC 7807 (스택트레이스 노출 금지)
@@ -55,10 +55,10 @@
 - [ ] AJAX 응답 처리 — 에러 분기 누락 없음
 - [ ] TUI Grid / AG Grid 셀렉터 정확성
 - [ ] `$.ajax` 타임아웃 명시
-- [ ] include popup — caller 화면 의존성 확인 (`agents/rules-on-demand/current-state-analysis-harness.md`)
+- [ ] include popup — caller 화면 의존성 확인 (`rules-on-demand/current-state-analysis-harness.md`)
 
 ### 도메인 정합성
-- [ ] 도메인 준수 규칙 사전 확인 (`agents/rules-on-demand/<your_service>/`; 도메인 에이전트 본체는 [미생성])
+- [ ] 도메인 준수 규칙 사전 확인 (`rules-on-demand/<your_service>/`; 도메인 에이전트 본체는 [미생성])
 - [ ] 피처 문서 사전 확인 (`projects/{프로젝트}/docs/features/{TICKET}-*.md`)
 - [ ] **이미 판정된 항목 재지적 금지**
 
@@ -96,7 +96,7 @@
 - [ ] 인덱스 영향 분석 (EXPLAIN 결과)
 - [ ] 락 범위 — long transaction 회피
 
-### Cross-cutting (`agents/rules-on-demand/impact-analysis.md`)
+### Cross-cutting (`rules-on-demand/impact-analysis.md`)
 - [ ] 기존 JOIN 패턴 — 새 데이터가 기존 조회에서 누락되지 않음
 - [ ] 공통코드/매핑 테이블 등록
 - [ ] 권한 체계 필터 포함

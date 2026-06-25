@@ -111,7 +111,7 @@ Includes structural guidelines, anti-patterns, governance model, and metrics.
 ### What This Session Revealed
 
 #### Problem Discovered
-When implementing rules across multiple locations (~/.claude/rules, agents/rules/, CLAUDE.md), consistency breaks down without explicit synchronization strategy.
+When implementing rules across multiple locations (~/.claude/rules, rules/, CLAUDE.md), consistency breaks down without explicit synchronization strategy.
 
 #### Solution Emerged
 A layered architecture with:

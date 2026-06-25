@@ -40,7 +40,7 @@ MCP 도구에 없는 기능은 curl로 직접 REST API 호출.
 ### 인증 정보 위치
 
 ```
-canonical: `agents/skills/jira-rest-ops/SKILL.md`
+canonical: `skills/jira-rest-ops/SKILL.md`
 ```
 
 ### 사용 예시

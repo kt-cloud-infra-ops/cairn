@@ -5,7 +5,7 @@
 #
 # 동작:
 #   가드 대상 repo가 아니면 즉시 통과 (무관 프로젝트 부작용 0)
-#   docs/·base/·agents/·temp/ 문서 변경 → 통과
+#   docs/·rules/·rules-on-demand/·skills/·agents/·templates/·hooks/·temp/ 문서 변경 → 통과
 #   프로젝트 코드 변경 → nearest project root(.harness/state.json)에서 Phase/Level 차단
 #
 # Phase × Level 차단 매트릭스:
@@ -18,13 +18,13 @@
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 
 # ── 가드 대상 repo 판정 (무관 프로젝트는 즉시 통과) ──
-# user 레벨 발동이므로 self-guard 역할이 "ai-team-standards 한정"에서
+# user 레벨 발동이므로 self-guard 역할이 "cairn 엔진 한정"에서
 # "가드 대상 repo만 검사, 무관 repo는 빠른 통과"로 재정의됨 (ADR-011).
 is_guarded_repo() {
   local root="$1"
   [ -z "$root" ] && return 1
-  # 1) cairn plugin repo (AGENTS.md + agents/skills 마커)
-  [ -f "$root/AGENTS.md" ] && [ -d "$root/agents/skills" ] && return 0
+  # 1) cairn plugin repo (AGENTS.md + skills/ 마커)
+  [ -f "$root/AGENTS.md" ] && [ -d "$root/skills" ] && return 0
   # 2) 하네스 활성 프로젝트 (.harness 마커 존재)
   [ -d "$root/.harness" ] && return 0
   return 1
@@ -45,8 +45,8 @@ FILE_PATH=$(echo "$TOOL_INPUT" | grep -oE '"file_path"[[:space:]]*:[[:space:]]*"
 # docs/ 하위는 non-runtime → 통과 (어느 repo/worktree든. workspace/ 문자열 비의존)
 echo "$FILE_PATH" | grep -qE '/docs/' && exit 0
 
-# ai-team-standards 자체 자산(base/ agents/ temp/) → 통과 (dev 하네스 대상 아님)
-echo "$FILE_PATH" | grep -qE '/(base|agents|temp)/' && exit 0
+# cairn 엔진 자체 자산(rules/ rules-on-demand/ skills/ agents/ templates/ hooks/ temp/) → 통과 (dev 하네스 대상 아님)
+echo "$FILE_PATH" | grep -qE '/(rules|rules-on-demand|skills|agents|templates|hooks|temp)/' && exit 0
 
 # ── 프로젝트 코드 변경 → nearest project root에서 .harness 검사 ──
 DIR=$(dirname "$FILE_PATH" 2>/dev/null)

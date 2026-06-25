@@ -42,13 +42,13 @@
 
 - 도메인 에이전트의 current-state 문서 포인터는 **직접 링크**로 둔다.
 - 에이전트가 문서명을 복사해 다시 찾지 않게 한다.
-- trace 템플릿은 프로젝트별 복사본이 아니라 `agents/templates/harness-trace.md`를 canonical로 둔다.
+- trace 템플릿은 프로젝트별 복사본이 아니라 `templates/harness-trace.md`를 canonical로 둔다.
 
 ## 필수 산출물
 
 ### 도메인 에이전트
 
-- `workspace/<YOUR_SERVICE>/agents/{도메인}.md`
+- `domains/<YOUR_SERVICE>/agents/{도메인}.md`
 - `현재 운영 기준 문서 포인터` 또는 `상세 문서 포인터`를 markdown link로 유지
 
 ### 프로젝트 문서
@@ -61,7 +61,7 @@
 - `{project}/.harness/current-state/state.json`
 - `{project}/.harness/current-state/README.md`
 - `{project}/.harness/current-state/traces/{screen-id}.md` 또는 동등 산출물
-- trace 템플릿 canonical: `agents/templates/harness-trace.md`
+- trace 템플릿 canonical: `templates/harness-trace.md`
 
 ## trace 최소 계약
 
@@ -163,7 +163,7 @@
 
 ## 관련 규칙
 
-- `agents/rules/agents.md`
-- `agents/rules/doc-organization.md`
-- `agents/rules-on-demand/impact-analysis.md`
+- `rules/agents.md`
+- `rules/doc-organization.md`
+- `rules-on-demand/impact-analysis.md`
 - `agents/harnessing.md` (엔진 plugin 레이어 에이전트)

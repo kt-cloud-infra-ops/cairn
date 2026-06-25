@@ -78,7 +78,7 @@ if (principal.hasRole("ADMIN")) {
 ## 원칙
 
 - 기존 프로젝트의 패키지 구조, 네이밍 컨벤션 준수
-- Java 코드 스타일: `agents/rules-on-demand/coding-style.md` Java 섹션 참조
+- Java 코드 스타일: `rules-on-demand/coding-style.md` Java 섹션 참조
 - 모든 외부 호출에 타임아웃 필수
 - 에러 시 스택트레이스 로깅
 - 프로젝트에 공통 helper/response wrapper가 있으면 우선 재사용

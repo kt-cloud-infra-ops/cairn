@@ -11,7 +11,7 @@ Jira 이슈를 **In Review** 또는 **Done** 상태로 전환하기 전에, 에�
 
 전환 ID는 팀 Jira 인스턴스에 따라 다르므로 `${JIRA_TRANSITION_IN_REVIEW}` / `${JIRA_TRANSITION_DONE}` 환경변수 또는 프로필 설정을 따른다.
 
-### 전환 전 필수 5단계 (Canonical: `agents/rules-on-demand/jira-workflow.md`)
+### 전환 전 필수 5단계 (Canonical: `rules-on-demand/jira-workflow.md`)
 
 | 단계 | 검증 내용 | 실패 시 |
 |------|----------|---------|
@@ -72,5 +72,5 @@ Jira 이슈를 **In Review** 또는 **Done** 상태로 전환하기 전에, 에�
 
 ## 소스 참조
 
-- `agents/rules-on-demand/jira-workflow.md` — "태스크 완료 처리 5단계" (canonical)
-- `agents/skills/harness-dev-process/references/phase-gates.md` — Phase 4: SHIP GATE 조건
+- `rules-on-demand/jira-workflow.md` — "태스크 완료 처리 5단계" (canonical)
+- `skills/harness-dev-process/references/phase-gates.md` — Phase 4: SHIP GATE 조건

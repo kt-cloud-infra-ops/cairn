@@ -225,8 +225,8 @@ function bootstrapArtifactSummary(projectRoots) {
 }
 
 function validateBootstrapOptions(options) {
-  const serviceReadme = resolveRepoPath(options.serviceReadme ?? `base/services/${options.service}/README.md`)
-  const tasks = resolveRepoPath(options.tasks ?? `base/services/${options.service}/TASKS.md`)
+  const serviceReadme = resolveRepoPath(options.serviceReadme ?? `services/${options.service}/README.md`)
+  const tasks = resolveRepoPath(options.tasks ?? `services/${options.service}/TASKS.md`)
   const charts = resolveRepoPath(options.charts)
   const values = resolveRepoPath(options.values)
   const httproute = resolveRepoPath(options.httproute)

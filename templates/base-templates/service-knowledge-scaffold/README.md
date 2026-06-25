@@ -31,7 +31,7 @@ owner 부재(휴직·이직·담당 이동)에도 **팀 + AI가 서비스를 같
 
 ## 강제 메커니즘 (하네스 연계)
 
-- `code-reviewer`가 코드 변경 시 도메인 에이전트 선참조 의무 (`agents/rules/agents.md`)
+- `code-reviewer`가 코드 변경 시 도메인 에이전트 선참조 의무 (`rules/agents.md`)
 - Phase Gate 영향도 분석이 "결정 이력" 참조를 유도
 - `/analytics-maintainability` — 주기 스캔으로 stale·빈 문서·메타 누락 감지 (drift 방지, maintainer별 리포트)
 - 적립 누락 시 경고 hook 강화 가능

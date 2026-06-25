@@ -3,7 +3,7 @@
 ## 핵심 원칙: 프로젝트 레포 = Source of Truth
 
 프로젝트의 상세 문서(피처 스펙, 운영 SQL, API, ADR)는 **해당 프로젝트 코드 레포**에 저장한다.
-`base/services/`는 서비스 허브(인덱스) 역할만 한다.
+`services/`는 서비스 허브(인덱스) 역할만 한다.
 
 ## 프로젝트 레포 내 표준 구조
 
@@ -77,12 +77,12 @@ standards 저장소의 `temp/orchestrator/{service}/state.json` 에 둔다.
 - `features/README.md`에 영향도 매트릭스 유지
 - impact-analysis.md 체크리스트와 병행
 
-## base/services/ — 서비스 허브 (인덱스)
+## services/ — 서비스 허브 (인덱스)
 
-`base/services/{서비스}/`는 **서비스 단위 인덱스**로, 상세 문서는 포함하지 않는다.
+`services/{서비스}/`는 **서비스 단위 인덱스**로, 상세 문서는 포함하지 않는다.
 
 ```
-base/services/{서비스}/
+services/{서비스}/
 ├── README.md               # 서비스 카탈로그 (프로젝트 목록 + 에이전트 + 워크스페이스)
 ├── TASKS.md                # Jira 동기화
 └── sop/                    # 서비스 운영 SOP (선택)
@@ -109,7 +109,7 @@ base/services/{서비스}/
 
 - [ ] 프로젝트 레포에 `docs/` 표준 구조 생성
 - [ ] 프로젝트 레포에 `AGENTS.md` 생성
-- [ ] `base/services/{서비스}/README.md` 프로젝트 카탈로그 업데이트
+- [ ] `services/{서비스}/README.md` 프로젝트 카탈로그 업데이트
 - [ ] `domains/{서비스}/agents/README.md` 라우터에 포인터 추가
 
 ## 프로젝트명 규칙

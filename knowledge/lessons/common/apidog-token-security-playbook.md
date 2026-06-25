@@ -83,8 +83,8 @@ ls -l ~/.apidog-credentials.json
 export APIDOG_ACCESS_TOKEN="***"
 export APIDOG_PROJECT_ID="992853"
 
-# 2) 연결 검증
-python3 agents/skills/apidog-openapi-sync/scripts/apidog_rest_api.py export-openapi \
+# 2) 연결 검증  ([미확인] apidog-openapi-sync 스킬은 cairn 엔진 미포함 — 도메인/워크스페이스 스킬로 별도 제공 시 경로 조정)
+python3 skills/apidog-openapi-sync/scripts/apidog_rest_api.py export-openapi \
   --scope all \
   --oas-version 3.1 \
   --export-format JSON \

@@ -1,7 +1,7 @@
 #!/bin/bash
-# Project guard: only run in ai-team-standards repo
+# Project guard: only run in cairn engine repo
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/.claude/hooks" ]] && exit 0
+[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/hooks" ]] && exit 0
 
 # Hook: 하네스 템플릿 문서 수정 시 자동 계약 검증
 # PostToolUse(Edit, Write)
@@ -13,8 +13,8 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 INPUT_JSON="$(cat 2>/dev/null || echo '{}')"
 TOOL_INPUT="${CLAUDE_TOOL_INPUT:-$INPUT_JSON}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATOR="$REPO_ROOT/agents/skills/harness-orchestrator/scripts/validate-doc-contracts.mjs"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+VALIDATOR="$REPO_ROOT/skills/harness-orchestrator/scripts/validate-doc-contracts.mjs"
 
 # 파일 경로 추출
 FILE_PATH=$(echo "$TOOL_INPUT" | grep -oE '"file_path"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"file_path"\s*:\s*"//;s/"$//')

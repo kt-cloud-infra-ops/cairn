@@ -92,7 +92,7 @@ is_pure_md_doc_path() {
   esac
   case "$rel" in
     .claude/*|.claude-plugin/*|hooks/*|scripts/*|schemas/*|skills/*|\
-    agents/rules/*|agents/rules-on-demand/*|rules/*|rules-on-demand/*|\
+    rules/*|rules-on-demand/*|\
     domains/*/skills/*|operations/skills/*)
       return 1
       ;;

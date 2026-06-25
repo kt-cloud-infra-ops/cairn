@@ -20,7 +20,7 @@ This document captures the architectural insights from establishing a distribute
 
 When implementing shared rules across multiple locations:
 - **Home Rules** (`~/.claude/rules/`) - Global defaults for all projects
-- **Project Rules** (`agents/rules/` in repo) - Project-specific overrides
+- **Project Rules** (`rules/` in repo) - Project-specific overrides
 - **Documentation References** (CLAUDE.md) - Context-dependent rules
 
 The challenge is maintaining consistency while allowing local customization.
@@ -42,7 +42,7 @@ Rules follow a **3-tier hierarchical model**:
                ↓ (override by)
 ┌─────────────────────────────────────┐
 │  Project Overrides                  │
-│  (./agents/rules/)                 │
+│  (./rules/)                 │
 │  - Project-specific customizations  │
 │  - Domain-specific standards        │
 │  - Team/org preferences             │
@@ -104,8 +104,8 @@ git-workflow.md
 
 2. **Update All Affected Locations**
    ```
-   Global change → ~/.claude/rules/ + agents/rules/ + CLAUDE.md
-   Project change → agents/rules/<project>/ only
+   Global change → ~/.claude/rules/ + rules/ + CLAUDE.md
+   Project change → rules/<project>/ only
    Session note → temp/ or docs/projects/<project>/
    ```
 
@@ -144,7 +144,7 @@ else if (workingOnSharedPolicy)
 else if (workingOnLanguagePattern)
   → save to docs/guides/<language>/
 else if (workingOnAutomation)
-  → save to agents/knowledge/lessons/common/
+  → save to knowledge/lessons/common/
 else
   → save to temp/
 ```
@@ -179,7 +179,7 @@ When syncing a rule across locations:
 nano ~/.claude/rules/rule-name.md
 
 # 2. Update project rules
-nano agents/rules/rule-name.md
+nano rules/rule-name.md
 
 # 3. Update CLAUDE.md if referenced
 nano CLAUDE.md
@@ -188,7 +188,7 @@ nano CLAUDE.md
 git commit -m "docs: sync rule-name changes across all locations
 
 - Updated global rule in ~/.claude/rules/
-- Updated project override in agents/rules/
+- Updated project override in rules/
 - Updated references in CLAUDE.md
 - Added cross-reference links"
 ```

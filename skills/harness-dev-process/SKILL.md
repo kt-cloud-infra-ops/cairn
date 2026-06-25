@@ -77,7 +77,7 @@ Phase 4: SHIP
 │   ├── `.harness/review-evidence.json` 생성 (5분 이내, checks pass)
 │   └── 미생성 시 `guard-git-commit.sh`가 commit 차단 (exit 2)
 ├── 저장소 표준 merge/promotion 순서 준수
-│   ├── ai-team-standards: `rules/*` 브랜치 → PR → `main`
+│   ├── cairn: `rules/*` 브랜치 → PR → `main`
 │   └── 서비스 저장소 예시: `develop` → `stage` → `production` → `main`
 ├── 배포 계획 확인
 ├── Jira A.C. 완료
@@ -100,7 +100,7 @@ Phase 4: SHIP
 
 ### Worktree base branch 판정
 
-- `ai-team-standards` 같은 `main` 단일 저장소: `{repo-default-branch}=origin/main`
+- `cairn` 같은 `main` 단일 저장소: `{repo-default-branch}=origin/main`
 - 서비스 저장소처럼 통합 브랜치가 `develop`인 경우: `{repo-default-branch}=origin/develop`
 - 추정 금지. 저장소 원격 브랜치 구조를 먼저 확인한 뒤 worktree 생성
 

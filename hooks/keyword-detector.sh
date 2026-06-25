@@ -5,7 +5,7 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 is_guarded_repo() {
   local root="$1"
   [ -z "$root" ] && return 1
-  [ -f "$root/AGENTS.md" ] && [ -d "$root/agents/skills" ] && return 0   # cairn plugin repo
+  [ -f "$root/AGENTS.md" ] && [ -d "$root/skills" ] && return 0   # cairn plugin repo
   [ -d "$root/.harness" ] && return 0                                     # 하네스 활성 프로젝트
   return 1
 }
@@ -40,7 +40,7 @@ LOG="/tmp/claude-hook-hits.log"
 HARNESS_SESSION_FLAG="/tmp/claude-harness-checked-$PPID"
 if [ ! -f "$HARNESS_SESSION_FLAG" ]; then
   touch "$HARNESS_SESSION_FLAG"
-  HARNESS_DIRTY=$(git diff --name-only HEAD 2>/dev/null | grep -E '(agents/rules/|agents/rules-on-demand/|agents/skills/|\.claude/hooks/|\.claude/settings\.json|AGENTS\.md)' 2>/dev/null)
+  HARNESS_DIRTY=$(git diff --name-only HEAD 2>/dev/null | grep -E '(rules/|rules-on-demand/|skills/|\hooks/|\.claude/settings\.json|AGENTS\.md)' 2>/dev/null)
   if [ -n "$HARNESS_DIRTY" ]; then
     COUNT=$(echo "$HARNESS_DIRTY" | wc -l | tr -d ' ')
     FILES=$(echo "$HARNESS_DIRTY" | head -5 | sed 's/^/  - /')
@@ -186,7 +186,7 @@ json.dump(d, open(f, 'w'), indent=2, ensure_ascii=False)
     echo "  ⬜ Phase 4 SHIP  → 배포 + Jira A.C. DONE + 작업일지"
     echo ""
     echo "  ⚠️ 코드 변경(Edit/Write)은 Phase 2(IMPL) 이후에만 허용됩니다."
-    echo "  템플릿: agents/skills/harness-dev-process/templates/"
+    echo "  템플릿: skills/harness-dev-process/templates/"
   fi
 # ── impl 명령: GATE 1→2 검사 — CPS + PRD 없으면 blocking ──
 elif [ "$MATCHED_CMD" = "impl" ]; then
@@ -211,7 +211,7 @@ elif [ "$MATCHED_CMD" = "impl" ]; then
     printf "%b" "$MISSING"
     echo ""
     echo "구현을 진행하지 마세요. Phase 0→1 완료 후 재시도하세요."
-    echo "템플릿: agents/skills/harness-dev-process/templates/"
+    echo "템플릿: skills/harness-dev-process/templates/"
     exit 2
   else
     echo "✅ GATE 1→2 통과"

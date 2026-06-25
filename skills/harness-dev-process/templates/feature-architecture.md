@@ -105,7 +105,7 @@ Client → Controller → Service → Repository → DB
 
 ## 보안 고려사항
 
-> agents/rules-on-demand/security.md 체크리스트 수행
+> rules-on-demand/security.md 체크리스트 수행
 
 | 항목 | 적용 | 비고 |
 |------|------|------|

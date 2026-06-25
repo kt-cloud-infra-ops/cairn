@@ -31,7 +31,7 @@
 
 ## 풀스택 레이어 설계
 
-> agents/rules-on-demand/impact-analysis.md "풀스택 레이어 체크리스트" 수행
+> rules-on-demand/impact-analysis.md "풀스택 레이어 체크리스트" 수행
 
 | # | 레이어 | 해당 | 변경 내용 | 파일/위치 |
 |---|--------|------|----------|----------|

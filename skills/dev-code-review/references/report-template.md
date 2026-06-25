@@ -172,7 +172,7 @@ git commit -m "fix: ${JIRA_PROJECT_KEY}-xxx ..."
 
 PR(GitHub/GitLab) 직접 코멘트 작성 시 압축 형식 사용 가능. 우리 표준 review 워크플로우는 그대로 (evidence + 보안 체크리스트 + 도메인 정합성) — **출력 형식만 압축 옵션 제공**.
 
-> Origin: `agents/skills/vendor/juliusbrussee--caveman/caveman-review/SKILL.md` (MIT License, Julius Brussee)
+> Origin: `skills/vendor/juliusbrussee--caveman/caveman-review/SKILL.md` (MIT License, Julius Brussee)
 
 ### 코멘트 형식
 

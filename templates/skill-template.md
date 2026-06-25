@@ -23,7 +23,7 @@ description: "{한 줄 설명}"
 ## (선택) GATE 패턴
 
 > **언제 GATE를 추가하는가**: 외부 시스템(Jira/DB/배포)에 돌이킬 수 없는 변경을 일으키거나 사용자 신뢰에 영향을 주는 산출물을 생성할 때. 단순 도구성/분석성 스킬은 GATE 불필요 — DONE WHEN으로 충분. 단, 도구형 스킬이라도 write 경로(create/update/comment/transition)가 있으면 GATE를 둔다.
-> 상세 기준: `agents/rules/skill-governance.md` "GATE 필수 영역" 섹션.
+> 상세 기준: `rules/skill-governance.md` "GATE 필수 영역" 섹션.
 
 GATE가 필요하다면 절차 단계 끝에 아래 형식 블록을 삽입한다.
 

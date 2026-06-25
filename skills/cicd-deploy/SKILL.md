@@ -41,7 +41,7 @@ description: "Git 조직 저장소에서 완료된 브랜치를 develop에 머�
   - 서비스 허브와 프로젝트 `docs/`/`AGENTS.md`가 존재한다.
   - `service-charts` / `service-values` 경로와 대응 앱 해석 근거가 있다.
   - 초기 서비스 생성 단계가 아니라 deploy 가능한 repo/app mapping 상태다.
-  - `node agents/skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require deploy-ready` 가 성공한다.
+  - `node skills/harness-orchestrator/scripts/service-orchestration.mjs validate {service} --require deploy-ready` 가 성공한다.
 
 사전 조건이 하나라도 비어 있으면 먼저 그것부터 해결한다. 준비가 덜 된 상태로 머지, 워크플로우, ArgoCD 단계를 시작하지 않는다.
 

@@ -4,9 +4,9 @@
 
 사용자가 "지라", "Jira", `${JIRA_PROJECT_KEY}-` 형태의 티켓 키를 사용하면:
 
-1. **먼저 읽기**: 팀 내 Jira REST API 가이드 (예: `base/guides/atlassian/jira-rest-api-guide.md`)
+1. **먼저 읽기**: 팀 내 Jira REST API 가이드 (예: `runbooks/integrations/atlassian/jira-rest-api-guide.md`)
 2. Jira REST 호출 전 `/rest/api/3/myself` 또는 동등한 preflight로 인증 상태를 먼저 확인한다
-3. `agents/skills/jira-rest-ops/` shared helper 또는 curl REST API를 사용한다
+3. `skills/jira-rest-ops/` shared helper 또는 curl REST API를 사용한다
 4. 가이드의 필드 ID, 상태 Transition ID, A.C. 형식을 따른다
 
 > **팀별 커스텀 라우팅**: 팀 특화 요청 유형(통합요청, 데이터 보정 등)이 있으면
@@ -86,7 +86,7 @@
 - 생성 직후 재조회 self-audit 수행
 
 > **커스텀 필드 ID**: `customfield_XXXXX`는 팀 Jira 인스턴스에 따라 다르다.
-> 팀 가이드(예: `base/guides/atlassian/jira-rest-api-guide.md`)에서 확인한다.
+> 팀 가이드(예: `runbooks/integrations/atlassian/jira-rest-api-guide.md`)에서 확인한다.
 
 ### Backlog 기본 정책
 
@@ -128,7 +128,7 @@
 ```
 
 > **하네스 연계**: 개발 단계 체크박스는 하네스 Phase Gate와 1:1 매핑된다.
-> Canonical 정의: `agents/skills/harness-dev-process/references/phase-gates.md`
+> Canonical 정의: `skills/harness-dev-process/references/phase-gates.md`
 
 > **배포 검증 분리**: stg/운영 배포 검증은 Jira A.C.가 아닌 배포절차서에서 관리한다.
 > 개발 티켓 A.C.는 코드 리뷰까지, 배포 검증은 배포절차서 체크리스트로 분리.
@@ -158,7 +158,7 @@
 ## CRITICAL: 태스크 완료 처리 5단계 (순서 엄수, 건너뛰기 금지)
 
 > **하네스 Phase 4: SHIP** — GATE 4→DONE 조건의 Jira 실행 절차.
-> Canonical 정의: `agents/skills/harness-dev-process/references/phase-gates.md`
+> Canonical 정의: `skills/harness-dev-process/references/phase-gates.md`
 
 상태를 In Review/Done으로 변경하기 **전에** 1~4단계를 반드시 순서대로 수행한다.
 
@@ -170,7 +170,7 @@
 
 ### 가드 훅 (자동 강제)
 
-`.claude/hooks/guard-jira-transition.sh` (PreToolUse Bash hook):
+`hooks/guard-jira-transition.sh` (PreToolUse Bash hook):
 - Jira transition API 호출 시 대상 티켓 A.C. TODO 잔존 검사
 - In Review(transition id=5) / Done(transition id=6)로 가는 경우 차단
 - 우회 (1회): `touch /tmp/.claude-allow-jira-transition`

@@ -30,7 +30,7 @@ tags:
   },
   "sync_pairs": [
     {
-      "project": "<YOUR_PLUGIN_ROOT>/agents/rules/",
+      "project": "<YOUR_PLUGIN_ROOT>/rules/",
       "home": "~/.claude/rules/",
       "files": ["agents.md", "coding-style.md", "doc-organization.md",
                 "git-workflow.md", "hooks.md", "patterns.md",
@@ -454,7 +454,7 @@ RULES_FILES=(
 # 규칙 파일이 변경되었는지 확인
 RULES_CHANGED=0
 for file in "${RULES_FILES[@]}"; do
-  if git diff --cached --name-only | grep -q "agents/rules/$file"; then
+  if git diff --cached --name-only | grep -q "rules/$file"; then
     RULES_CHANGED=1
     break
   fi
@@ -468,12 +468,12 @@ if [ $RULES_CHANGED -eq 1 ]; then
 
   # 생성된 파일들을 staging에 추가
   for file in "${RULES_FILES[@]}"; do
-    git add "agents/rules/$file"
+    git add "rules/$file"
   done
 
   # 홈 디렉토리 동기화
   for file in "${RULES_FILES[@]}"; do
-    cp "agents/rules/$file" "$HOME/agents/rules/$file"
+    cp "rules/$file" "$HOME/rules/$file"
   done
 
   echo "✓ Sync complete"
@@ -536,7 +536,7 @@ done
 # 4. 양쪽 파일 비교
 echo -e "\n4. Comparing home vs project..."
 diff <(head -20 ~/.claude/rules/agents.md) \
-     <(head -20 agents/rules/agents.md) && \
+     <(head -20 rules/agents.md) && \
 echo "✓ Files match" || echo "⚠ Files differ (this may be OK)"
 
 echo -e "\n=== All tests complete ==="
@@ -566,7 +566,7 @@ python3 generate_related_rules.py --dry-run
 python3 generate_related_rules.py
 
 # 4. Git에 커밋
-git add agents/rules/
+git add rules/
 git commit -m "docs: auto-generate Related Rules sections"
 
 # 5. 검증

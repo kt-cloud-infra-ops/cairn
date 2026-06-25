@@ -115,7 +115,7 @@
         "아이디어 정리",
         "설계 잡자"
       ],
-      "message": "📋 요구사항 수집 + 설계 (Phase 0: INIT, harness-brainstorm)\n\n1. Charter Preflight 작성 (Goal/Context/Constraints/Done When)\n2. CPS 템플릿 사용: agents/skills/harness-dev-process/templates/feature-cps.md\n3. 영향도 분석 8항목 — 서비스 전반 연관관계 검토\n   - 관련 서비스에 영향 있는지 확인\n   - 관련 서비스 TASKS.md 교차 확인\n4. 해당 서비스 도메인 에이전트 읽기: agents/subagents/<YOUR_SERVICE>/*.md\n5. harness-brainstorm Step 1~9 절차 따르기 (질문 한 번에 1개 → 접근안 2-3개 → CPS Charter 9항목 설계 → 사용자 승인 → Step 9에서 init-harness-run.sh 실행)"
+      "message": "📋 요구사항 수집 + 설계 (Phase 0: INIT, harness-brainstorm)\n\n1. Charter Preflight 작성 (Goal/Context/Constraints/Done When)\n2. CPS 템플릿 사용: skills/harness-dev-process/templates/feature-cps.md\n3. 영향도 분석 8항목 — 서비스 전반 연관관계 검토\n   - 관련 서비스에 영향 있는지 확인\n   - 관련 서비스 TASKS.md 교차 확인\n4. 해당 서비스 도메인 에이전트 읽기: domains/<YOUR_SERVICE>/agents/*.md\n5. harness-brainstorm Step 1~9 절차 따르기 (질문 한 번에 1개 → 접근안 2-3개 → CPS Charter 9항목 설계 → 사용자 승인 → Step 9에서 init-harness-run.sh 실행)"
     },
     {
       "command": "plan",
@@ -143,7 +143,7 @@
         "아키텍처 설계",
         "아키텍처 작성"
       ],
-      "message": "📐 설계 (Phase 1: PLAN)\n\n1. PRD 작성: agents/skills/harness-dev-process/templates/feature-prd.md\n   - 풀스택 8레이어 전부 판정 (해당없음도 명시)\n2. Architecture 작성: agents/skills/harness-dev-process/templates/feature-architecture.md\n3. 서비스 전반 검토:\n   - 다른 서비스/프로젝트에 영향 있는지 cross-check\n   - 공통코드, 권한체계, 배치 연관 확인\n4. 서브에이전트 병렬 투입:\n   - 해당 도메인 에이전트 (agents/subagents/<YOUR_SERVICE>/*.md)\n   - frontend-dev: UI/화면 영향\n   - backend-dev: API/서비스 로직 영향\n   - dba: 쿼리/스키마/인덱스 영향\n5. 각 에이전트 검토 결과를 설계 문서에 반영\n6. UI 변경 시 목업 필수 → 사용자 승인"
+      "message": "📐 설계 (Phase 1: PLAN)\n\n1. PRD 작성: skills/harness-dev-process/templates/feature-prd.md\n   - 풀스택 8레이어 전부 판정 (해당없음도 명시)\n2. Architecture 작성: skills/harness-dev-process/templates/feature-architecture.md\n3. 서비스 전반 검토:\n   - 다른 서비스/프로젝트에 영향 있는지 cross-check\n   - 공통코드, 권한체계, 배치 연관 확인\n4. 서브에이전트 병렬 투입:\n   - 해당 도메인 에이전트 (domains/<YOUR_SERVICE>/agents/*.md)\n   - frontend-dev: UI/화면 영향\n   - backend-dev: API/서비스 로직 영향\n   - dba: 쿼리/스키마/인덱스 영향\n5. 각 에이전트 검토 결과를 설계 문서에 반영\n6. UI 변경 시 목업 필수 → 사용자 승인"
     },
     {
       "command": "workflow",
@@ -182,7 +182,7 @@
         "리팩터링",
         "리팩토링"
       ],
-      "message": "🔄 dev branch 시작 전 전체 Phase 확인 (Harness)\n\nPhase 0 INIT  → CPS 작성: Charter(Goal/Context/Constraints/Done When) + 영향도 분석 8항목\nPhase 1 PLAN  → PRD + Architecture 작성 + 사용자 승인\nPhase 2 IMPL  → Charter/PRD 존재 확인 후 구현 + Task Packet 분해\nPhase 3 VERIFY→ 빌드 + 테스트 + 코드리뷰(code-reviewer) + 보안검토\nPhase 4 SHIP  → 배포 계획 + Jira A.C. DONE(5단계) + 작업일지\n\n현재 상태: .harness/state.json\n템플릿: agents/skills/harness-dev-process/templates/\n새 서비스 신설이면 `harness-service-bootstrap`, 운영 반영이면 `harness-service-ops` branch를 먼저 검토"
+      "message": "🔄 dev branch 시작 전 전체 Phase 확인 (Harness)\n\nPhase 0 INIT  → CPS 작성: Charter(Goal/Context/Constraints/Done When) + 영향도 분석 8항목\nPhase 1 PLAN  → PRD + Architecture 작성 + 사용자 승인\nPhase 2 IMPL  → Charter/PRD 존재 확인 후 구현 + Task Packet 분해\nPhase 3 VERIFY→ 빌드 + 테스트 + 코드리뷰(code-reviewer) + 보안검토\nPhase 4 SHIP  → 배포 계획 + Jira A.C. DONE(5단계) + 작업일지\n\n현재 상태: .harness/state.json\n템플릿: skills/harness-dev-process/templates/\n새 서비스 신설이면 `harness-service-bootstrap`, 운영 반영이면 `harness-service-ops` branch를 먼저 검토"
     },
     {
       "command": "impl",
@@ -238,7 +238,7 @@
         "TDD",
         "테스트 작성"
       ],
-      "message": "🧪 TDD (Phase 2: IMPL)\n\n1. agents/skills/dev-tdd/SKILL.md 절차 (RED→GREEN→REFACTOR)\n2. 서브에이전트:\n   - 도메인 에이전트: 테스트 시나리오 도출 (비즈니스 케이스)\n   - dba: DB 테스트 데이터 준비\n3. 80%+ 커버리지 확인"
+      "message": "🧪 TDD (Phase 2: IMPL)\n\n1. skills/dev-tdd/SKILL.md 절차 (RED→GREEN→REFACTOR)\n2. 서브에이전트:\n   - 도메인 에이전트: 테스트 시나리오 도출 (비즈니스 케이스)\n   - dba: DB 테스트 데이터 준비\n3. 80%+ 커버리지 확인"
     },
     {
       "command": "build-fix",

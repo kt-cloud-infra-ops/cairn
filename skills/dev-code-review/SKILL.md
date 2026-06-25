@@ -5,13 +5,13 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
 
 ## 스킬 규칙
 ### ALWAYS
-- 도메인 에이전트 먼저 읽기: `workspace/<YOUR_SERVICE>/agents/` (도메인 에이전트 canonical 위치)
+- 도메인 에이전트 먼저 읽기: `domains/<YOUR_SERVICE>/agents/` (도메인 에이전트 canonical 위치)
 - 피처 문서 검색: `projects/{프로젝트}/docs/features/` — 이미 판정된 항목 재지적 금지
 - 보안 체크리스트, Cross-cutting 8항목, Cross-layer 데이터 흐름 추적
-- <YOUR_ORG> 시큐어 코딩 가드레일 (`agents/rules-on-demand/security.md`)
+- <YOUR_ORG> 시큐어 코딩 가드레일 (`rules-on-demand/security.md`)
 - 언어별 점검: `references/language-checklist.md`
 - 리포트 출력: `references/report-template.md` 6단 형식
-- 커밋 단위 판정: 목적 단일성 (`agents/rules/git-workflow.md` 기능 단위 분리 기준)
+- 커밋 단위 판정: 목적 단일성 (`rules/git-workflow.md` 기능 단위 분리 기준)
 - **commit 전 `.harness/review-evidence.json` 생성 의무** — guard-git-commit.sh가 본 파일 검증
 - `git diff --cached` 기준으로 판단 (staged 변경만)
 - 검사 중 코드 수정 발생 시 lint/정적분석/테스트 **재실행**
@@ -33,7 +33,7 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
    - 파일/라인 변경량 + 영향 영역 식별
 
 2. **도메인/피처 사전 참조**
-   - 변경 파일 → 서비스 판별 → `workspace/<YOUR_SERVICE>/agents/` 읽기 (도메인 에이전트)
+   - 변경 파일 → 서비스 판별 → `domains/<YOUR_SERVICE>/agents/` 읽기 (도메인 에이전트)
    - `projects/{프로젝트}/docs/features/{TICKET}-*.md` 검색 → 이미 판정된 항목 식별
    - **이미 판정된 항목 재지적 금지**
 
@@ -51,16 +51,16 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
    - 레이어 경계 위반 없음
    - 리팩터링 커밋이면 동작 변경 0건
 
-5. **보안 점검** (`agents/rules-on-demand/security.md`)
+5. **보안 점검** (`rules-on-demand/security.md`)
    - 시크릿 노출 (토큰/비밀번호/키/세션)
    - 입력 검증 / 권한 체크 / SQL injection / 경로 조작
    - 에러 응답 내부 구조 노출 금지
    - <YOUR_ORG> 가드레일 (Pbkdf2/Jasypt/RFC 7807/Tika/Spring Security 6.x)
 
-6. **Cross-cutting 8항목 + Cross-layer 데이터 흐름** (`agents/rules-on-demand/impact-analysis.md`)
+6. **Cross-cutting 8항목 + Cross-layer 데이터 흐름** (`rules-on-demand/impact-analysis.md`)
 
 7. **커밋 단위 판정**
-   - 목적 단일성 검사 (`agents/rules/git-workflow.md` 기능 단위 분리 기준)
+   - 목적 단일성 검사 (`rules/git-workflow.md` 기능 단위 분리 기준)
    - 혼재 조합 발견 시: 기능+버그수정 / 로직+포맷 / 보안+일반 / 문서+코드
    - 혼재 시 분리안 제시 (`references/report-template.md` "커밋 분리 권고" 양식)
 
@@ -91,12 +91,12 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
 
 - `references/language-checklist.md` — Java/JSP/JS/SQL 언어별 점검 매트릭스
 - `references/report-template.md` — 6단 리포트 + 분리 권고 + evidence JSON 스키마
-- `agents/rules/git-workflow.md` — 기능 단위 커밋 분리 기준 + Runtime/Non-runtime + Jira 티켓 + 머지 순서
-- `agents/rules-on-demand/security.md` — <YOUR_ORG> 시큐어 코딩 가드레일
-- `agents/rules-on-demand/coding-style.md` — 불변성/함수 크기/파일 크기
-- `agents/rules-on-demand/impact-analysis.md` — Cross-cutting 8항목 + Cross-layer 데이터 흐름
-- `agents/skills/dev-build-fix/SKILL.md` — lint/포맷 자동 수정 (옵트인)
-- `.claude/hooks/guard-git-commit.sh` — commit 강제 차단 hook (evidence 검증)
+- `rules/git-workflow.md` — 기능 단위 커밋 분리 기준 + Runtime/Non-runtime + Jira 티켓 + 머지 순서
+- `rules-on-demand/security.md` — <YOUR_ORG> 시큐어 코딩 가드레일
+- `rules-on-demand/coding-style.md` — 불변성/함수 크기/파일 크기
+- `rules-on-demand/impact-analysis.md` — Cross-cutting 8항목 + Cross-layer 데이터 흐름
+- `skills/dev-build-fix/SKILL.md` — lint/포맷 자동 수정 (옵트인)
+- `hooks/guard-git-commit.sh` — commit 강제 차단 hook (evidence 검증)
 
 ## 스킬 간 관계
 

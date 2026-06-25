@@ -1,16 +1,16 @@
 #!/bin/bash
-# Project guard: only run in ai-team-standards repo
+# Project guard: only run in cairn engine repo
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/.claude/hooks" ]] && exit 0
+[[ ! -f "$repo_root/AGENTS.md" || ! -d "$repo_root/hooks" ]] && exit 0
 
 # 증적 수집 스크립트 — Phase 4 SHIP 지원
 # 용도: Jira In Review/Done 전환 시 증적 텍스트 자동 생성
 #
-# 사용법: bash .claude/hooks/collect-evidence.sh [이슈키]
+# 사용법: bash hooks/collect-evidence.sh [이슈키]
 # 출력: Jira 코멘트용 마크다운
 
 ISSUE_KEY="${1:-}"
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "## 완료 증적"
 echo ""

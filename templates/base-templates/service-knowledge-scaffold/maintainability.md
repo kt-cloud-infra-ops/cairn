@@ -32,4 +32,4 @@
 
 ## 측정 도구
 
-`agents/skills/analytics-maintainability/` — 전 서비스 결정층 스캔 + 건강 리포트.
+`skills/analytics-maintainability/` — 전 서비스 결정층 스캔 + 건강 리포트.

@@ -62,11 +62,11 @@ tags:
 
 ```bash
 # 하네스 초기화
-./agents/skills/harness-dev-process/scripts/init-harness-run.sh /path/to/project --level standard --ticket ${JIRA_PROJECT_KEY}-XXX
+./skills/harness-dev-process/scripts/init-harness-run.sh /path/to/project --level standard --ticket ${JIRA_PROJECT_KEY}-XXX
 
 # 문서 검증
-node agents/skills/harness-dev-process/scripts/validate-doc-contracts.mjs feature-cps.md --type cps
+node skills/harness-dev-process/scripts/validate-doc-contracts.mjs feature-cps.md --type cps
 
 # Gate 검증
-node agents/skills/harness-dev-process/scripts/validate-phase-gates.mjs /path/to/project --phase PLAN
+node skills/harness-dev-process/scripts/validate-phase-gates.mjs /path/to/project --phase PLAN
 ```
