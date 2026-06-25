@@ -202,6 +202,23 @@ cairn-workspace/
 
 ---
 
+## 오케스트레이터 형상
+
+`harness-orchestrator`(GATE 0 intent triage)가 요청을 4개 branch로 분기하고, 각 owner 스킬이 Phase Gate로 실행한다.
+
+📊 **형상 도식 (SoT)** — [`docs/orchestrator-topology.html`](docs/orchestrator-topology.html): Phase별 **문서·훅·rules·스킬·에이전트** 매핑 + GATE 통과/차단(exit 2) 영향을 도식화. **구조 변경 시 이 도식을 함께 갱신한다.**
+
+| branch | owner skill | Phase / GATE |
+|--------|-------------|--------------|
+| `dev` | `harness-dev-process` | INIT → PLAN → IMPL → VERIFY → SHIP |
+| `service-bootstrap` | `harness-service-bootstrap` | SCAN → REGISTER(GATE 1) → APPLY → VERIFY |
+| `service-ops` | `harness-service-ops` (+`ops-incident` sub) | PRECHECK(GATE 0) → CONFIG → DEPLOY → DATA(GATE 2) → VERIFY → RELEASE |
+| `harnessing` | `meta-harnessing` | ADR-INTENT(GATE 0) → 스캔 → 정합 → 제안 → 적용 |
+
+전 branch 공통: 모든 commit 전 `dev-code-review` → `.harness/review-evidence.json` → `guard-git-commit` 검증. 단일 진입 가드 `guard-orchestrator-entry`(triage.json 마커), Phase 가드 `guard-charter`(state.json).
+
+---
+
 ## 플러그인 vs Workspace 디렉터리
 
 ```

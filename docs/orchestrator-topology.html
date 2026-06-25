@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cairn 오케스트레이터 형상 — Phase별 구성요소 매핑 (엔진)</title>
+<style>
+  :root{
+    --bg:#0d1117;--line:#30363d;--txt:#e6edf3;--dim:#8b949e;
+    --c0:#e3a008;--c1:#3fb950;--c2:#58a6ff;--c3:#a371f7;--c4:#f85149;--c5:#56d4dd;
+    --hook:#f85149;--skill:#3fb950;--rule:#8b949e;--common:#1f6feb;--gate:#d29922;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo",sans-serif;padding:24px 28px;line-height:1.35}
+  h1{font-size:23px;margin:0 0 3px;color:#79b8ff}
+  .sub{color:var(--dim);font-size:12.5px;margin-bottom:14px;max-width:1050px}
+  code{background:#1c2230;padding:1px 5px;border-radius:4px;font-size:11px;color:#79c0ff}
+  .legend{display:flex;gap:13px;flex-wrap:wrap;font-size:11px;margin:8px 0 14px}
+  .legend .i{display:flex;align-items:center;gap:5px}.dot{width:11px;height:11px;border-radius:3px}
+  .tabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+  .tabs button{background:#1c2230;color:var(--txt);border:1px solid var(--line);border-radius:7px;padding:7px 13px;font-size:12.5px;cursor:pointer;font-weight:600;border-bottom:3px solid transparent}
+  .tabs button.on{background:#0d1117;border-bottom-color:#79b8ff;color:#79b8ff}
+  .pane{display:none}.pane.on{display:block}
+  .pane .intro{font-size:11.5px;color:var(--dim);margin-bottom:11px}
+
+  /* stage: 배경 컬럼 박스 + 콘텐츠 레이어 */
+  .stage{position:relative;padding:0}
+  .cols{position:absolute;inset:11px;display:grid;gap:10px;z-index:0;pointer-events:none}
+  .cols.l5{grid-template-columns:repeat(5,1fr)}.cols.l6{grid-template-columns:repeat(6,1fr)}
+  .cols>div{border-radius:12px;background:rgba(255,255,255,.03)}
+  .layers{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;padding:11px}
+
+  .lyr{display:grid;gap:10px}
+  .lyr.l5{grid-template-columns:repeat(5,1fr)} .lyr.l6{grid-template-columns:repeat(6,1fr)}
+  .lyr .lbl{grid-column:1/-1;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#586069;margin:6px 0 -3px}
+  /* 헤더: 채움 강조 */
+  .hd{border-radius:11px;padding:11px 6px;text-align:center;font-weight:800;font-size:15px;border:1.6px solid}
+  .hd .g{display:block;font-size:10.5px;font-weight:600;opacity:.85;margin-top:3px}
+  .h0{background:rgba(227,160,8,.12);border-color:var(--c0);color:#f0c674}
+  .h1{background:rgba(63,185,80,.12);border-color:var(--c1);color:#6fdc8c}
+  .h2{background:rgba(88,166,255,.12);border-color:var(--c2);color:#85b8ff}
+  .h3{background:rgba(163,113,247,.12);border-color:var(--c3);color:#c8a6f7}
+  .h4{background:rgba(248,81,73,.12);border-color:var(--c4);color:#ff9d96}
+  .h5{background:rgba(86,212,221,.12);border-color:var(--c5);color:#79d8e0}
+  .cell{display:flex;flex-direction:column;gap:6px}
+  .box{border:1px solid;border-radius:8px;padding:7px 10px;font-size:11.5px}
+  .box b{font-size:12px;display:block}.box .d{font-size:10px;color:var(--dim);margin-top:1px}
+  .box.doc{background:#161c26;border-color:#46505f;color:#c9d4e0}
+  .box.doc.c0,.box.doc.c1,.box.doc.c2,.box.doc.c3,.box.doc.c4,.box.doc.c5{border-color:#46505f}
+  .box.hook{background:#21161a;border-color:#b0524f;color:#f0a8a2}
+  .box.hookdim{background:#1a1316;border-color:#6e3b3b;color:#c79490}
+  .box.rule{background:#161c26;border-color:#46505f;color:#aeb8c4}
+  .box.skill{background:#15211a;border-color:#3f8b56;color:#8fd6a4}
+  .box.agent{background:#15211a;border-color:#3f8b56;color:#8fd6a4}
+  .box.common{background:#16202c;border-color:#3f6aa0;color:#9cc4ef;text-align:center;font-weight:600}
+  .box.gate{background:#211d12;border-color:#9c7c2e;color:#e0c277}
+  .box.center{text-align:center;font-weight:600}
+  .span2{grid-column:span 2}.span3{grid-column:span 3}.span4{grid-column:span 4}.full{grid-column:1/-1}
+  .empty{visibility:hidden}
+  .star{color:var(--gate)}
+  .notes{margin-top:20px;background:#161b22;border:1px solid var(--line);border-radius:10px;padding:12px 15px}
+  .notes h3{margin:0 0 7px;font-size:13px;color:#79b8ff}.notes ul{margin:0;padding-left:17px;font-size:11.5px;color:var(--dim)}.notes li{margin-bottom:3px}.notes b{color:var(--txt)}
+  .foot{margin-top:14px;font-size:11px;color:var(--dim);border-top:1px solid var(--line);padding-top:9px}
+</style>
+</head>
+<body>
+  <h1>Cairn 오케스트레이터 형상 — Phase별 구성요소 매핑 (엔진)</h1>
+  <div class="sub">각 Phase = 세로 컬럼(색 박스). 단계마다 작동하는 <b>문서·훅·rules·스킬·에이전트</b>를 레이어로 배치. 가로걸침 박스 = 여러 Phase에 걸쳐 발동. 형상 SoT · 조직값 0.</div>
+  <div class="legend">
+    <div class="i"><span class="dot" style="background:#3d4756"></span>문서·산출물</div>
+    <div class="i"><span class="dot" style="background:var(--hook)"></span>훅</div>
+    <div class="i"><span class="dot" style="background:var(--rule)"></span>rules-on-demand</div>
+    <div class="i"><span class="dot" style="background:var(--common)"></span>전 Phase 공통</div>
+    <div class="i"><span class="dot" style="background:var(--skill)"></span>스킬</div>
+    <div class="i"><span class="dot" style="background:#2ea043"></span>에이전트</div>
+    <div class="i"><span class="dot" style="background:var(--gate)"></span>GATE/★</div>
+  </div>
+  <div class="tabs">
+    <button class="on" data-p="dev">dev — harness-dev-process</button>
+    <button data-p="bs">service-bootstrap</button>
+    <button data-p="ops">service-ops</button>
+    <button data-p="inc">ops-incident</button>
+    <button data-p="harn">harnessing</button>
+  </div>
+
+  <!-- ============ DEV ============ -->
+  <div class="pane on" id="p-dev">
+    <div class="intro">진입: orchestrator GATE 0(<code>triage.json</code>) → dev. state.json(phase) ≠ triage.json(branch). Phase 경계마다 GATE 0→1→2→3→4.</div>
+    <div class="stage">
+      <div class="cols l5"><div class="cb0"></div><div class="cb1"></div><div class="cb2"></div><div class="cb3"></div><div class="cb4"></div></div>
+      <div class="layers">
+        <div class="lyr l5">
+          <div class="hd h0">Phase 0 · INIT<span class="g">GATE 0→1</span></div>
+          <div class="hd h1">Phase 1 · PLAN<span class="g">GATE 1→2</span></div>
+          <div class="hd h2">Phase 2 · IMPL<span class="g">GATE 2→3</span></div>
+          <div class="hd h3">Phase 3 · VERIFY<span class="g">GATE 3→4</span></div>
+          <div class="hd h4">Phase 4 · SHIP<span class="g">GATE 4→DONE</span></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">문서 · 산출물</div>
+          <div class="cell"><div class="box doc c0"><b>charter-preflight.md</b><span class="d">Charter 4요소 수집(읽기)</span></div><div class="box doc c0"><b>feature-cps.md</b><span class="d">CPS + 테스트 전략 초안</span></div></div>
+          <div class="cell"><div class="box doc c1"><b>feature-prd.md</b><span class="d">PRD + 8레이어 + 테스트</span></div><div class="box doc c1"><b>feature-architecture.md</b><span class="d">기술 설계</span></div></div>
+          <div class="cell"><div class="box doc c2"><b>task-packet.md</b><span class="d">작업 분해</span></div></div>
+          <div class="cell"><div class="box doc c3"><b>phase-gates.md <span class="star">★</span></b><span class="d">Gate 조건 (Canonical)</span></div></div>
+          <div class="cell"><div class="box doc c4"><b>review-evidence.json</b><span class="d">5분 이내 · status pass</span></div></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">훅</div>
+          <div class="box hook span2"><b>keyword-detector.sh</b><span class="d">UserPromptSubmit · impl+CPS/PRD 부재 → GATE1→2 exit 2</span></div>
+          <div class="box hook"><b>guard-skill-enforce.sh</b><span class="d">Bash · marker 없으면 exit 2</span></div>
+          <div class="box hook empty">x</div>
+          <div class="box hook"><b>guard-git-commit.sh</b><span class="d">evidence 없음/stale/non-pass → exit 2</span></div>
+        </div>
+        <div class="lyr l5">
+          <div class="box hook span2"><b>guard-charter.sh</b><span class="d">state 없음 · INIT · PLAN+non-Lite → exit 2</span></div>
+          <div class="box hook span2"><b>detect-build-fail.sh</b><span class="d">PostToolUse · build/test evidence(비차단)</span></div>
+          <div class="box hook empty">x</div>
+        </div>
+        <div class="lyr l5">
+          <div class="box hook full"><b>guard-orchestrator-entry.sh</b> — 전 Phase · triage.json 없으면 code/config/ops write exit 2 (md·.harness·read-only 면제)</div>
+        </div>
+        <div class="lyr l5">
+          <div class="box hookdim full"><b>detect-harness-change.sh</b> — 전 Phase · PostToolUse · rules/skills/hooks 변경 시 /harnessing 권장(비차단)</div>
+        </div>
+        <div class="lyr l5"><div class="lbl">rules-on-demand</div>
+          <div class="box rule"><b>impact-analysis</b></div><div class="box rule"><b>coding-style</b></div><div class="box rule"><b>testing</b><span class="d">TDD</span></div><div class="box rule"><b>security</b></div><div class="box rule"><b>jira-workflow</b></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">전 Phase 공통</div>
+          <div class="box common full">service-mapping.md · core · agents · git-workflow · doc-organization · skill-governance (always 룰)</div>
+        </div>
+        <div class="lyr l5"><div class="lbl">스킬</div>
+          <div class="box skill"><b>harness-brainstorm</b></div><div class="box skill"><b>harness-plan</b></div>
+          <div class="box skill"><b>dev-tdd</b><span class="d">dev-build-fix · worktrees</span></div>
+          <div class="box skill"><b>dev-code-review</b><span class="d">dev-e2e</span></div>
+          <div class="box skill"><b>dev-code-review(의무)</b><span class="d">jira-rest-ops · cairn-capture</span></div>
+        </div>
+        <div class="lyr l5">
+          <div class="box common span3">meta-harnessing — 하네스 정합성 검토 (harnessing branch, 교차)</div>
+          <div class="box gate span2 center">★ 피처 문서 참조 필수 — 이미 판정된 항목 재지적 금지</div>
+        </div>
+        <div class="lyr l5"><div class="lbl">에이전트</div>
+          <div class="box agent"><b>도메인 에이전트</b><span class="d">domains/{svc}/agents/*.md</span></div>
+          <div class="box agent"><b>backend-dev · frontend-dev</b></div>
+          <div class="box agent"><b>dba · backend/fe</b></div>
+          <div class="box agent"><b>code-reviewer · security-reviewer</b></div>
+          <div class="box agent empty">x</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ BOOTSTRAP ============ -->
+  <div class="pane" id="p-bs">
+    <div class="intro">선행: orchestrator GATE 0. 각 GATE 통과 전 다음 단계 write 금지(NEVER). 로컬상태 <code>temp/orchestrator/{service}/state.json</code>.</div>
+    <div class="stage">
+      <div class="cols l5"><div class="cb0"></div><div class="cb1"></div><div class="cb2"></div><div class="cb3"></div><div class="cb4"></div></div>
+      <div class="layers">
+        <div class="lyr l5">
+          <div class="hd h0">SCAN<span class="g">→ GATE 0</span></div><div class="hd h1">SCAFFOLD</div><div class="hd h2">REGISTER<span class="g">→ GATE 1</span></div><div class="hd h3">APPLY</div><div class="hd h4">VERIFY · handoff</div>
+        </div>
+        <div class="lyr l5"><div class="lbl">문서</div>
+          <div class="cell"><div class="box doc c0"><b>bootstrap-charter.md</b></div><div class="box doc c0"><b>orchestration init</b></div></div>
+          <div class="cell"><div class="box doc c1"><b>rename-service.py</b><span class="d">결과 검토</span></div></div>
+          <div class="cell"><div class="box doc c2"><b>services/{파트}/{svc}</b><span class="d">README · TASKS</span></div><div class="box doc c2"><b>레포 docs · AGENTS.md</b></div></div>
+          <div class="cell"><div class="box doc c3"><b>charts/values skeleton</b><span class="d">HTTPRoute skeleton</span></div></div>
+          <div class="cell"><div class="box doc c4"><b>handoff evidence</b><span class="d">bootstrap-complete</span></div></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">훅</div>
+          <div class="box hook full"><b>guard-orchestrator-entry</b>(전 단계 triage) · <b>guard-skill-enforce</b>(APPLY) · <b>guard-git-commit</b>(VERIFY 런타임코드 시 evidence)</div>
+        </div>
+        <div class="lyr l5"><div class="lbl">GATE 조건</div>
+          <div class="box gate"><b>GATE 0</b><span class="d">서비스명/repo naming · template · 비전정합 · service-mapping</span></div>
+          <div class="box gate empty">x</div>
+          <div class="box gate"><b>GATE 1</b><span class="d">rename 경로 · docs/AGENTS · 카탈로그 · charts/values</span></div>
+          <div class="box gate empty">x</div>
+          <div class="box gate"><b>DONE</b><span class="d">handoff evidence → service-ops</span></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">스킬 · 에이전트</div>
+          <div class="box skill"><b>cairn-init</b></div><div class="box skill empty">x</div>
+          <div class="box skill"><b>cairn-project-add · pull</b></div>
+          <div class="box skill"><b>cicd-deploy</b></div>
+          <div class="box skill"><b>dev-code-review · cairn-capture</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SERVICE-OPS ============ -->
+  <div class="pane" id="p-ops">
+    <div class="intro">bootstrap evidence 없으면 되돌림. PRECHECK 장애 식별 시 ops-incident 분기(GATE 0 면제). CI/CD 차단은 guard-skill-enforce/guard-orchestrator-entry.</div>
+    <div class="stage">
+      <div class="cols l6"><div class="cb0"></div><div class="cb1"></div><div class="cb2"></div><div class="cb3"></div><div class="cb4"></div><div class="cb5"></div></div>
+      <div class="layers">
+        <div class="lyr l6">
+          <div class="hd h0">PRECHECK<span class="g">→ GATE 0</span></div><div class="hd h1">CONFIG<span class="g">→ GATE 1</span></div><div class="hd h2">DEPLOY</div><div class="hd h3">DATA<span class="g">→ GATE 2</span></div><div class="hd h4">VERIFY</div><div class="hd h5">RELEASE-CLOSE</div>
+        </div>
+        <div class="lyr l6"><div class="lbl">문서 · 작업</div>
+          <div class="cell"><div class="box doc c0"><b>validate --require bootstrap</b></div></div>
+          <div class="cell"><div class="box doc c1"><b>service-ops-config</b><span class="d">Vault/Observability/HTTPRoute</span></div></div>
+          <div class="cell"><div class="box doc c2"><b>chart/value push · ArgoCD sync</b></div></div>
+          <div class="cell"><div class="box doc c3"><b>DDL/DML · 권한</b></div></div>
+          <div class="cell"><div class="box doc c4"><b>pod/env/secret · 대시보드</b></div></div>
+          <div class="cell"><div class="box doc c5"><b>fixVersion released</b></div></div>
+        </div>
+        <div class="lyr l6"><div class="lbl">훅</div>
+          <div class="box hook full"><b>guard-orchestrator-entry</b> · <b>guard-skill-enforce</b>(CONFIG/DATA write_patterns marker) · <b>guard-git-commit</b>(VERIFY)</div>
+        </div>
+        <div class="lyr l6"><div class="lbl">GATE 조건</div>
+          <div class="box gate"><b>GATE 0</b><span class="d">bootstrap evidence · env/ns/DB · rollback</span></div>
+          <div class="box gate"><b>GATE 1</b><span class="d">chart/value diff · key · rollout</span></div>
+          <div class="box gate empty">x</div>
+          <div class="box gate"><b>GATE 2</b><span class="d">DB/계정 · DDL/DML · 복구</span></div>
+          <div class="box gate empty">x</div>
+          <div class="box gate"><b>RELEASED</b><span class="d">사용자 승인 → released=true</span></div>
+        </div>
+        <div class="lyr l6"><div class="lbl">스킬 · 에이전트</div>
+          <div class="box skill"><b>ops-incident 분기</b></div>
+          <div class="box skill"><b>service-ops-config</b></div>
+          <div class="box skill"><b>cicd-deploy</b></div>
+          <div class="box agent"><b>dba</b></div>
+          <div class="box skill empty">x</div>
+          <div class="box skill"><b>jira-rest-ops</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ INCIDENT ============ -->
+  <div class="pane" id="p-inc">
+    <div class="intro">service-ops PRECHECK 장애 식별 → sub-owner(bootstrap/deploy 검증 면제, 시급성 우선). 자체 GATE 0~3.</div>
+    <div class="stage">
+      <div class="cols l5"><div class="cb0"></div><div class="cb1"></div><div class="cb2"></div><div class="cb3"></div><div class="cb4"></div></div>
+      <div class="layers">
+        <div class="lyr l5">
+          <div class="hd h0">Phase 0 · 인지&분류<span class="g">GATE 0</span></div><div class="hd h1">Phase 1 · 임시회피<span class="g">GATE 1</span></div><div class="hd h2">Phase 2 · 원인분석</div><div class="hd h3">Phase 3 · 보고서<span class="g">GATE 2</span></div><div class="hd h4">Phase 4 · 후속<span class="g">GATE 3 SHIP</span></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">문서</div>
+          <div class="cell"><div class="box doc c0"><b>incident-response-process</b></div></div>
+          <div class="cell"><div class="box doc c1"><b>회피기록</b><span class="d">시각/액션/책임자</span></div></div>
+          <div class="cell"><div class="box doc c2"><b>로그/DB 흔적 · 재현</b><span class="d">root cause 3중검증</span></div></div>
+          <div class="cell"><div class="box doc c3"><b>Confluence 5섹션</b><span class="d">인시던트 ADF 8섹션</span></div></div>
+          <div class="cell"><div class="box doc c4"><b>운영개선 태스크</b><span class="d">hotfix 티켓</span></div></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">GATE 조건</div>
+          <div class="box gate"><b>GATE 0</b><span class="d">등급 · 영향범위 · 번호 · 서비스분류</span></div>
+          <div class="box gate"><b>GATE 1</b><span class="d">방안 승인 · 책임자 · 부작용</span></div>
+          <div class="box gate empty">x</div>
+          <div class="box gate"><b>GATE 2</b><span class="d">root cause 확정/[가설] · 재발방지</span></div>
+          <div class="box gate"><b>GATE 3</b><span class="d">URL · ADF · 태스크 · hotfix handoff</span></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">스킬 · 에이전트</div>
+          <div class="box skill empty">x</div><div class="box skill empty">x</div>
+          <div class="box agent"><b>dba · 도메인</b></div>
+          <div class="box skill"><b>jira-rest-ops</b></div>
+          <div class="box skill"><b>→ harness-dev-process</b><span class="d">hotfix 위임</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HARNESSING ============ -->
+  <div class="pane" id="p-harn">
+    <div class="intro">Phase Gate형 아님 — 검토 워크플로우 6단계 + GATE 0(ADR-INTENT).</div>
+    <div class="stage">
+      <div class="cols l5"><div class="cb0"></div><div class="cb1"></div><div class="cb2"></div><div class="cb3"></div><div class="cb4"></div></div>
+      <div class="layers">
+        <div class="lyr l5">
+          <div class="hd h0">GATE 0 · ADR-INTENT</div><div class="hd h1">1 · 현황 스캔</div><div class="hd h2">2-3 · 검증·정합</div><div class="hd h3">4 · 개선 제안</div><div class="hd h4">5-6 · 스냅샷·적용</div>
+        </div>
+        <div class="lyr l5"><div class="lbl">문서 · 훅</div>
+          <div class="cell"><div class="box gate"><b>의도 확인</b><span class="d">decisions/ ADR 신설/수정 전</span></div></div>
+          <div class="cell"><div class="box hook"><b>detect-harness-change</b><span class="d">PostToolUse</span></div></div>
+          <div class="cell"><div class="box doc c2"><b>SoT 경계 검토</b><span class="d">rules vs skills vs rules-on-demand</span></div></div>
+          <div class="cell"><div class="box doc c3"><b>harnessing-review</b><span class="d">Findings/Options/Rec</span></div></div>
+          <div class="cell"><div class="box hook"><b>guard-git-commit</b><span class="d">공통룰 경고(비차단)</span></div></div>
+        </div>
+        <div class="lyr l5"><div class="lbl">스킬 · 에이전트</div>
+          <div class="box skill empty">x</div>
+          <div class="box agent"><b>병렬: harnessing · code-reviewer · security · architect</b></div>
+          <div class="box skill empty">x</div><div class="box skill empty">x</div>
+          <div class="box skill"><b>meta-review-rules · dev-code-review</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>핵심 정확성 노트</h3>
+    <ul>
+      <li><b>state.json vs triage.json</b>: triage.json(orchestrator GATE 0, guard-orchestrator-entry) ≠ state.json(dev phase, guard-charter) — 독립 가드.</li>
+      <li><b>guard-charter Phase×Level</b>: state 없음·INIT·PLAN+Standard/Full → exit 2 / PLAN+Lite·IMPL·DONE → 통과.</li>
+      <li><b>guard-git-commit</b>: staged 런타임코드(.java/.js/.sql/.sh/hooks·*.sh/skills/*/scripts/*/settings.json)만 review-evidence 요구 → 없음/stale/non-pass exit 2. 문서·md 면제.</li>
+      <li><b>Lite</b>: 산출물·승인 면제이나 GATE 0(state/triage)·GATE 2→3(빌드+테스트)는 적용.</li>
+      <li><b>guard-service-orchestration.sh [미확인]</b>: service-ops SKILL 언급, hooks/ 부재. 실제 차단은 guard-skill-enforce/guard-orchestrator-entry.</li>
+    </ul>
+  </div>
+  <div class="foot">형상 SoT: <code>docs/orchestrator-topology.html</code> + README · 미구현: <code>skills/vendor/</code>([TBD]) · hook 멱등등록 자동화([TBD]) · 조직(cairn-pe) 확장 형상은 cairn-pe 버전.</div>
+
+<script>
+  document.querySelectorAll('.tabs button').forEach(b=>{b.onclick=()=>{
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');document.getElementById('p-'+b.dataset.p).classList.add('on');};});
+</script>
+</body>
+</html>
