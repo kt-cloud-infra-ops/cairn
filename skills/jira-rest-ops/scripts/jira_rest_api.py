@@ -26,6 +26,7 @@ Usage:
 
 import json
 import os
+import re
 import requests
 from pathlib import Path
 from typing import Optional, Any
@@ -37,11 +38,176 @@ TEAM_LEAD_REPORTER_ACCOUNT_ID = os.environ.get('JIRA_REPORTER_ACCOUNT_ID', '')
 TEAM_LEAD_REPORTER_NAME = os.environ.get('JIRA_REPORTER_NAME', 'reporter')
 
 
+# ========== Profile-aware custom field resolution ==========
+#
+# This engine ships with ZERO organization values. Custom field IDs, project
+# keys, and transition IDs vary per Jira instance, so they are resolved at
+# runtime in this order:
+#   1. Cairn profile  — nearest `.cairn/profile/atlassian.yaml` (walk cwd→/)
+#                        or `$CAIRN_WORKSPACE/.cairn/profile/atlassian.yaml`.
+#   2. Environment    — JIRA_FIELD_<NAME> override (e.g. JIRA_FIELD_ACCEPTANCE_CRITERIA).
+#   3. Graceful None  — when neither is set, the field is simply skipped
+#                       (validation/audit/payload degrade without crashing).
+#
+# No PyYAML dependency: a minimal line parser reads the `jira.fields` /
+# `jira.projects` / `jira.transitions` blocks (same approach as the engine's
+# cairn-hook-router.sh). Example field keys (NOT real instance IDs):
+#   acceptance_criteria -> customfield_NNNNN
+#   start_date          -> customfield_NNNNN
+#   epic_link           -> customfield_NNNNN  (optional; may be absent)
+
+# Logical field name -> Jira create/update payload semantics.
+# These are stable, instance-independent keys read from the profile.
+_FIELD_KEYS = ('acceptance_criteria', 'start_date', 'epic_link')
+
+
+def _find_profile_path() -> Optional[Path]:
+    """Locate `.cairn/profile/atlassian.yaml`.
+
+    Order: $CAIRN_PROFILE_ATLASSIAN (explicit file) →
+           $CAIRN_WORKSPACE/.cairn/... → walk cwd upward for nearest workspace.
+    Returns None when no profile is found (engine has no org values of its own).
+    """
+    explicit = os.environ.get('CAIRN_PROFILE_ATLASSIAN')
+    if explicit:
+        p = Path(explicit)
+        return p if p.is_file() else None
+
+    candidates = []
+    ws = os.environ.get('CAIRN_WORKSPACE')
+    if ws:
+        candidates.append(Path(ws) / '.cairn' / 'profile' / 'atlassian.yaml')
+
+    dir_ = Path.cwd().resolve()
+    while True:
+        candidates.append(dir_ / '.cairn' / 'profile' / 'atlassian.yaml')
+        if dir_.parent == dir_:
+            break
+        dir_ = dir_.parent
+
+    for cand in candidates:
+        if cand.is_file():
+            return cand
+    return None
+
+
+def _clean_scalar(value: str) -> str:
+    value = value.split('#', 1)[0].strip()
+    if len(value) >= 2 and value[0] in "'\"" and value[-1] == value[0]:
+        value = value[1:-1]
+    return value
+
+
+def _parse_jira_subsections(profile_path: Path) -> dict:
+    """Minimal YAML reader for the `jira:` block (fields/projects/transitions).
+
+    No PyYAML dependency — mirrors cairn-hook-router.sh's hand-rolled parser.
+    Returns {'fields': {...}, 'projects': {...}, 'transitions': {...},
+             'default_project': '...'}. Missing sections yield empty dicts.
+    """
+    result = {'fields': {}, 'projects': {}, 'transitions': {}, 'default_project': ''}
+    try:
+        lines = profile_path.read_text(encoding='utf-8').splitlines()
+    except OSError:
+        return result
+
+    in_jira = False
+    section = None  # 'fields' | 'projects' | 'transitions'
+    for raw in lines:
+        line = raw.rstrip()
+        stripped = line.strip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        indent = len(line) - len(line.lstrip(' '))
+
+        if indent == 0:
+            in_jira = stripped.rstrip(':') == 'jira'
+            section = None
+            continue
+        if not in_jira:
+            continue
+
+        if indent == 2 and stripped.endswith(':') and ':' == stripped[-1] and ' ' not in stripped[:-1]:
+            key = stripped[:-1].strip()
+            section = key if key in ('fields', 'projects', 'transitions') else None
+            continue
+
+        if indent == 2 and ':' in stripped:
+            key, value = stripped.split(':', 1)
+            key, value = key.strip(), _clean_scalar(value)
+            if key == 'default_project' and value:
+                result['default_project'] = value
+            section = None
+            continue
+
+        if section and indent >= 4 and ':' in stripped:
+            key, value = stripped.split(':', 1)
+            key, value = key.strip(), _clean_scalar(value)
+            if key and value:
+                result[section][key] = value
+
+    return result
+
+
+class _FieldResolver:
+    """Resolves logical field names to instance-specific Jira field IDs.
+
+    profile → env (JIRA_FIELD_<UPPER>) → None (graceful skip).
+    """
+
+    def __init__(self):
+        self._profile = {'fields': {}, 'projects': {}, 'transitions': {}, 'default_project': ''}
+        path = _find_profile_path()
+        self.profile_source = str(path) if path else None
+        if path:
+            self._profile = _parse_jira_subsections(path)
+
+    def field(self, logical_name: str) -> Optional[str]:
+        """Jira field ID for a logical name, or None if unconfigured."""
+        val = self._profile['fields'].get(logical_name)
+        if val:
+            return val
+        env_key = 'JIRA_FIELD_' + re.sub(r'[^A-Za-z0-9]', '_', logical_name).upper()
+        env_val = os.environ.get(env_key)
+        return env_val or None
+
+    @property
+    def acceptance_criteria(self) -> Optional[str]:
+        return self.field('acceptance_criteria')
+
+    @property
+    def start_date(self) -> Optional[str]:
+        return self.field('start_date')
+
+    @property
+    def epic_link(self) -> Optional[str]:
+        # epic_link may be absent from profile; fall back to env, else None.
+        return self.field('epic_link')
+
+    def project(self, alias: str) -> Optional[str]:
+        return self._profile['projects'].get(alias) or self._profile['default_project'] or None
+
+    def transition(self, name: str) -> Optional[str]:
+        return self._profile['transitions'].get(name) or None
+
+
+# Module-level resolver (lazy-friendly singleton).
+_RESOLVER: Optional[_FieldResolver] = None
+
+
+def get_field_resolver() -> _FieldResolver:
+    global _RESOLVER
+    if _RESOLVER is None:
+        _RESOLVER = _FieldResolver()
+    return _RESOLVER
+
+
 class JiraRestAPI:
     """Jira REST API 헬퍼 클래스"""
 
     def __init__(self):
         self._load_auth()
+        self.fields = get_field_resolver()
 
     def _load_auth(self):
         """인증 정보 로드: 환경변수 우선(JIRA_*/ATLASSIAN_*) → ${JIRA_CREDENTIALS_FILE:-~/.jira-credentials.json}. MCP 의존 없음."""
@@ -237,9 +403,11 @@ class JiraRestAPI:
             errors.append('description must be a non-empty ADF document')
 
         if self._is_task_issue(fields):
-            ac = fields.get('customfield_14516')
-            if not self._has_task_list(ac):
-                errors.append('customfield_14516 must include taskList/taskItem ADF')
+            ac_field = self.fields.acceptance_criteria
+            if ac_field:
+                ac = fields.get(ac_field)
+                if not self._has_task_list(ac):
+                    errors.append(f'{ac_field} (Acceptance Criteria) must include taskList/taskItem ADF')
             reporter = fields.get('reporter') or {}
             if not reporter.get('accountId'):
                 errors.append('reporter.accountId is required for task creation')
@@ -250,13 +418,15 @@ class JiraRestAPI:
                 )
             if not (fields.get('assignee') or {}).get('accountId'):
                 errors.append('assignee.accountId is required for task creation')
-            if not str(fields.get('customfield_10015', '')).strip():
-                errors.append('customfield_10015 (start date) is required for task creation')
+            start_field = self.fields.start_date
+            if start_field and not str(fields.get(start_field, '')).strip():
+                errors.append(f'{start_field} (start date) is required for task creation')
             if not str(fields.get('duedate', '')).strip():
                 errors.append('duedate is required for task creation')
             if self._should_require_epic_link(fields, require_epic_link):
-                if not str(fields.get('customfield_10014', '')).strip():
-                    errors.append('customfield_10014 (Epic Link) is required for this task')
+                epic_field = self.fields.epic_link
+                if epic_field and not str(fields.get(epic_field, '')).strip():
+                    errors.append(f'{epic_field} (Epic Link) is required for this task')
 
         if errors:
             raise ValueError('Invalid create payload: ' + '; '.join(errors))
@@ -269,9 +439,13 @@ class JiraRestAPI:
         expected_reporter_account_id: Optional[str] = TEAM_LEAD_REPORTER_ACCOUNT_ID,
     ) -> dict:
         """생성 직후 필수 필드가 실제로 채워졌는지 재조회한다"""
-        fields_to_fetch = (
-            'summary,description,customfield_14516,reporter,assignee,'
-            'customfield_10015,duedate,customfield_10014,issuetype'
+        ac_field = self.fields.acceptance_criteria
+        start_field = self.fields.start_date
+        epic_field = self.fields.epic_link
+        custom_fields = [f for f in (ac_field, start_field, epic_field) if f]
+        fields_to_fetch = ','.join(
+            ['summary', 'description', 'reporter', 'assignee', 'duedate', 'issuetype']
+            + custom_fields
         )
         issue = self.get_issue(issue_key, fields=fields_to_fetch)
         issue_fields = issue['fields']
@@ -284,8 +458,8 @@ class JiraRestAPI:
             missing.append('description')
 
         if self._is_task_issue(issue_fields):
-            if not self._has_task_list(issue_fields.get('customfield_14516')):
-                missing.append('customfield_14516')
+            if ac_field and not self._has_task_list(issue_fields.get(ac_field)):
+                missing.append(ac_field)
             reporter = issue_fields.get('reporter') or {}
             if not reporter:
                 missing.append('reporter')
@@ -296,12 +470,12 @@ class JiraRestAPI:
                 )
             if not issue_fields.get('assignee'):
                 missing.append('assignee')
-            if not str(issue_fields.get('customfield_10015', '')).strip():
-                missing.append('customfield_10015')
+            if start_field and not str(issue_fields.get(start_field, '')).strip():
+                missing.append(start_field)
             if not str(issue_fields.get('duedate', '')).strip():
                 missing.append('duedate')
-            if require_epic_link and not str(issue_fields.get('customfield_10014', '')).strip():
-                missing.append('customfield_10014')
+            if require_epic_link and epic_field and not str(issue_fields.get(epic_field, '')).strip():
+                missing.append(epic_field)
 
         return {
             'issue_key': issue_key,
@@ -383,15 +557,22 @@ class JiraRestAPI:
             'issuetype': {'name': issue_type_name},
             'summary': summary,
             'description': description_adf,
-            'customfield_14516': ac_adf,
             'reporter': {'accountId': reporter_account_id},
             'assignee': {'accountId': assignee_account_id},
-            'customfield_10015': start_date,
             'duedate': due_date,
         }
 
+        ac_field = self.fields.acceptance_criteria
+        if ac_field:
+            fields[ac_field] = ac_adf
+        start_field = self.fields.start_date
+        if start_field:
+            fields[start_field] = start_date
+
         if epic_link:
-            fields['customfield_10014'] = epic_link
+            epic_field = self.fields.epic_link
+            if epic_field:
+                fields[epic_field] = epic_link
         if labels:
             fields['labels'] = labels
 
@@ -415,14 +596,13 @@ class JiraRestAPI:
             # 기한 설정
             jira.update_issue('PROJ-123', {'duedate': '2026-02-09'})
 
-            # 에픽 링크 설정
-            jira.update_issue('PROJ-123', {'customfield_10014': 'PROJ-100'})
+            # 에픽 링크 설정 (필드 ID는 profile에서 해석)
+            epic_field = jira.fields.epic_link  # e.g. 'customfield_NNNNN'
+            if epic_field:
+                jira.update_issue('PROJ-123', {epic_field: 'PROJ-100'})
 
             # 여러 필드 동시 업데이트
-            jira.update_issue('PROJ-123', {
-                'duedate': '2026-02-09',
-                'customfield_10014': 'PROJ-100'
-            })
+            jira.update_issue('PROJ-123', {'duedate': '2026-02-09'})
         """
         self._request('PUT', f"/rest/api/3/issue/{issue_key}", json={'fields': fields})
 
@@ -657,10 +837,12 @@ class JiraRestAPI:
         )
         new_key = result['key']
 
-        # 에픽 링크 복사
-        epic_link = fields.get('customfield_10014')
-        if epic_link:
-            self.update_issue(new_key, {'customfield_10014': epic_link})
+        # 에픽 링크 복사 (epic_link 필드가 profile/env로 해석될 때만)
+        epic_field = self.fields.epic_link
+        if epic_field:
+            epic_link = fields.get(epic_field)
+            if epic_link:
+                self.update_issue(new_key, {epic_field: epic_link})
 
         return new_key
 
@@ -754,7 +936,14 @@ def main():
         if args.duedate:
             fields['duedate'] = args.duedate
         if args.epic:
-            fields['customfield_10014'] = args.epic
+            epic_field = jira.fields.epic_link
+            if not epic_field:
+                raise ValueError(
+                    'Cannot set --epic: epic_link field unresolved. '
+                    'Set jira.fields.epic_link in .cairn/profile/atlassian.yaml '
+                    'or export JIRA_FIELD_EPIC_LINK.'
+                )
+            fields[epic_field] = args.epic
         if fields:
             jira.update_issue(args.issue_key, fields)
             print(f"Updated {args.issue_key}: {fields}")

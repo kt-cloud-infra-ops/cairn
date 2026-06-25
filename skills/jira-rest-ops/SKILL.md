@@ -6,7 +6,7 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 ## 스킬 규칙
 ### ALWAYS
 - REST 호출 전 `/rest/api/3/myself` preflight 필수
-- 신규 Task 생성 시 `summary / description / customfield_14516 / reporter / assignee / start/due date` 검증 필수
+- 신규 Task 생성 시 `summary / description / acceptance_criteria(A.C.) / reporter / assignee / start/due date` 검증 필수 (A.C.·start_date 필드 ID는 profile에서 해석)
 - 신규 Task 생성 직후 self-audit 필수
 - 상태 변경 전 A.C. 5단계 (jira-workflow.md)
 - 캐시 TTL 준수
@@ -64,7 +64,7 @@ description: Jira REST API 직접 호출 (MCP 의존 없음, 인증은 환경변
 - **Search API v3 필수**: `/rest/api/2/search` 폐기됨 → `/rest/api/3/search/jql` 사용
 - **신규 Task 생성 기본 경로**: `create-task` helper 또는 동등한 검증 로직 사용. ad-hoc `POST /issue` 금지
 - **Task 생성 minimum skeleton**: `Backlog`라도 `description + A.C. + reporter + assignee + start/due date`를 채운다
-- **생성 후 self-audit 필수**: `summary, description, customfield_14516, reporter, assignee, customfield_10015, duedate, customfield_10014`
+- **생성 후 self-audit 필수**: `summary, description, acceptance_criteria, reporter, assignee, start_date, duedate, epic_link` (커스텀 필드 ID는 profile에서 해석; 미설정 시 해당 검증 skip)
 - 상태 변경 전 A.C. 5단계 필수 (rules/jira-workflow.md 참조)
 - 인증 토큰을 stdout/로그에 노출하지 않는다
 - 캐시: `.claude/cache/jira/` (이슈 60분, 검색 30분)
@@ -92,13 +92,19 @@ read-only 조회(`auth-check`, `search`, `get issue`)는 제외하고, 아래 �
 | 6 | Done |
 | 7 | Cancel |
 
-## 주요 커스텀 필드
+## 주요 커스텀 필드 (profile에서 해석)
 
-| 필드 ID | 이름 |
-|---------|------|
-| customfield_10014 | Epic Link |
-| customfield_14516 | A.C. (Acceptance Criteria) |
-| customfield_10015 | Start date |
+커스텀 필드 ID는 Jira 인스턴스마다 다르다. 엔진은 조직값을 갖지 않으며, 실 ID는
+`.cairn/profile/atlassian.yaml`의 `jira.fields.*`에서 해석한다(없으면 env `JIRA_FIELD_<NAME>`,
+그래도 없으면 graceful skip). 헬퍼는 `jira.fields.<logical_name>`으로 접근한다.
+
+| 논리 키 (logical name) | 의미 | profile 키 | env override |
+|------------------------|------|-----------|--------------|
+| `acceptance_criteria` | A.C. (taskList/taskItem) | `jira.fields.acceptance_criteria` | `JIRA_FIELD_ACCEPTANCE_CRITERIA` |
+| `start_date` | Start date | `jira.fields.start_date` | `JIRA_FIELD_START_DATE` |
+| `epic_link` | Epic Link (선택) | `jira.fields.epic_link` | `JIRA_FIELD_EPIC_LINK` |
+
+> 실제 `customfield_*` ID는 엔진에 하드코딩하지 않는다 (조직값 0).
 
 ## create-task 계약
 
@@ -106,15 +112,15 @@ read-only 조회(`auth-check`, `search`, `get issue`)는 제외하고, 아래 �
 
 - `summary`
 - `description` (ADF 또는 plain text → ADF 변환)
-- `customfield_14516` (`taskList/taskItem` ADF)
+- `acceptance_criteria` (`taskList/taskItem` ADF; 필드 ID는 profile `jira.fields.acceptance_criteria`)
 - `reporter.accountId` (지정된 보고자, `${JIRA_REPORTER_ACCOUNT_ID}`)
 - `assignee.accountId`
-- `customfield_10015`
+- `start_date` (필드 ID는 profile `jira.fields.start_date`)
 - `duedate`
 
 ### `${JIRA_PROJECT_KEY}` Task 추가 규칙
 
-- `issuetype=작업`이면 `Epic Link(customfield_10014)`를 기본 요구로 본다
+- `issuetype=작업`이면 `Epic Link`(profile `jira.fields.epic_link`)를 기본 요구로 본다
 - 에픽 없이 생성해야 하면 명시적 예외 판단을 남긴다
 
 ### 출력 필수
