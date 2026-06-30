@@ -54,9 +54,11 @@ cairn-workspace/
 │   ├── service-a/
 │   └── service-b/
 ├── services/                   # 서비스 카탈로그, TASKS, service-level SOP index
+├── rulepacks/                  # 도메인별 실행팩 (rules-on-demand·agents·skills). 구 domains/ (ADR-014 개명, 전환기 동시허용)
 ├── runbooks/                   # 운영 SOP/절차서 (canonical)
 ├── decisions/                  # ADR/의사결정
 ├── knowledge/                  # lessons/patterns
+├── operations/                 # 팀 공통 운영 활동이력 + operations/skills/ (조직 횡단 스킬, 레지스트리 마운트)
 ├── support-projects/           # 외부 요청/지원 프로젝트
 ├── templates/                  # 문서 템플릿
 └── AGENTS.md                   # workspace 진입점. cairn core + profile 로딩 안내
@@ -71,7 +73,9 @@ cairn-workspace/
 | `services/` | 서비스 카탈로그 인덱스 + TASKS + SOP 링크 | workspace repo |
 | `runbooks/` | 운영 SOP canonical | workspace repo |
 | `decisions/` | ADR 이력 | workspace repo |
-| `knowledge/` | AI/팀 학습 내용 | workspace repo |
+| `knowledge/` | AI/팀 학습 내용 (횡단 조사·리뷰) | workspace repo |
+| `rulepacks/` | 도메인별 실행팩(rules-on-demand·agents·skills). 구 `domains/` 개명(ADR-014, 전환기) | workspace repo |
+| `operations/` | 팀 공통 운영 활동이력 + 횡단 스킬 마운트(`operations/skills/`, 레지스트리·브라우즈축 직교) | workspace repo |
 | `support-projects/` | 외부 요청 프로젝트 | workspace repo |
 
 ---

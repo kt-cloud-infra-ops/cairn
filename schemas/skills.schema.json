@@ -25,8 +25,8 @@
           },
           "path": {
             "type": "string",
-            "pattern": "^(domains|operations|services)/[^.].*/SKILL\\.md$",
-            "description": "워크스페이스 상대 경로. domains/{svc}/skills/{name}/SKILL.md 또는 operations/skills/{name}/SKILL.md. '..' 금지."
+            "pattern": "^(rulepacks|domains|operations|services)/[^.].*/SKILL\\.md$",
+            "description": "워크스페이스 상대 경로. rulepacks/{svc}/skills/{name}/SKILL.md(서비스 특화) 또는 operations/skills/{name}/SKILL.md(조직 횡단). domains/는 rulepacks/ 개명 전환기 한시 허용(ADR-014). '..' 금지."
           },
           "branch": {
             "enum": ["dev", "service-ops", "service-bootstrap", "harnessing"],
