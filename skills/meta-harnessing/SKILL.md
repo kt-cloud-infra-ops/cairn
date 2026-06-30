@@ -267,9 +267,13 @@ done
 - 구조 변경 → Codex 검토 요청
 - 구조 변경 검토는 기본적으로 **제안 우선**이며, 수정은 `Handoff` 확정 후 실행한다.
 
-## 병렬 실행 권장
+## 다관점 검토 — 2가지 모드
 
-가능하면 아래 에이전트를 병렬로 투입:
+검토 성격에 따라 모드를 고른다.
+
+### 모드 A. 빠른 병렬 스캔 (quick-parallel)
+
+대립이 적은 정합성 점검에. 독립 관점을 한 번에 투입하고 취합:
 
 | 에이전트 | 검토 관점 |
 |---------|----------|
@@ -277,6 +281,35 @@ done
 | code-reviewer | Hook 스크립트 품질 |
 | security-reviewer | Hook bypass 가능성 |
 | architect | 레이어 구조 정합성 |
+
+### 모드 B. 패널 토론 (panel-debate)
+
+**중대 구조 변경·결정 대립 예상·단일 시각 불충분·사용자 요청** 시. 라운드 기반으로 대립을 드러내고 수렴시킨다. (ADR-015 도출에 사용한 방식 — declaration-enforcement drift 진단)
+
+**흐름**:
+1. **R1 독립검토** — 패널을 병렬 디스패치(백그라운드 비동기). 각자 잘된점 / 개선필요 / 방안. 압축 출력 contract.
+2. **중재자 종합** — 합의(공통 메타결함) / 대립·긴장 / 채택 신규주제 / R2 의제(전문가별 질문 1개).
+3. **R2 교차반박** — 자기 입장 방어·양보·상대 반박. **대립 쟁점에 맞춰 전문가 추가 초대**(예: 토큰경제·플랫폼배포).
+4. **수렴** — 우선순위 로드맵(즉시/숙고) + 중대결정 TUI(AskUserQuestion) + ADR/`knowledge` 캡처.
+
+**기본 패널 (대립 따라 동적 가감)**:
+
+| 역할 | subagent_type | 렌즈 |
+|------|---------------|------|
+| 하네스전문가 | `cairn:harnessing` | 구조 정합·SoT·Gate/owner 경계 |
+| AI전문가 | general-purpose | LLM 오케스트레이션·컨텍스트·토큰 |
+| 유지보수담당 | general-purpose | 실사용·온보딩·드리프트·유지비 |
+| 중재자 | general-purpose | 합의/대립/의제 (R1 후 투입) |
+| +토큰경제 / +플랫폼배포 / +보안 등 | general-purpose | 대립 쟁점 실재 시 R2 초대 |
+
+**토큰 가드** (panel-debate는 비쌈 — 가드 필수):
+- 백그라운드 비동기 병렬 + **압축 출력 contract**(`FINDINGS→OPTIONS→RECOMMENDATION→RISKS`), 산문 금지 → 메인 컨텍스트엔 압축본만 주입
+- 라운드 **max 2~3**, 추가 초대는 대립 쟁점이 실재할 때만
+- 모델티어: 조회 haiku / 분석 sonnet, **opus 금지**(advisor는 본작업에서만)
+
+**권장**:
+- 전문가가 R2에서 R1 입장 **철회/수정 환영**(자기수정 — ADR-015에서 union스키마 철회 사례)
+- 출력은 기존 `Findings → Options → Recommendation → Handoff`로 종합 → ADR(`decisions/`) 또는 `knowledge`로 캡처
 
 ## 참고 문서
 

@@ -1,0 +1,27 @@
+name: version-bump-gate
+
+# ADR-015: 하네스 자산(skills/hooks/rules…) 변경 PR이 plugin.json version을 bump하지 않으면
+# main 머지를 차단한다. /plugin update가 version 문자열만 비교하는 no-op 트랩을 구조적으로 봉쇄.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'hooks/**'
+      - 'rules/**'
+      - 'rules-on-demand/**'
+      - 'agents/**'
+      - 'templates/**'
+      - 'AGENTS.md'
+      - '.claude-plugin/**'
+
+jobs:
+  version-bump-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require plugin version bump + marketplace sync
+        run: python3 .github/scripts/version-bump-gate.py "origin/${{ github.base_ref }}"
