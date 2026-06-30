@@ -29,6 +29,19 @@ is_guarded_repo() {
   [ -d "$root/.harness" ] && return 0
   return 1
 }
+
+# 워크스페이스 루트 탐색 (.cairn/workspace.yaml 상향) — guard-orchestrator-entry.sh와 동일 계약.
+# triage.json(Gate 0 마커) 위치를 찾기 위함.
+find_workspace_root() {
+  local start="$1" dir
+  if [ -n "$start" ] && [[ "$start" == /* ]]; then dir="$(dirname "$start")"; else dir="$PWD"; fi
+  while [ "$dir" != "/" ] && [ -n "$dir" ]; do
+    [ -f "$dir/.cairn/workspace.yaml" ] && { printf '%s\n' "$dir"; return 0; }
+    dir="$(dirname "$dir")"
+  done
+  git rev-parse --show-toplevel 2>/dev/null || pwd
+}
+
 is_guarded_repo "$repo_root" || exit 0
 
 # tool 입력 수집: 현재 하네스는 PreToolUse payload를 stdin JSON으로 전달한다.
@@ -84,7 +97,15 @@ while [ -n "$DIR" ] && [ "$DIR" != "." ] && [ "$DIR" != "/" ]; do
         exit 2
       fi
     else
-      # state.json 없음 → orchestrator 미진입(GATE 0 미통과) → BLOCK
+      # ops/bootstrap/harnessing branch는 dev 전용 Phase 게이트(guard-charter) 대상이 아니다 —
+      # Gate 0(triage)이 이미 진입을 책임지므로 소유권 분리(deference)로 오차단을 막는다 (ADR-015).
+      # 예: ops sql이 pom.xml 트리 안(src/main/resources/db/migration/*.sql)에 있어 dev로 오인되던 BLOCK 버그.
+      WS_ROOT="$(find_workspace_root "$FILE_PATH")"
+      TRIAGE_BRANCH=$(python3 -c "import json; print(json.load(open('$WS_ROOT/.harness/triage.json')).get('branch',''))" 2>/dev/null || true)
+      if [ -n "$TRIAGE_BRANCH" ] && [ "$TRIAGE_BRANCH" != "dev" ]; then
+        exit 0
+      fi
+      # state.json 없음 + (dev branch 또는 triage 없음) → orchestrator 미진입(GATE 0 미통과) → BLOCK
       # Lite여도 state.json은 요구 (원칙: Lite는 산출물 면제이지 GATE 0 면제 아님 — docs/HARNESS_DESIGN_RATIONALE.md)
       echo "⚠️ $PROJECT 프로젝트에 .harness/state.json이 없습니다."
       echo "코드 변경 전 하네스 프로세스를 시작하세요 (GATE 0 intent triage):"
