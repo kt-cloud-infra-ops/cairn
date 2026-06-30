@@ -1,7 +1,7 @@
 {
   "name": "cairn",
   "displayName": "Cairn",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Learn your work, share it with your team. An AI development harness with a branch-routing orchestrator, a knowledge Capture Loop (work → md → git), Phase Gates, and guardrail hooks. Atlassian evidence integration via env vars.",
   "author": {
     "name": "KT Cloud InfraOps"

@@ -122,4 +122,4 @@ AI가 아래를 추론한다 (사용자 인터럽트 최소화):
 
 - `config/cairn.config.example.json` — mode/capture/team 설정
 - `skills/analytics-learn/` — 패턴 추출 (캡처 엔진 보조)
-- `skills/daily-wrap/` — 세션 단위 인사이트 추출
+- `skills/analytics-session-insights/` — 세션 단위 인사이트 추출 (daily-wrap 대체)
