@@ -153,9 +153,15 @@ git commit -m "fix: ${JIRA_PROJECT_KEY}-xxx ..."
     "jiraTicket": "${JIRA_PROJECT_KEY}-XXX",
     "suggestedMessage": "feat: ${JIRA_PROJECT_KEY}-XXX {변경 요약}"
   },
+  "decisionLogged": "logged",
   "autoFixed": []
 }
 ```
+
+> **`decisionLogged`** (ADR-013 — 결정 적립 게이트):
+> - `logged` — 이번 변경에 설계·도메인 판단이 있었고 도메인 에이전트 `결정이력`/`판단시나리오` 또는 `docs/decisions/` ADR에 적립함
+> - `none` — 새 판단 없음 (단순 수정/리팩터 — 적립 불필요, 면제)
+> - `missing` — 판단이 있으나 미적립 → `guard-git-commit`이 경고(soft). Lite Level은 항상 면제.
 
 `guard-git-commit.sh`가 본 파일을 검사하여:
 - 존재 여부

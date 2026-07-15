@@ -147,6 +147,13 @@ except Exception:
     exit 2
   fi
 
+  # 결정 적립 검증 (ADR-013, soft) — 설계 판단 있으나 미적립이면 경고(차단 X, soft 단계)
+  if grep -q '"decisionLogged"[[:space:]]*:[[:space:]]*"missing"' "$EVIDENCE"; then
+    echo "$(date +%Y-%m-%dT%H:%M:%S) WARN $ACTION (decisionLogged=missing)" >> "$LOG"
+    echo "ℹ️ [결정 적립] 이번 변경에 설계·도메인 판단이 있으나 미적립(decisionLogged=missing)." >&2
+    echo "도메인 에이전트 결정이력/판단시나리오 또는 docs/decisions ADR에 적립 권고 (ADR-013, soft)." >&2
+  fi
+
     echo "$(date +%Y-%m-%dT%H:%M:%S) ALLOWED $ACTION (evidence verified, runtime files:" >> "$LOG"
     printf '%s' "$RUNTIME_FILES" >> "$LOG"
     echo ")" >> "$LOG"

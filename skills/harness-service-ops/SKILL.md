@@ -128,4 +128,5 @@ node skills/harness-orchestrator/scripts/service-orchestration.mjs ops-precheck 
 - [ ] [CONTENT] bootstrap evidence 확인 완료
 - [ ] [MANUAL] 운영 반영 write와 검증 경로 보고 완료
 - [ ] [MANUAL] 웹/대시보드/rollout 검증 완료
+- [ ] [GATE] **결정 적립 (ADR-013)**: 비자명한 운영 판단(왜 이 설정·무엇을 조심)이 있었으면 workspace `services/{svc}/sop/` 또는 운영 결정 기록에 적립. 단순 반복 반영은 면제
 - [ ] [FILE] `temp/orchestrator/{service}/state.json` 에 ops precheck/complete 기록

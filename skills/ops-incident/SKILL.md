@@ -111,6 +111,7 @@ description: "운영 장애 인지 → 임시 회피 → 원인 분석 → 보�
 - [ ] [CONTENT] 인시던트 관리 시스템 description 8섹션 완료
 - [ ] [CONTENT] 운영개선 Jira 태스크 번호 (`${JIRA_PROJECT_KEY}` 또는 devops)
 - [ ] [GATE] GATE 0~3 모두 통과
+- [ ] [GATE] **장애 패턴 환류 (ADR-013)**: 이 장애의 원인·대응·재발방지 패턴을 보고서로 끝내지 말고 해당 도메인 에이전트 `결정이력`/`판단시나리오` 또는 workspace `services/{svc}/sop/`에 적립 (다음 대응자가 헤매지 않게)
 - [ ] [MANUAL] (필요 시) hotfix 티켓 + harness-dev-process handoff
 
 ## 외부 컨텍스트 처리

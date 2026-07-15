@@ -2,7 +2,8 @@
 """
 결정층 문서 건강 스캔 (유지가능성 측정).
 
-전 서비스의 도메인 에이전트(agents/domain/*.md)와 ADR(docs/decisions/*.md)을 스캔해
+전 서비스의 도메인 에이전트(agents/domain/*.md)·ADR(docs/decisions/*.md)·
+운영 SOP(workspace services/**/sop/*.md — ADR-013 운영 확장)를 스캔해
 stale(신선도) · 충실도 · 커버리지 신호를 리포트한다. 읽기 전용.
 
 사용: python3 scan.py [workspace-root] [stale-days]
@@ -66,10 +67,22 @@ def scan():
     domain = [p for p in domain if not p.name.startswith("_")]
     adr = [p for p in adr if not p.name.startswith("_")]
 
+    # 운영 그릇 (SOP) — cairn workspace services/**/sop (ADR-013 운영 확장)
+    # ROOT가 projects/ 하위면 workspace 루트(.cairn 보유)로 승격해 탐색
+    ws = ROOT
+    if not (ws / ".cairn").exists() and (ws.parent / ".cairn").exists():
+        ws = ws.parent
+    sop = [p for p in sorted(ws.glob("services/**/sop/*.md")) if not p.name.startswith("_")]
+
     rows = []
-    for p in domain + adr:
-        kind = "domain" if "/agents/domain/" in str(p) else "adr"
-        svc = p.relative_to(ROOT).parts[0]
+    for p in domain + adr + sop:
+        s = str(p)
+        if "/sop/" in s:
+            kind = "sop"
+            svc = p.parent.parent.name  # services/{tier}/{svc}/sop/x.md → {svc}
+        else:
+            kind = "domain" if "/agents/domain/" in s else "adr"
+            svc = p.relative_to(ROOT).parts[0]
         try:
             text = p.read_text(encoding="utf-8")
         except Exception:
@@ -89,7 +102,7 @@ def scan():
         rows.append((svc, kind, p.name, fm.get("maintainer", "-"), lv or "-", flags))
 
     print(f"=== 결정층 건강 스캔 (root={ROOT}, stale>{STALE_DAYS}d, today={TODAY}) ===")
-    print(f"도메인 에이전트 {len(domain)}건, ADR {len(adr)}건\n")
+    print(f"도메인 에이전트 {len(domain)}건, ADR {len(adr)}건, 운영 SOP {len(sop)}건\n")
     if not rows:
         print("⚠️ 결정층 문서 0건 — 스캐폴드 미적용 서비스일 수 있음.")
         return

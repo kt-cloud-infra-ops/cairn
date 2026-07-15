@@ -119,5 +119,26 @@ while [ -n "$DIR" ] && [ "$DIR" != "." ] && [ "$DIR" != "/" ]; do
   DIR=$(dirname "$DIR")
 done
 
+# === 참조 가드 (soft) — 코드 편집 시 도메인 결정층 참조 권고 (결정 루프 ㉠, ADR-013) ===
+# 편집 파일명이 workspace rulepacks/{svc}/agents/*.md 에 언급되면, 이 세션 transcript에서
+# 해당 도메인 에이전트를 Read했는지 확인. 미참조 시 soft 경고(차단 X).
+# rulepacks/ 없는 워크스페이스는 무동작. (ats d8f23c5의 luppiter 하드코딩을 일반화)
+BN=$(basename "$FILE_PATH")
+case "$BN" in
+  *.java|*.kt|*.kts|*.jsp|*.js|*.ts|*.tsx|*.py|*.sql|*.xml)
+    WS_ROOT="${WS_ROOT:-$(find_workspace_root "$FILE_PATH")}"
+    if [ -d "$WS_ROOT/rulepacks" ]; then
+      AGENT=$(grep -rlF "$BN" "$WS_ROOT"/rulepacks/*/rules-on-demand/*.md "$WS_ROOT"/rulepacks/*/agents/*.md 2>/dev/null | grep -v 'README' | head -1)
+      if [ -n "$AGENT" ]; then
+        AN="${AGENT#"$WS_ROOT"/}"
+        TRANSCRIPT=$(echo "$TOOL_INPUT" | python3 -c "import json,sys;print(json.load(sys.stdin).get('transcript_path',''))" 2>/dev/null)
+        if [ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ] || ! tail -3000 "$TRANSCRIPT" 2>/dev/null | grep -qF "$(basename "$AGENT")"; then
+          echo "ℹ️ [참조 권고] $BN 편집 — 도메인 결정층 '$AN'(결정 이력·판단 시나리오)을 먼저 확인하세요. (soft, 미차단)"
+        fi
+      fi
+    fi
+    ;;
+esac
+
 # 프로젝트 루트를 못 찾은 경우 (pom.xml/package.json 없음) → 통과
 exit 0

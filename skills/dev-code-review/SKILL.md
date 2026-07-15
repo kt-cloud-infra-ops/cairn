@@ -13,6 +13,7 @@ description: "코드 리뷰 + 커밋 전 검증. 보안/품질/도메인 정합�
 - 리포트 출력: `references/report-template.md` 6단 형식
 - 커밋 단위 판정: 목적 단일성 (`rules/git-workflow.md` 기능 단위 분리 기준)
 - **commit 전 `.harness/review-evidence.json` 생성 의무** — guard-git-commit.sh가 본 파일 검증
+- **결정 적립 판정 (ADR-013)**: 이번 변경에 설계·도메인 판단이 있었는지 판정 → 있으면 도메인 에이전트 `결정이력`/`판단시나리오` 또는 `docs/decisions/` ADR 적립 확인 → evidence `decisionLogged`(`logged`/`none`/`missing`) 기록. Lite Level은 `none`(면제)
 - `git diff --cached` 기준으로 판단 (staged 변경만)
 - 검사 중 코드 수정 발생 시 lint/정적분석/테스트 **재실행**
 

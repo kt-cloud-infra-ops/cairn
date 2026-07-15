@@ -104,6 +104,7 @@ Phase 4: SHIP     → 배포 준비
 | 3 | 보안 체크 통과 | security-reviewer 에이전트 결과 |
 | 4 | 영향받는 기존 테스트 통과 | 기존 테스트 스위트 전체 |
 | 5 | 로컬 검증 완료 | DB → API → UI 순서 확인 |
+| 6 | **결정 적립** (Standard/Full) | 설계·도메인 판단 발생 시 도메인 에이전트 `결정이력`/`판단시나리오` 또는 `docs/decisions/` ADR에 적립. `dev-code-review`가 `decisionLogged` 기록 → `guard-git-commit` 검증. Lite·판단 없음(`none`) 면제 — **ADR-013** |
 
 ### GATE 4→DONE: SHIP
 
