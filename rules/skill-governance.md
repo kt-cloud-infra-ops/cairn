@@ -93,6 +93,7 @@ vendor가 hook, script, MCP middleware, subagent 정의에 의존하면 SKILL.md
 | `cicd-` | CI/CD 배포 | cicd-deploy |
 | `cairn-` | workspace/환경 설정 | cairn-init, cairn-project-add, cairn-project-pull |
 | `analytics-` | 분석/학습 | analytics-usage-report |
+| `security-check-` | 보안 점검 (SAST/이미지/설정) | security-check-cve, security-check-cce, security-check-sparrow |
 | `meta-` | 하네스/규칙 관리 | meta-harnessing, meta-review-rules |
 | `{서비스}-` | 서비스 특화 (팀 환경에 맞게 추가) | `<YOUR_SERVICE>-datachange`, `<YOUR_SERVICE>-release` |
 | `service-ops-` | service-ops branch helper (Vault/Observability/HTTPRoute 등) | service-ops-config |

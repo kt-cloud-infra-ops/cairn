@@ -91,6 +91,8 @@ cairn/
 ├── CODEX.md                ← Codex pointer
 ├── config/
 │   ├── cairn.config.example.json  ← Config template (workspace-based paths)
+│   ├── sparrow.env.example        ← security-check-sparrow 조직 공통값 템플릿
+│   ├── cce.env.example            ← security-check-cce 기준 문서 URL 템플릿
 │   └── ENV_STANDARD.md            ← Placeholder / env-var naming standard
 ├── rules/                  ← Auto-loaded rules (core, git, jira, agents, skill-governance ...)
 ├── rules-on-demand/        ← Project/domain rules (load explicitly when needed)
@@ -104,6 +106,9 @@ cairn/
 │   ├── harness-plan/
 │   ├── dev-code-review/
 │   ├── dev-tdd/
+│   ├── security-check-cve/   ← 컨테이너 이미지 CVE 분석·조치
+│   ├── security-check-cce/   ← 컨테이너/K8s 보안 설정(CCE) 진단
+│   ├── security-check-sparrow/ ← Sparrow SAST 소스코드 정적분석
 │   └── ...
 ├── agents/                 ← Subagent definitions (domain + layer experts)
 ├── hooks/                  ← Shell hooks for Claude Code / Codex
@@ -257,6 +262,9 @@ Invoke skills with the `/cairn:` prefix (or your team's configured prefix):
 /cairn:dev-code-review          ← Code review + evidence generation
 /cairn:dev-tdd                  ← TDD workflow
 /cairn:jira-rest-ops            ← Jira REST API operations (profile/env for org values)
+/cairn:security-check-cve       ← 컨테이너 이미지 CVE 분석·조치·리포트
+/cairn:security-check-cce       ← 컨테이너/Kubernetes 보안 설정(CCE) 진단·조치·리포트
+/cairn:security-check-sparrow   ← Sparrow(SourceChecker) SAST 소스코드 정적분석
 ```
 
 Each skill lives at `skills/<skill-name>/SKILL.md` and follows the template at `templates/skill-template.md`.
